@@ -4,6 +4,7 @@ import fashion.look_book.domain.Comment;
 import fashion.look_book.domain.Like;
 import fashion.look_book.domain.Member;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,8 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor
 public class LikeRepository {
+
+    @PersistenceContext
     private EntityManager em;
 
     public void save(Like like) {

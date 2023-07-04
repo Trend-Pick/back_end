@@ -33,4 +33,5 @@ public class Picture {
     }
     // like 리스트가 아니라 like의 개수를 받아와야함
 
+
 }

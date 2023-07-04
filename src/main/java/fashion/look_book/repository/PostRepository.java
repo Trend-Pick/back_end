@@ -3,6 +3,7 @@ package fashion.look_book.repository;
 import fashion.look_book.domain.Member;
 import fashion.look_book.domain.Post;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +12,8 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor
 public class PostRepository {
+
+    @PersistenceContext
     private EntityManager em;
 
     public void save(Post post) {
@@ -26,5 +29,10 @@ public class PostRepository {
         return em.createQuery("select p from Post p where p.member = :name", Post.class)
                 .setParameter("name", memberId)
                 .getResultList();
+    }
+
+    public List<Post> findAllPost() {
+        List<Post> AllPost = em.createQuery("select p from Post p", Post.class).getResultList();
+        return AllPost;
     }
 }
