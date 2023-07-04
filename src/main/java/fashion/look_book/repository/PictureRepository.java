@@ -3,6 +3,7 @@ package fashion.look_book.repository;
 import fashion.look_book.domain.Member;
 import fashion.look_book.domain.Picture;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PictureRepository {
 
+    @PersistenceContext
     private final EntityManager em;
 
     public void save(Picture picture) {
