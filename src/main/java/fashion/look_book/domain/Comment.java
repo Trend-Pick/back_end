@@ -2,14 +2,13 @@ package fashion.look_book.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
-import lombok.Generated;
 import lombok.Getter;
 
 @Entity
 @Getter
 public class Comment {
 
-    @Id @Generated
+    @Id @GeneratedValue
     @Column(name = "comment_id")
     private Long id;
 
@@ -21,6 +20,9 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
+
+    public Comment() {
+    }
 
     @Builder
     public Comment (Member comment_member, String content, Post post) {

@@ -2,7 +2,6 @@ package fashion.look_book.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
-import lombok.Generated;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,7 +12,7 @@ import java.util.List;
 @Getter
 public class Picture {
 
-    @Id @Generated
+    @Id @GeneratedValue
     @Column(name = "picture_id")
     private Long id;
 
@@ -25,6 +24,9 @@ public class Picture {
     private List<Like> likes = new ArrayList<>();
 
     // private MultipartFile cody_img;
+
+    public Picture() {
+    }
 
     @Builder
     public Picture (Member picture_member) {

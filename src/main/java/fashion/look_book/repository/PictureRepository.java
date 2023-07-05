@@ -27,7 +27,7 @@ public class PictureRepository {
 
     public List<Picture> findByMember(Member member) {
         Long memberId = member.getId();
-        return em.createQuery("select p from Picture p where p.member = :name", Picture.class)
+        return em.createQuery("select p from Picture p where p.picture_member = :name", Picture.class)
                 .setParameter("name", memberId)
                 .getResultList();
     }

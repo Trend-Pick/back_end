@@ -2,7 +2,6 @@ package fashion.look_book.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
-import lombok.Generated;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ import java.util.List;
 @Getter
 public class Post {
 
-    @Id @Generated
+    @Id @GeneratedValue
     @Column(name = "post_id")
     private Long id;
 
@@ -25,6 +24,9 @@ public class Post {
 
     @OneToMany(mappedBy = "post")
     private List<Comment> commentList = new ArrayList<>();
+
+    public Post() {
+    }
 
     @Builder
     public Post (Member post_member, String title, String content) {

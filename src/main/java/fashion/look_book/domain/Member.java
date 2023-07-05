@@ -38,6 +38,9 @@ public class Member {
     @OneToMany(mappedBy = "post_member")
     private List<Post> postList = new ArrayList<>();
 
+    public Member() {
+    }
+
     // 생성자
     @Builder
     public Member(String user_user_id, String password, String nickname, int age, boolean sex) {

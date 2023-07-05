@@ -2,7 +2,6 @@ package fashion.look_book.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
-import lombok.Generated;
 import lombok.Getter;
 
 @Entity
@@ -10,7 +9,7 @@ import lombok.Getter;
 @Getter
 public class Like {
 
-    @Id @Generated
+    @Id @GeneratedValue
     @Column(name = "like_id")
     private Long id;
 
@@ -24,6 +23,9 @@ public class Like {
 
     @Enumerated(EnumType.STRING)
     private LikeStatus status;
+
+    public Like() {
+    }
 
     @Builder
     public Like (Member like_member, Picture picture, LikeStatus status) {

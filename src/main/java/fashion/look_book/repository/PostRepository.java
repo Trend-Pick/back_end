@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class PostRepository {
 
     public List<Post> findByMember(Member member) {
         Long memberId = member.getId();
-        return em.createQuery("select p from Post p where p.member = :name", Post.class)
+        return em.createQuery("select p from Post p where p.post_member = :name", Post.class)
                 .setParameter("name", memberId)
                 .getResultList();
     }
@@ -34,5 +35,18 @@ public class PostRepository {
     public List<Post> findAllPost() {
         List<Post> AllPost = em.createQuery("select p from Post p", Post.class).getResultList();
         return AllPost;
+    }
+
+    /*public void deletePost(Long id) {
+        Post findPost = em.find(Post.class, id);
+        Long findPostId = findPost.getId();
+        em.createQuery("delete from Post p where id = :postId", Post.class)
+                .setParameter("postId", findPostId);
+        // em.remove(findPost);
+    }*/
+
+    public void deletePost(Long id) {
+        Post findPost = em.find(Post.class, id);
+        em.remove(findPost);
     }
 }

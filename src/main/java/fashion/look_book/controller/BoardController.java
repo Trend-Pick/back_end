@@ -4,9 +4,9 @@ import fashion.look_book.domain.Member;
 import fashion.look_book.domain.Post;
 import fashion.look_book.service.MemberService;
 import fashion.look_book.service.PostService;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +36,8 @@ public class BoardController {
 
         return postLists;
     } // post의 제목들을 넘겨줘야함
+    //////////////////////////// 타이틀만 보이게
+    //////////////////////////// result로 감싸기
 
     /*
     @GetMapping("/create_post") // 글쓰기 페이지로 넘어가는 것
@@ -45,42 +47,46 @@ public class BoardController {
      */
 
     @PostMapping("/create_post") // 글쓰기 페이지에서 저장을 누르는거
-    public CreatePost savePost(@RequestParam("title") String title,
-                            @RequestParam("content") String content) {
+    public CreatePostResponse savePost(@RequestBody CreatePostRequest request) {
 
-        Member post_member = new Member("hi", "1234", "abc", 24, true);
+        // Member post_member = new Member("hi", "1234", "abc", 24, true);
         // 원래는 세션에서 member의 정보를 가져와야 함
+        Member post_member = memberService.findOne(1L);
 
-        Post post = new Post(post_member, title, content);
+        Post post = new Post(post_member, request.title, request.content);
         Long id = postService.savePost(post);
 
-        return new CreatePost(id);
+        return new CreatePostResponse(id);
     }
 
-    @GetMapping("/create_post/{postId}") // 3번의 게시글 하나 클릭해서 들어가는 것
-    public UpdateMemberRequest createPost(@PathVariable ("postId") Long postId) {
+
+    @GetMapping("/post/{postId}") // 3번의 게시글 하나 클릭해서 들어가는 것
+    public PostDto createPost(@PathVariable ("postId") Long postId) {
         // 여기서 모델같은 데에서 데이터를 받아와야 한다.
         Post post = postService.findOne(postId);
 
         String title = post.getTitle();
         String content = post.getContent();
 
-        return new UpdateMemberRequest(title, content);
+        return new PostDto(post);
     }
 
-    @PostMapping("/update_post/{postId}")
-    public UpdateMemberResponse updatePost(@PathVariable ("postId") Long postId,
-                           @RequestParam("title") String title,
-                           @RequestParam("content") String content) {
 
-        postService.updatePost(postId, title, content);
+    @PutMapping("/update_post/{postId}")
+    public UpdatePostResponse updatePost(@PathVariable ("postId") Long postId,
+                                           @RequestBody UpdatePostRequest request) {
 
-        return new UpdateMemberResponse(postId);
-    } // update 넘어가는 메서드
+        postService.updatePost(postId, request.title, request.content);
 
+        return new UpdatePostResponse(postId);
+    }
+    //////////////////////////// 여기 기존 정보 받아와서 보여주는 로직 추가
 
-    // 삭제
-
+    @DeleteMapping("/delete_post/{postId}")
+    public String deletePost(@PathVariable ("postId") Long postId) {
+        postService.delete_Post(postId);
+        return "ok";
+    }
 
 
     @Data
@@ -96,7 +102,7 @@ public class BoardController {
     }
 
     @Data
-    public class CreatePost {
+    static class CreatePost {
         private Long id;
 
         public CreatePost(Long id) {
@@ -105,21 +111,32 @@ public class BoardController {
     }
 
     @Data
-    public class UpdateMemberRequest {
+    static class CreatePostRequest {
         private String title;
         private String content;
-
-        public UpdateMemberRequest(String title, String content) {
-            this.title = title;
-            this.content = content;
-        }
     }
 
     @Data
-    public class UpdateMemberResponse {
+    static class CreatePostResponse {
         private Long id;
 
-        public UpdateMemberResponse(Long id) {
+        public CreatePostResponse(Long id) {
+            this.id = id;
+        }
+    }
+
+
+    @Data
+    static class UpdatePostRequest {
+        private String title;
+        private String content;
+    }
+
+    @Data
+    static class UpdatePostResponse {
+        private Long id;
+
+        public UpdatePostResponse(Long id) {
             this.id = id;
         }
     }

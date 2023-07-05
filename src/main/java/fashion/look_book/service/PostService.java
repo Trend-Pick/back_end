@@ -49,6 +49,7 @@ public class PostService {
         return postRepository.findAllPost();
     }
 
+    @Transactional
     public Post add_comment (Post post, Comment comment) {
 
         post.getCommentList().add(comment);
@@ -61,5 +62,10 @@ public class PostService {
         post.getCommentList().remove(comment);
 
         return post;
+    }
+
+    @Transactional
+    public void delete_Post (Long postId) {
+        postRepository.deletePost(postId);
     }
 }

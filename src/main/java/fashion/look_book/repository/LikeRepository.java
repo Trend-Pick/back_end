@@ -27,7 +27,7 @@ public class LikeRepository {
 
     public List<Like> findByMember(Member member) {
         Long memberId = member.getId();
-        return em.createQuery("select l from Like l where l.member = :name", Like.class)
+        return em.createQuery("select l from Like l where l.like_member = :name", Like.class)
                 .setParameter("name", memberId)
                 .getResultList();
     }

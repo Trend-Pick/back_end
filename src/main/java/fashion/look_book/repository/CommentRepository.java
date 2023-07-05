@@ -26,7 +26,7 @@ public class CommentRepository {
 
     public List<Comment> findByMember(Member member) {
         Long memberId = member.getId();
-        return em.createQuery("select c from Comment c where c.member = :name", Comment.class)
+        return em.createQuery("select c from Comment c where c.comment_member = :name", Comment.class)
                 .setParameter("name", memberId)
                 .getResultList();
     }
