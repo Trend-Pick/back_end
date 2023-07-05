@@ -35,6 +35,9 @@ public class Post {
         // 연관관계 편의 메서드
     }
 
+    public Post() {
+    }
+
     public void update_post (String title, String content) {
         this.title = title;
         this.content = content;

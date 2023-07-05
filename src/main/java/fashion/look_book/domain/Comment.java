@@ -21,6 +21,9 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
 
+    public Comment() {
+    }
+
     @Builder
     public Comment (Member comment_member, String content, Post post) {
         this.comment_member = comment_member;
