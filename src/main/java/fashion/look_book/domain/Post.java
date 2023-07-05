@@ -9,9 +9,14 @@ import java.util.List;
 
 @Entity
 @Getter
+@SequenceGenerator(
+        name="POST_SEQ_GENERATOR",
+        allocationSize=1
+        )
 public class Post {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "POST_SEQ_GENERATOR")
     @Column(name = "post_id")
     private Long id;
 

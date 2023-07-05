@@ -6,9 +6,14 @@ import lombok.Getter;
 
 @Entity
 @Getter
+@SequenceGenerator(
+        name="COMMENT_SEQ_GENERATOR",
+        allocationSize=1
+)
 public class Comment {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "COMMENT_SEQ_GENERATOR")
     @Column(name = "comment_id")
     private Long id;
 

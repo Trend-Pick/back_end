@@ -10,9 +10,14 @@ import java.util.List;
 
 @Entity
 @Getter
+@SequenceGenerator(
+        name="PICTURE_SEQ_GENERATOR",
+        allocationSize=1
+)
 public class Picture {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "PICTURE_SEQ_GENERATOR")
     @Column(name = "picture_id")
     private Long id;
 

@@ -7,9 +7,14 @@ import lombok.Getter;
 @Entity
 @Table(name = "likes")
 @Getter
+@SequenceGenerator(
+        name="LIKES_SEQ_GENERATOR",
+        allocationSize=1
+)
 public class Like {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "LIKES_SEQ_GENERATOR")
     @Column(name = "like_id")
     private Long id;
 
