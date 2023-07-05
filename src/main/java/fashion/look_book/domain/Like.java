@@ -25,9 +25,6 @@ public class Like {
     @Enumerated(EnumType.STRING)
     private LikeStatus status;
 
-    public Like() {
-    }
-
     @Builder
     public Like (Member like_member, Picture picture, LikeStatus status) {
         this.like_member = like_member;

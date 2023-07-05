@@ -26,9 +26,6 @@ public class Picture {
 
     // private MultipartFile cody_img;
 
-    public Picture() {
-    }
-
     @Builder
     public Picture (Member picture_member) {
         this.picture_member = picture_member;

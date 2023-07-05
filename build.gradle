@@ -31,7 +31,7 @@ dependencies {
 
 	implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.0.33'
 	runtimeOnly 'com.h2database:h2'
-	implementation 'com.mysql:mysql-connector-j'
+	implementation 'mysql:mysql-connector-java'
 
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

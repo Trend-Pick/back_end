@@ -4,9 +4,9 @@ import fashion.look_book.domain.Member;
 import fashion.look_book.domain.Post;
 import fashion.look_book.service.MemberService;
 import fashion.look_book.service.PostService;
-import lombok.*;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,7 +36,6 @@ public class BoardController {
 
         return postLists;
     } // post의 제목들을 넘겨줘야함
-    //////////////////////////// result로 감싸기
 
     /*
     @GetMapping("/create_post") // 글쓰기 페이지로 넘어가는 것
@@ -46,43 +45,42 @@ public class BoardController {
      */
 
     @PostMapping("/create_post") // 글쓰기 페이지에서 저장을 누르는거
-    public CreateMemberResponse savePost(@RequestBody CreateMemberRequest request) {
+    public CreatePost savePost(@RequestParam("title") String title,
+                            @RequestParam("content") String content) {
 
-        // Member post_member = new Member("hi", "1234", "abc", 24, true);
+        Member post_member = new Member("hi", "1234", "abc", 24, true);
         // 원래는 세션에서 member의 정보를 가져와야 함
-        Member post_member = memberService.findOne(1L);
 
-        Post post = new Post(post_member, request.title, request.content);
+        Post post = new Post(post_member, title, content);
         Long id = postService.savePost(post);
 
-        return new CreateMemberResponse(id);
+        return new CreatePost(id);
     }
 
-
-    @GetMapping("/post/{postId}") // 3번의 게시글 하나 클릭해서 들어가는 것
-    public PostDto createPost(@PathVariable ("postId") Long postId) {
+    @GetMapping("/create_post/{postId}") // 3번의 게시글 하나 클릭해서 들어가는 것
+    public UpdateMemberRequest createPost(@PathVariable ("postId") Long postId) {
         // 여기서 모델같은 데에서 데이터를 받아와야 한다.
         Post post = postService.findOne(postId);
 
         String title = post.getTitle();
         String content = post.getContent();
 
-        return new PostDto(post);
-    } // 테스트해보고 수정 필요 (title, content 따로 받아와야 할거같은데)
+        return new UpdateMemberRequest(title, content);
+    }
 
-
-////////////////////// 여기도 수정 필요
     @PostMapping("/update_post/{postId}")
     public UpdateMemberResponse updatePost(@PathVariable ("postId") Long postId,
-                           @RequestBody UpdateMemberRequest request) {
+                           @RequestParam("title") String title,
+                           @RequestParam("content") String content) {
 
-        postService.updatePost(postId, request.title, request.content);
+        postService.updatePost(postId, title, content);
 
         return new UpdateMemberResponse(postId);
     } // update 넘어가는 메서드
 
 
     // 삭제
+
 
 
     @Data
@@ -98,7 +96,7 @@ public class BoardController {
     }
 
     @Data
-    static class CreatePost {
+    public class CreatePost {
         private Long id;
 
         public CreatePost(Long id) {
@@ -107,29 +105,18 @@ public class BoardController {
     }
 
     @Data
-    static class CreateMemberRequest {
+    public class UpdateMemberRequest {
         private String title;
         private String content;
-    }
 
-    @Data
-    static class CreateMemberResponse {
-        private Long id;
-
-        public CreateMemberResponse(Long id) {
-            this.id = id;
+        public UpdateMemberRequest(String title, String content) {
+            this.title = title;
+            this.content = content;
         }
     }
 
-
     @Data
-    static class UpdateMemberRequest {
-        private String title;
-        private String content;
-    }
-
-    @Data
-    static class UpdateMemberResponse {
+    public class UpdateMemberResponse {
         private Long id;
 
         public UpdateMemberResponse(Long id) {
