@@ -2,6 +2,7 @@ package fashion.look_book.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Generated;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @Getter
 public class Picture {
 
-    @Id @GeneratedValue
+    @Id @Generated
     @Column(name = "picture_id")
     private Long id;
 
