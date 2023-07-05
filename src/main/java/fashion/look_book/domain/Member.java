@@ -10,9 +10,13 @@ import java.util.List;
 
 @Entity
 @Getter
+@SequenceGenerator(
+        name="MEMBER_SEQ_GENERATOR",
+        allocationSize=1
+)
 public class Member {
-
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE,
+        generator = "MEMBER_SEQ_GENERATOR")
     @Column(name = "member_id")
     private Long id;
 

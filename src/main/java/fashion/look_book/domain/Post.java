@@ -2,6 +2,7 @@ package fashion.look_book.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Generated;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.List;
 @Getter
 public class Post {
 
-    @Id @GeneratedValue
+    @Id @Generated
     @Column(name = "post_id")
     private Long id;
 

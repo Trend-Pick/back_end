@@ -2,13 +2,14 @@ package fashion.look_book.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Generated;
 import lombok.Getter;
 
 @Entity
 @Getter
 public class Comment {
 
-    @Id @GeneratedValue
+    @Id @Generated
     @Column(name = "comment_id")
     private Long id;
 
