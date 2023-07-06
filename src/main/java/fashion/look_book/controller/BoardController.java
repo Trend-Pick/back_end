@@ -79,10 +79,14 @@ public class BoardController {
 
         List<Comment> commentList = commentService.post_comment(postId);
 
-        ////////////// 수정 필요
-        return new PostWithCommentDto(post, commentList);
-    }
+        // id, content가 아니라 content만 반환하도록 수정
 
+        List<CommentDtoContent> commentDtoContents = commentList.stream()
+                .map(c -> new CommentDtoContent(c.getContent()))
+                .collect((Collectors.toList()));
+
+        return new PostWithCommentDto(post, commentDtoContents);
+    }
 
     @PutMapping("/update_post/{postId}")
     public UpdatePostResponse updatePost(@PathVariable ("postId") Long postId,
@@ -103,7 +107,7 @@ public class BoardController {
 
     // 여기서부터 댓글
 
-
+    // 세션 만들어지면 GetMapping
 
     // 댓글 만들기
     @PostMapping("/create/{postId}/comment")
@@ -140,79 +144,4 @@ public class BoardController {
         commentService.delete_Comment(commentId);
         return "ok";
     }
-
-    /*@Data
-    static class PostWithCommentDto {
-        private String title;
-        private String content;
-        private List<Comment> commentList;
-
-        public PostWithCommentDto(Post post, List<Comment> commentList) {
-            this.title = post.getTitle();
-            this.content = post.getContent();
-            this.commentList = commentList;
-        }
-    }
-
-
-    @Data
-    static class CreatePostRequest {
-        private String title;
-        private String content;
-    }
-
-
-    @Data
-    static class CreatePostResponse {
-        private Long id;
-
-        public CreatePostResponse(Long id) {
-            this.id = id;
-        }
-    }
-
-    @Data
-    static class CreateCommentRequest {
-        private String content;
-    }
-
-
-    @Data
-    static class CreateCommentResponse {
-        private Long id;
-
-        public CreateCommentResponse(Long id) {
-            this.id = id;
-        }
-    }
-
-
-    @Data
-    static class UpdatePostRequest {
-        private String title;
-        private String content;
-    }
-
-    @Data
-    static class UpdatePostResponse {
-        private Long id;
-
-        public UpdatePostResponse(Long id) {
-            this.id = id;
-        }
-    }
-
-    @Data
-    static class UpdateCommentRequest {
-        private String content;
-    }
-
-    @Data
-    static class UpdateCommentResponse {
-        private Long id;
-
-        public UpdateCommentResponse(Long id) {
-            this.id = id;
-        }
-    }*/
 }
