@@ -1,5 +1,6 @@
 package fashion.look_book.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,11 +22,12 @@ public class Picture {
     @Column(name = "picture_id")
     private Long id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member picture_member;
 
-    @OneToMany(mappedBy = "picture")
+    @OneToMany(mappedBy = "picture", cascade = CascadeType.ALL)
     private List<Like> likes = new ArrayList<>();
 
     // private MultipartFile cody_img;

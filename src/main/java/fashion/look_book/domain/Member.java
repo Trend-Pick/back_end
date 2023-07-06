@@ -49,7 +49,6 @@ public class Member {
         this.nickname = nickname;
         this.age = age;
         this.sex = sex;
-
     }
 
     // private MultipartFile profile_img;

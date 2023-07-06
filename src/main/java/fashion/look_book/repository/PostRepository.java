@@ -37,14 +37,6 @@ public class PostRepository {
         return AllPost;
     }
 
-    /*public void deletePost(Long id) {
-        Post findPost = em.find(Post.class, id);
-        Long findPostId = findPost.getId();
-        em.createQuery("delete from Post p where id = :postId", Post.class)
-                .setParameter("postId", findPostId);
-        // em.remove(findPost);
-    }*/
-
     public void deletePost(Long id) {
         Post findPost = em.find(Post.class, id);
         em.remove(findPost);

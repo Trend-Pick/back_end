@@ -1,12 +1,13 @@
 package fashion.look_book.controller;
 
+import fashion.look_book.Dto.Board.*;
+import fashion.look_book.domain.Comment;
 import fashion.look_book.domain.Member;
 import fashion.look_book.domain.Post;
+import fashion.look_book.service.CommentService;
 import fashion.look_book.service.MemberService;
 import fashion.look_book.service.PostService;
 import lombok.*;
-import org.springframework.ui.Model;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,24 +26,35 @@ public class BoardController {
 
     private final PostService postService;
     private final MemberService memberService;
+    private final CommentService commentService;
 
     @GetMapping("/post_list")
-    public List<PostDto> postList() {
+    public List<PostDtoTitle> postList() {
         List<Post> findPosts = postService.findAllPost();
 
-        List<PostDto> postLists = findPosts.stream()
-                .map(p -> new PostDto(p))
+        List<PostDtoTitle> postLists = findPosts.stream()
+                .map(p -> new PostDtoTitle(p.getTitle()))
                 .collect(Collectors.toList());
 
         return postLists;
-    } // post의 제목들을 넘겨줘야함
-    //////////////////////////// 타이틀만 보이게
-    //////////////////////////// result로 감싸기
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result<T> {
+        private T data;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class PostDtoTitle {
+        private String title;
+    }
 
     /*
     @GetMapping("/create_post") // 글쓰기 페이지로 넘어가는 것
     public Post createPost() {
-
+        // 이거도 세션 만들어야지 넘어가는 걸로
     }
      */
 
@@ -53,7 +65,7 @@ public class BoardController {
         // 원래는 세션에서 member의 정보를 가져와야 함
         Member post_member = memberService.findOne(1L);
 
-        Post post = new Post(post_member, request.title, request.content);
+        Post post = new Post(post_member, request.getTitle(), request.getContent());
         Long id = postService.savePost(post);
 
         return new CreatePostResponse(id);
@@ -61,14 +73,14 @@ public class BoardController {
 
 
     @GetMapping("/post/{postId}") // 3번의 게시글 하나 클릭해서 들어가는 것
-    public PostDto createPost(@PathVariable ("postId") Long postId) {
-        // 여기서 모델같은 데에서 데이터를 받아와야 한다.
+    public PostWithCommentDto createPost(@PathVariable ("postId") Long postId) {
+
         Post post = postService.findOne(postId);
 
-        String title = post.getTitle();
-        String content = post.getContent();
+        List<Comment> commentList = commentService.post_comment(postId);
 
-        return new PostDto(post);
+        ////////////// 수정 필요
+        return new PostWithCommentDto(post, commentList);
     }
 
 
@@ -76,11 +88,10 @@ public class BoardController {
     public UpdatePostResponse updatePost(@PathVariable ("postId") Long postId,
                                            @RequestBody UpdatePostRequest request) {
 
-        postService.updatePost(postId, request.title, request.content);
+        postService.updatePost(postId, request.getTitle(), request.getContent());
 
         return new UpdatePostResponse(postId);
     }
-    //////////////////////////// 여기 기존 정보 받아와서 보여주는 로직 추가
 
     @DeleteMapping("/delete_post/{postId}")
     public String deletePost(@PathVariable ("postId") Long postId) {
@@ -89,26 +100,60 @@ public class BoardController {
     }
 
 
-    @Data
-    static class PostDto {
+
+    // 여기서부터 댓글
+
+
+
+    // 댓글 만들기
+    @PostMapping("/create/{postId}/comment")
+    public CreateCommentResponse saveComment(@PathVariable ("postId") Long postId,
+                                            @RequestBody CreateCommentRequest request) {
+
+        // Member post_member = new Member("hi", "1234", "abc", 24, true);
+        // 원래는 세션에서 member의 정보를 가져와야 함
+        Member post_member = memberService.findOne(1L);
+        Post post = postService.findOne(postId);
+
+        Comment comment = new Comment(post_member, request.getContent(), post);
+        Long id = commentService.save(comment);
+
+        return new CreateCommentResponse(id);
+    }
+
+
+    // 댓글 수정하기
+    @PutMapping("/update_post/{postId}/{CommentId}")
+    public UpdateCommentResponse updatePost(@PathVariable ("postId") Long postId,
+                                            @PathVariable ("CommentId") Long commentId,
+                                            @RequestBody UpdateCommentRequest request) {
+
+        commentService.updateComment(commentId, request.getContent());
+
+        return new UpdateCommentResponse(commentId);
+    }
+
+
+    // 댓글 삭제하기
+    @DeleteMapping("/delete_comment/{commentId}")
+    public String deleteComment(@PathVariable ("commentId") Long commentId) {
+        commentService.delete_Comment(commentId);
+        return "ok";
+    }
+
+    /*@Data
+    static class PostWithCommentDto {
         private String title;
         private String content;
+        private List<Comment> commentList;
 
-        public PostDto(Post post) {
+        public PostWithCommentDto(Post post, List<Comment> commentList) {
             this.title = post.getTitle();
             this.content = post.getContent();
-        }
-
-    }
-
-    @Data
-    static class CreatePost {
-        private Long id;
-
-        public CreatePost(Long id) {
-            this.id = id;
+            this.commentList = commentList;
         }
     }
+
 
     @Data
     static class CreatePostRequest {
@@ -116,11 +161,27 @@ public class BoardController {
         private String content;
     }
 
+
     @Data
     static class CreatePostResponse {
         private Long id;
 
         public CreatePostResponse(Long id) {
+            this.id = id;
+        }
+    }
+
+    @Data
+    static class CreateCommentRequest {
+        private String content;
+    }
+
+
+    @Data
+    static class CreateCommentResponse {
+        private Long id;
+
+        public CreateCommentResponse(Long id) {
             this.id = id;
         }
     }
@@ -140,4 +201,18 @@ public class BoardController {
             this.id = id;
         }
     }
+
+    @Data
+    static class UpdateCommentRequest {
+        private String content;
+    }
+
+    @Data
+    static class UpdateCommentResponse {
+        private Long id;
+
+        public UpdateCommentResponse(Long id) {
+            this.id = id;
+        }
+    }*/
 }

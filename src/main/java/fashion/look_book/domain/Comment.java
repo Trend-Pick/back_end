@@ -1,5 +1,6 @@
 package fashion.look_book.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,11 +20,14 @@ public class Comment {
 
     private String content;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member comment_member;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
     private Post post;
 
     public Comment() {
@@ -34,5 +38,9 @@ public class Comment {
         this.comment_member = comment_member;
         this.content = content;
         this.post = post;
+    }
+
+    public void update_comment (String content) {
+        this.content = content;
     }
 }

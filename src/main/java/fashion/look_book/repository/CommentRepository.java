@@ -2,6 +2,7 @@ package fashion.look_book.repository;
 
 import fashion.look_book.domain.Comment;
 import fashion.look_book.domain.Member;
+import fashion.look_book.domain.Post;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
@@ -29,5 +30,18 @@ public class CommentRepository {
         return em.createQuery("select c from Comment c where c.comment_member = :name", Comment.class)
                 .setParameter("name", memberId)
                 .getResultList();
+    }
+
+    public List<Comment> findByPost(Post post) {
+        Long postId = post.getId();
+        return em.createQuery("select c from Comment c where c.post.id = :post", Comment.class)
+                .setParameter("post", postId)
+                .getResultList();
+    }
+
+
+    public void deleteComment(Long id) {
+        Comment findComment = em.find(Comment.class, id);
+        em.remove(findComment);
     }
 }

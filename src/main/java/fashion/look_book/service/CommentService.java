@@ -19,10 +19,12 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
+    private final PostRepository postRepository;
 
     @Transactional
-    public void save(Comment comment) {
+    public Long save(Comment comment) {
         commentRepository.save(comment);
+        return comment.getId();
     }
 
     public Comment findOne(Long commentId) {
@@ -32,5 +34,24 @@ public class CommentService {
     public List<Comment> users_comment(Long id) {
         Member findMember = memberRepository.findOne(id);
         return commentRepository.findByMember(findMember);
+    }
+
+    public List<Comment> post_comment(Long id) {
+        Post findPost = postRepository.findOne(id);
+        return commentRepository.findByPost(findPost);
+    }
+
+    @Transactional
+    public Long updateComment(Long commentId, String content) {
+        Comment findComment = commentRepository.findOne(commentId);
+        // findOne으로 찾아온 findItem은 영속상태이다.
+
+        findComment.update_comment(content);
+        return findComment.getId();
+    }
+
+    @Transactional
+    public void delete_Comment (Long commentId) {
+        commentRepository.deleteComment(commentId);
     }
 }
