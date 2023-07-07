@@ -7,8 +7,10 @@ import fashion.look_book.domain.Picture;
 import fashion.look_book.repository.MemberRepository;
 import fashion.look_book.repository.PictureRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,9 +22,16 @@ public class PictureService {
     private final PictureRepository pictureRepository;
     private final MemberRepository memberRepository;
 
+
+    @Value("${itemImgLocation}") // .properties 의 itemImgLocation 값을 itemImgLocation 변수에 넣어
+    private String imgLocation;
+
     @Transactional
-    public void savePicture(Picture picture) {
+    public void save(Picture picture) throws Exception{
+
+
         pictureRepository.save(picture);
+
     }
 
     public Picture findOne(Long pictureId) {

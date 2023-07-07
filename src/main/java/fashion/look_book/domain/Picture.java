@@ -32,12 +32,23 @@ public class Picture {
 
     // private MultipartFile cody_img;
 
+    private String imgName;
+
+    private String oriImgName;
+
+    private String imgUrl;
+
+    private String repimgYn;
+
     public Picture() {
     }
 
     @Builder
-    public Picture (Member picture_member) {
+    public Picture (Member picture_member,String imgName, String oriImgName, String imgUrl) {
         this.picture_member = picture_member;
+        this.imgName = imgName;
+        this.oriImgName = oriImgName;
+        this.imgUrl = imgUrl;
 
         Like.builder().picture(this).build();
     }

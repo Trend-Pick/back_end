@@ -1,0 +1,59 @@
+package fashion.look_book.controller;
+import fashion.look_book.Dto.PIcture.CreatePictureDto;
+import fashion.look_book.domain.*;
+import fashion.look_book.service.FileService;
+import fashion.look_book.service.MemberService;
+import fashion.look_book.service.PictureService;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+public class PictureController {
+    private final PictureService pictureService;
+    private final MemberService memberService;
+    private final FileService fileService;
+
+    @Value("${itemImgLocation}") // .properties 의 itemImgLocation 값을 itemImgLocation 변수에 넣어
+    private String imgLocation;
+
+    //memberId,multipartfile을 같이 보낼 것.
+    @PostMapping("/picture") // 글쓰기 페이지에서 저장을 누르는거
+    public CreatePictureDto savePicture(@RequestParam("member_id") Long memberId,
+                                        @RequestParam("cody_img") MultipartFile codyImg)
+            throws Exception{
+        //    PictureCreateDto pictureDto = new PictureCreateDto.builder()
+        // 여기서 날라왔을 때
+        Member picture_member = memberService.findOne(memberId);
+        Long picture_memberId = picture_member.getId();
+
+        String oriImgName = codyImg.getOriginalFilename();
+        String imgName="";
+        String imgUrl = "";
+
+        imgName = fileService.uploadFiles(imgLocation,oriImgName,codyImg.getBytes());
+        imgUrl = "/item/" + imgName;
+
+        Picture picture = Picture.builder()
+                .picture_member(picture_member)
+                .imgName(imgName).oriImgName(oriImgName).imgUrl(imgUrl).build();
+
+        pictureService.save(picture);
+        return new CreatePictureDto(picture);
+        //  codyImgService.save(picture_member,codyImg);
+
+    }
+
+    @Data
+    public class CodyImgCreateDto{
+
+    }
+
+
+}
