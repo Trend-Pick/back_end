@@ -21,16 +21,21 @@ public class PictureService {
 
     private final PictureRepository pictureRepository;
     private final MemberRepository memberRepository;
-
+    private final FileService fileService;
 
     @Value("${itemImgLocation}") // .properties 의 itemImgLocation 값을 itemImgLocation 변수에 넣어
     private String imgLocation;
 
     @Transactional
     public void save(Picture picture) throws Exception{
-
-
         pictureRepository.save(picture);
+    }
+
+    //삭제하려고 할 때 pictureId를 받아서 그 pictureId에 연결된 img를 삭제하는 식으로.
+    public void delete(Picture picture) throws Exception {
+       fileService.deleteFile(picture.getImgUrl());
+
+        pictureRepository.delete(picture.getId());
 
     }
 
