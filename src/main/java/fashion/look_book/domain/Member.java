@@ -1,6 +1,7 @@
 package fashion.look_book.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,10 +21,19 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
+    @NotEmpty
     private String user_user_id;
+
+    @NotEmpty
     private String password;
+
+    @NotEmpty
     private String nickname;
+
+    @NotEmpty
     private int age;
+
+    @NotEmpty
     private boolean sex;
 
     @OneToMany(mappedBy = "picture_member")
@@ -37,6 +47,7 @@ public class Member {
 
     @OneToMany(mappedBy = "post_member")
     private List<Post> postList = new ArrayList<>();
+
 
     public Member() {
     }

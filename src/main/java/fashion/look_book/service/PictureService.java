@@ -28,7 +28,9 @@ public class PictureService {
 
     @Transactional
     public void save(Picture picture) throws Exception{
+
         pictureRepository.save(picture);
+
     }
 
     //삭제하려고 할 때 pictureId를 받아서 그 pictureId에 연결된 img를 삭제하는 식으로.
