@@ -13,7 +13,7 @@ public class HomeController {
 
     private final MemberService memberService;
 
-    @GetMapping("/home")
+    //@GetMapping("/home")
     public CreateMemberDto test() {
 
         Member member = new Member("hi", "1234", "abc", 24, true);

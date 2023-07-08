@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -34,5 +35,12 @@ public class MemberRepository {
                 .setParameter("userid", id)
                 .getResultList();
     } // 중복회원 검증할 때 필요한 메서드
+
+    public Optional<Member> findByLoginId(String loginId) {
+        return findAll().stream()
+                .filter(m -> m.getUser_user_id().equals(loginId))
+                .findFirst();
+    }
+
 
 }

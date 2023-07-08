@@ -79,8 +79,6 @@ public class BoardController {
 
         List<Comment> commentList = commentService.post_comment(postId);
 
-        // id, content가 아니라 content만 반환하도록 수정
-
         List<CommentDtoContent> commentDtoContents = commentList.stream()
                 .map(c -> new CommentDtoContent(c.getContent()))
                 .collect((Collectors.toList()));
@@ -108,6 +106,7 @@ public class BoardController {
     // 여기서부터 댓글
 
     // 세션 만들어지면 GetMapping
+
 
     // 댓글 만들기
     @PostMapping("/create/{postId}/comment")
