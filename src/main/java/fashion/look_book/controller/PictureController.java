@@ -57,8 +57,7 @@ public class PictureController {
 
     }
 
-    @DeleteMapping("/delete/picture") // picture_id와 member_id 보내줘야함. 그걸 받아서? picture_id만 보내줘도 되긴함. 근데 또 조회할 것도 필요하겠다. 해당 유저가 올린 사진들만 모아서 보여주는식
-    //해당 유저가 업로드한 사진만 보내줄 때 또 보내줘야하는게 picture_id다 . 그래야 다시 우리쪽으로 보낼 때 photo_id를 포함해서 보낼 수 있으니까.
+    @DeleteMapping("/delete/picture")
     public ResponseEntity deletePicture(@RequestParam(value= "member_id") Long memberId,
                                         @RequestParam(value= "picture_id") Long pictureId)
             throws Exception{
