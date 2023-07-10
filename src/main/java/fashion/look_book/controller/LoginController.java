@@ -4,6 +4,7 @@ import fashion.look_book.Dto.LoginDtos.*;
 import fashion.look_book.domain.Member;
 import fashion.look_book.login.Login;
 import fashion.look_book.login.LoginService;
+import fashion.look_book.login.SessionConst;
 import fashion.look_book.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -20,23 +21,10 @@ public class LoginController {
     private final MemberService memberService;
     private final LoginService loginService;
 
-    /*@GetMapping("/")
-    public String homeLogin (@SessionAttribute(name = SessionConst.LOGIN_MEMBER,
-            required = false) Member loginMember, Model model) {
-        // 세션을 생성하지 않기 때문에 가져올때만 @SessionAttribute 사용
-
-        if (loginMember == null) {
-            return null; // 처음 페이지로 리다이렉트
-        }
-
-        // 세션이 유지되면 로그인으로 이동
-        model.addAttribute("member", loginMember);
-        return null; // 로그인 해서 다음 페이지로 이동
-    }*/
 
     /////////////////// 여기 잘못됨
     @GetMapping("/")
-    public String homeLogin (@Login LoginDtoRequest loginMember, Model model) {
+    public String homeLogin (@Login LoginDtoRequest loginMember) {
 
         // 세션에 회원 데이터가 없으면 home (로그인 또는 회원가입 하는 페이지로 이동)
         if (loginMember == null) {
@@ -55,7 +43,7 @@ public class LoginController {
 
 
     @GetMapping("/member/add")
-    public String addMemberDto() {
+    public String addMember() {
         return null;
     }
 
@@ -64,7 +52,7 @@ public class LoginController {
     @PostMapping("/member/add")
     public addMemberDtoResponse saveMember(@RequestBody addMemberDtoRequest request) {
         Member member = new Member(request.getUser_user_id(), request.getPassword(), request.getNickname(),
-                                    request.getAge(), request.isSex());
+                                   request.getAge(), request.isSex());
 
         Long id = memberService.join(member);
 
@@ -83,6 +71,7 @@ public class LoginController {
         if(bindingResult.hasErrors()) {
             return null; // 로그인 페이지로 리다이렉트
         }
+
         Member loginMember = loginService.login(request.getUser_user_id(), request.getPassword());
 
         if(loginMember == null) {

@@ -1,6 +1,5 @@
 package fashion.look_book.login;
 
-import fashion.look_book.Dto.LoginDtos.SessionConst;
 import fashion.look_book.domain.Member;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
