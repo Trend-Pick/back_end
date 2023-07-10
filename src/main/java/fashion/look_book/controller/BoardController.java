@@ -1,12 +1,11 @@
 package fashion.look_book.controller;
 
 import fashion.look_book.Dto.Board.*;
-import fashion.look_book.Dto.LoginDtos.SessionConst;
+import fashion.look_book.login.SessionConst;
 import fashion.look_book.domain.Comment;
 import fashion.look_book.domain.Member;
 import fashion.look_book.domain.Post;
 import fashion.look_book.service.CommentService;
-import fashion.look_book.service.MemberService;
 import fashion.look_book.service.PostService;
 import jakarta.servlet.http.HttpSession;
 import lombok.*;
@@ -27,7 +26,6 @@ public class BoardController {
     // 3. 게시판 목록에서 게시글을 클릭하면 내용을 보여준다. 만약 자기가 쓴 글이라면 수정, 삭제 버튼도 보여준다.
 
     private final PostService postService;
-    private final MemberService memberService;
     private final CommentService commentService;
     private final HttpSession session;
 
@@ -54,12 +52,11 @@ public class BoardController {
         private String title;
     }
 
-    /*
+
     @GetMapping("/create_post") // 글쓰기 페이지로 넘어가는 것
-    public Post createPost() {
+    public void createPost() {
         // 이거도 세션 만들어야지 넘어가는 걸로
     }
-     */
 
     @PostMapping("/create_post") // 글쓰기 페이지에서 저장을 누르는거
     public CreatePostResponse savePost(@RequestBody CreatePostRequest request) {
