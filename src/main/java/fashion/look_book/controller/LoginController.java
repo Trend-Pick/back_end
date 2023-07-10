@@ -2,6 +2,7 @@ package fashion.look_book.controller;
 
 import fashion.look_book.Dto.LoginDtos.*;
 import fashion.look_book.domain.Member;
+import fashion.look_book.login.Login;
 import fashion.look_book.login.LoginService;
 import fashion.look_book.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +20,7 @@ public class LoginController {
     private final MemberService memberService;
     private final LoginService loginService;
 
-    @GetMapping("/")
+    /*@GetMapping("/")
     public String homeLogin (@SessionAttribute(name = SessionConst.LOGIN_MEMBER,
             required = false) Member loginMember, Model model) {
         // 세션을 생성하지 않기 때문에 가져올때만 @SessionAttribute 사용
@@ -30,7 +31,20 @@ public class LoginController {
 
         // 세션이 유지되면 로그인으로 이동
         model.addAttribute("member", loginMember);
-        return "aaa"; // 로그인 해서 다음 페이지로 이동
+        return null; // 로그인 해서 다음 페이지로 이동
+    }*/
+
+    /////////////////// 여기 잘못됨
+    @GetMapping("/")
+    public String homeLogin (@Login LoginDtoRequest loginMember, Model model) {
+
+        // 세션에 회원 데이터가 없으면 home (로그인 또는 회원가입 하는 페이지로 이동)
+        if (loginMember == null) {
+            return "ok";
+        }
+
+        // 세션이 유지되면 로그인으로 이동(사진 고르는 기능 페이지로 이동)
+        return "ok";
     }
 
 
@@ -44,8 +58,6 @@ public class LoginController {
     public String addMemberDto() {
         return null;
     }
-
-
 
 
 
@@ -92,6 +104,6 @@ public class LoginController {
         if (session != null) {
             session.invalidate();
         }
-        return "redirect:/"; // 홈 페이지로 리다이렉트
+        return "ok"; // 홈 페이지로 리다이렉트
     }
 }

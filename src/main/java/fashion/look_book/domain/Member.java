@@ -2,6 +2,7 @@ package fashion.look_book.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,10 +31,8 @@ public class Member {
     @NotEmpty
     private String nickname;
 
-    @NotEmpty
-    private int age;
+    private Long age;
 
-    @NotEmpty
     private boolean sex;
 
     @OneToMany(mappedBy = "picture_member")
@@ -54,7 +53,7 @@ public class Member {
 
     // 생성자
     @Builder
-    public Member(String user_user_id, String password, String nickname, int age, boolean sex) {
+    public Member(String user_user_id, String password, String nickname, Long age, boolean sex) {
         this.user_user_id = user_user_id;
         this.password = password;
         this.nickname = nickname;

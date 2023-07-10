@@ -1,6 +1,7 @@
 package fashion.look_book.Dto.LoginDtos;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,9 +20,7 @@ public class addMemberDtoRequest {
     @NotEmpty
     private String nickname;
 
-    @NotEmpty
-    private int age;
+    private Long age;
 
-    @NotEmpty
     private boolean sex;
 }

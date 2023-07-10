@@ -23,7 +23,7 @@ public class MemberService {
     }
 
     private void validateDuplicateMember (Member member) {
-        List<Member> findMember = memberRepository.findById(member.getId());
+        List<Member> findMember = memberRepository.findById(member.getUser_user_id());
         if(!findMember.isEmpty()) {
             throw new IllegalStateException();
         }

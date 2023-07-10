@@ -1,12 +1,14 @@
 package fashion.look_book.controller;
 
 import fashion.look_book.Dto.Board.*;
+import fashion.look_book.Dto.LoginDtos.SessionConst;
 import fashion.look_book.domain.Comment;
 import fashion.look_book.domain.Member;
 import fashion.look_book.domain.Post;
 import fashion.look_book.service.CommentService;
 import fashion.look_book.service.MemberService;
 import fashion.look_book.service.PostService;
+import jakarta.servlet.http.HttpSession;
 import lombok.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +29,7 @@ public class BoardController {
     private final PostService postService;
     private final MemberService memberService;
     private final CommentService commentService;
+    private final HttpSession session;
 
     @GetMapping("/post_list")
     public List<PostDtoTitle> postList() {
@@ -61,11 +64,9 @@ public class BoardController {
     @PostMapping("/create_post") // 글쓰기 페이지에서 저장을 누르는거
     public CreatePostResponse savePost(@RequestBody CreatePostRequest request) {
 
-        // Member post_member = new Member("hi", "1234", "abc", 24, true);
-        // 원래는 세션에서 member의 정보를 가져와야 함
-        Member post_member = memberService.findOne(1L);
+        Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
-        Post post = new Post(post_member, request.getTitle(), request.getContent());
+        Post post = new Post(member, request.getTitle(), request.getContent());
         Long id = postService.savePost(post);
 
         return new CreatePostResponse(id);
@@ -84,20 +85,42 @@ public class BoardController {
                 .collect((Collectors.toList()));
 
         return new PostWithCommentDto(post, commentDtoContents);
+        // 자기 게시글이면 수정, 삭제 버튼 보이게
+        // 프론트분들이랑 상의하기
     }
 
     @PutMapping("/update_post/{postId}")
     public UpdatePostResponse updatePost(@PathVariable ("postId") Long postId,
                                            @RequestBody UpdatePostRequest request) {
 
-        postService.updatePost(postId, request.getTitle(), request.getContent());
+        Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        Post post = postService.findOne(postId);
+
+        if(post.getPost_member().getId() == member.getId()) {
+            postService.updatePost(postId, request.getTitle(), request.getContent());
+        }
+        else {
+            return null;
+        }
 
         return new UpdatePostResponse(postId);
     }
 
     @DeleteMapping("/delete_post/{postId}")
     public String deletePost(@PathVariable ("postId") Long postId) {
-        postService.delete_Post(postId);
+
+        Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        Post post = postService.findOne(postId);
+
+        if(post.getPost_member().getId() == member.getId()) {
+            postService.delete_Post(postId);
+        }
+        else {
+            return null;
+        }
+
         return "ok";
     }
 
@@ -113,12 +136,10 @@ public class BoardController {
     public CreateCommentResponse saveComment(@PathVariable ("postId") Long postId,
                                             @RequestBody CreateCommentRequest request) {
 
-        // Member post_member = new Member("hi", "1234", "abc", 24, true);
-        // 원래는 세션에서 member의 정보를 가져와야 함
-        Member post_member = memberService.findOne(1L);
+        Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Post post = postService.findOne(postId);
 
-        Comment comment = new Comment(post_member, request.getContent(), post);
+        Comment comment = new Comment(member, request.getContent(), post);
         Long id = commentService.save(comment);
 
         return new CreateCommentResponse(id);
@@ -126,21 +147,41 @@ public class BoardController {
 
 
     // 댓글 수정하기
-    @PutMapping("/update_post/{postId}/{CommentId}")
+    @PutMapping("/update_comment/{postId}/{CommentId}")
     public UpdateCommentResponse updatePost(@PathVariable ("postId") Long postId,
                                             @PathVariable ("CommentId") Long commentId,
                                             @RequestBody UpdateCommentRequest request) {
 
-        commentService.updateComment(commentId, request.getContent());
+        Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        Comment comment = commentService.findOne(commentId);
+
+        if(comment.getComment_member().getId() == member.getId()) {
+            commentService.updateComment(commentId, request.getContent());
+        }
+        else {
+            return null;
+        }
 
         return new UpdateCommentResponse(commentId);
     }
 
 
     // 댓글 삭제하기
-    @DeleteMapping("/delete_comment/{commentId}")
+        @DeleteMapping("/delete_comment/{commentId}")
     public String deleteComment(@PathVariable ("commentId") Long commentId) {
-        commentService.delete_Comment(commentId);
+
+        Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        Comment comment = commentService.findOne(commentId);
+
+        if(comment.getComment_member().getId() == member.getId()) {
+            commentService.delete_Comment(commentId);
+        }
+        else {
+            return null;
+        }
+
         return "ok";
     }
 }

@@ -30,9 +30,9 @@ public class MemberRepository {
         return members;
     }
 
-    public List<Member> findById(Long id) {
+    public List<Member> findById(String user_user_id) {
         return em.createQuery("select m from Member m where m.user_user_id = :userid", Member.class)
-                .setParameter("userid", id)
+                .setParameter("userid", user_user_id)
                 .getResultList();
     } // 중복회원 검증할 때 필요한 메서드
 

@@ -38,8 +38,6 @@ public class Picture {
 
     private String imgUrl;
 
-    private String repimgYn;
-
     public Picture() {
     }
 

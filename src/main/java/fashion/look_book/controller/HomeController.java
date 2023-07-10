@@ -16,7 +16,7 @@ public class HomeController {
     //@GetMapping("/home")
     public CreateMemberDto test() {
 
-        Member member = new Member("hi", "1234", "abc", 24, true);
+        Member member = new Member("hi", "1234", "abc", 24L, true);
 
         Long id = memberService.join(member);
 
@@ -32,7 +32,7 @@ public class HomeController {
         private String id;
         private String password;
         private String nickname;
-        private int age;
+        private Long age;
         private boolean sex;
 
         public CreateMemberDto(Member member) {
