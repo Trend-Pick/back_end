@@ -19,8 +19,4 @@ public class addMemberDtoRequest {
 
     @NotEmpty
     private String nickname;
-
-    private Long age;
-
-    private boolean sex;
 }

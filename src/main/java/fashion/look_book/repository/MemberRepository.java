@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -36,11 +37,19 @@ public class MemberRepository {
                 .getResultList();
     } // 중복회원 검증할 때 필요한 메서드
 
+    public List<Member> findByNickname(String nickname) {
+        return em.createQuery("select m from Member m where m.nickname = :userNickname", Member.class)
+                .setParameter("userNickname", nickname)
+                .getResultList();
+    }
+
     public Optional<Member> findByLoginId(String loginId) {
         return findAll().stream()
                 .filter(m -> m.getUser_user_id().equals(loginId))
                 .findFirst();
     }
 
-
+    public List<Member> findExcept(String user_user_id) {
+        //return em.createQuery()
+    }
 }

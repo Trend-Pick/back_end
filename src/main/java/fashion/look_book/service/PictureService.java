@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +52,17 @@ public class PictureService {
         return pictureRepository.findByMember(findMember);
     }
 
-    // 이 사진의 like 갯수
-    
+    public Picture PictureByRandom(Member member) {
+        List<Picture> allPicture = pictureRepository.findByMember(member);
+
+        Collections.shuffle(allPicture);
+
+        Picture picture = allPicture.get(0);
+
+        return picture;
+    }
+
+    public void PictureLikeMember() {
+
+    }
 }

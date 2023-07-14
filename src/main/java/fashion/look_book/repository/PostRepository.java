@@ -27,7 +27,7 @@ public class PostRepository {
 
     public List<Post> findByMember(Member member) {
         Long memberId = member.getId();
-        return em.createQuery("select p from Post p where p.post_member = :name", Post.class)
+        return em.createQuery("select p from Post p where p.post_member.id = :name", Post.class)
                 .setParameter("name", memberId)
                 .getResultList();
     }

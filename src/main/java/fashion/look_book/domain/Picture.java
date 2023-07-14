@@ -29,8 +29,6 @@ public class Picture {
     @OneToMany(mappedBy = "picture", cascade = CascadeType.ALL)
     private List<Like> likes = new ArrayList<>();
 
-    // private MultipartFile cody_img;
-
     private String imgName;
 
     private String oriImgName;

@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,8 +50,7 @@ public class LoginController {
 
     @PostMapping("/member/add")
     public addMemberDtoResponse saveMember(@RequestBody addMemberDtoRequest request) {
-        Member member = new Member(request.getUser_user_id(), request.getPassword(), request.getNickname(),
-                                   request.getAge(), request.isSex());
+        Member member = new Member(request.getUser_user_id(), request.getPassword(), request.getNickname());
 
         Long id = memberService.join(member);
 
