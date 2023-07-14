@@ -46,20 +46,4 @@ public class MemberService {
         return memberRepository.findAll();
     }
 
-
-    public List<Member> MemberByRandom() {
-        List<Member> allMember = memberRepository.findAll();
-
-        Collections.shuffle(allMember);
-
-        Member member1 = allMember.get(0);
-        Member member2 = allMember.get(1);
-
-        List<Member> twoMember = new ArrayList<>();
-        twoMember.add(member1);
-        twoMember.add(member2);
-
-        return twoMember;
-    }
-
 }

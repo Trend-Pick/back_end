@@ -39,4 +39,12 @@ public class PictureRepository {
         Picture findPicture = em.find(Picture.class, pictureId);
         em.remove(findPicture);
     }
+
+    public List<Picture> CanLikePicture(Member member) {
+        Long memberId = member.getId();
+        return em.createQuery("SELECT p FROM Picture p WHERE p NOT IN (SELECT l.picture FROM Like l WHERE l.like_member.id " +
+                        "= :member) AND p.picture_member.id <> :member", Picture.class)
+                .setParameter("member", memberId)
+                .getResultList();
+    }
 }

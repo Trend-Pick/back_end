@@ -16,7 +16,7 @@ public class HomeController {
     //@GetMapping("/home")
     public CreateMemberDto test() {
 
-        Member member = new Member("hi", "1234", "abc", 24L, true);
+        Member member = new Member("hi", "1234", "abc");
 
         Long id = memberService.join(member);
 
@@ -32,15 +32,11 @@ public class HomeController {
         private String id;
         private String password;
         private String nickname;
-        private Long age;
-        private boolean sex;
 
         public CreateMemberDto(Member member) {
             this.id = member.getUser_user_id();
             this.password = member.getPassword();
             this.nickname = member.getNickname();
-            this.age = member.getAge();
-            this.sex = member.isSex(); // boolean 타입은 is로
         }
     }
 }

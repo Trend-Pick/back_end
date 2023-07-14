@@ -41,11 +41,11 @@ public class Member {
     @OneToMany(mappedBy = "post_member")
     private List<Post> postList = new ArrayList<>();
 
-    private String imgName;
+    private String user_imgName;
 
-    private String oriImgName;
+    private String user_oriImgName;
 
-    private String imgUrl;
+    private String user_imgUrl;
 
 
     public Member() {
