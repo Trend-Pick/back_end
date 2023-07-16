@@ -30,5 +30,5 @@ public class LikeRepository {
         return em.createQuery("select l from Like l where l.like_member = :name", Like.class)
                 .setParameter("name", memberId)
                 .getResultList();
-    }
+    } // select l from Like l join l.like_member m on m.id = :id
 }

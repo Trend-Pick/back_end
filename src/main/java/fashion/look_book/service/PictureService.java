@@ -52,17 +52,15 @@ public class PictureService {
         return pictureRepository.findByMember(findMember);
     }
 
+
     public Picture PictureByRandom(Member member) {
-        List<Picture> allPicture = pictureRepository.findByMember(member);
+        List<Picture> pictures = pictureRepository.CanLikePicture(member);
 
-        Collections.shuffle(allPicture);
+        Collections.shuffle(pictures);
 
-        Picture picture = allPicture.get(0);
+        Picture picture = pictures.get(0);
 
         return picture;
     }
 
-    public void PictureLikeMember() {
-
-    }
 }

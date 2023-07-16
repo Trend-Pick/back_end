@@ -112,7 +112,7 @@ public class BoardController {
 
         if(post.getPost_member().getId() == member.getId()) {
             postService.updatePost(postId, title, content);
-            System.out.println("멀티파트파일 "+imgInPost);
+
             if(imgInPost!=null) { //원본에는 이미지가 없었는데 수정했을 때는 이미지가 추가된 경우
                 if(postImgService.findByPostId(postId)==null){
                     postImgService.save(imgInPost,post);

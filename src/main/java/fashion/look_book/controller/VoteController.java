@@ -1,9 +1,12 @@
 package fashion.look_book.controller;
 
 import fashion.look_book.Dto.Vote.GetVoteDto;
+import fashion.look_book.domain.Like;
+import fashion.look_book.domain.LikeStatus;
 import fashion.look_book.domain.Member;
 import fashion.look_book.domain.Picture;
 import fashion.look_book.login.SessionConst;
+import fashion.look_book.service.LikeService;
 import fashion.look_book.service.MemberService;
 import fashion.look_book.service.PictureService;
 import jakarta.servlet.http.HttpSession;
@@ -21,32 +24,54 @@ public class VoteController {
 
     private final MemberService memberService;
     private final PictureService pictureService;
+    private final LikeService likeService;
     private final HttpSession session;
 
     @GetMapping("/vote")
     public GetVoteDto Vote() {
+        Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
-        List<Member> members = memberService.MemberByRandom();
+        Picture picture = pictureService.PictureByRandom(member);
 
-        Member findMember1 = members.get(0);
-        Member findMember2 = members.get(1);
+        Long pictureId = picture.getId();
 
-        Picture picture1 = pictureService.PictureByRandom(findMember1);
-        Picture picture2 = pictureService.PictureByRandom(findMember2);
-
-        Long id1 = picture1.getId();
-        Long id2 = picture2.getId();
-
-        return new GetVoteDto(id1, id2);
+        return new GetVoteDto(pictureId);
     }
 
 
-    @PostMapping("/vote/{pictureId}")
-    public void VotePicture(@PathVariable Long pictureId) {
+    // 받아와서 좋아요 누르면 좋아요 상태로 like만들고
+    @PostMapping("/vote/like/{pictureId}")
+    public String LikePicture(@PathVariable Long pictureId) {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         Picture picture = pictureService.findOne(pictureId);
 
+        Like like = new Like(member, picture, LikeStatus.LIKE);
+        likeService.saveLike(like);
+        picture.getLikes().add(like);
 
+        return "ok"; // 다시 /vote 로 리다이렉트
     }
+
+    // 별로에요 누르면 dislike로 만들기
+    @PostMapping("/vote/dislike/{pictureId}")
+    public String disLikePicture(@PathVariable Long pictureId) {
+        Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        Picture picture = pictureService.findOne(pictureId);
+
+        Like like = new Like(member, picture, LikeStatus.DISLIKE);
+        likeService.saveLike(like);
+        picture.getLikes().add(like);
+
+        return "ok"; // 다시 /vote 로 리다이렉트
+    }
+
+    /*@GetMapping("/list_pictures")
+    public int PictureList(@PathVariable Long pictureId) {
+        pictureService.findOne(pictureId);
+
+        int count = likeService.LikeNumber(pictureId);
+        return count;
+    }*/
 }

@@ -30,9 +30,6 @@ public class PostService {
     @Transactional
     public Long updatePost(Long postId, String title, String content) {
         Post findPost = postRepository.findOne(postId);
-        // findOne으로 찾아온 findItem은 영속상태이다.
-        //postId로 게시물 찾기. 찾은 개시물로 업뎃하기
-        // postImg 수정을 어떻게 할지 가져온 postImg는 음...그안에 있는 img 정보를 다
         findPost.update_post(title, content);
 
         return findPost.getId();

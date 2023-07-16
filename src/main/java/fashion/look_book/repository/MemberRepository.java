@@ -49,7 +49,11 @@ public class MemberRepository {
                 .findFirst();
     }
 
-    /*public List<Member> findExcept(String user_user_id) {
-        //return em.createQuery()
-    }*/
+
+    public List<Member> findExcept(String user_user_id) {
+        return em.createQuery("select m from Member m where m.user_user_id NOT LIKE :userid", Member.class)
+                .setParameter("userid", user_user_id)
+                .getResultList();
+    }
+
 }

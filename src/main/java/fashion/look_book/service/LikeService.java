@@ -7,10 +7,12 @@ import fashion.look_book.domain.Picture;
 import fashion.look_book.repository.LikeRepository;
 import fashion.look_book.repository.MemberRepository;
 import fashion.look_book.repository.PictureRepository;
+import jdk.jshell.Snippet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -31,11 +33,12 @@ public class LikeService {
         return likeRepository.findOne(likeId);
     }
 
-    public List<Like> users_like(Long id) {
+    public List<Like> like_users(Long id) {
         Member findMember = memberRepository.findOne(id);
         return likeRepository.findByMember(findMember);
     }
 
+    @Transactional
     public void change_like(Long id, Long pictureId, Like like) {
 
         Member member = memberRepository.findOne(id);
@@ -49,5 +52,23 @@ public class LikeService {
             like.update_like(member, picture, LikeStatus.LIKE);
         }
     }
-    // 자동으로 실행될거같은데 한 번 확인해보기
+
+    public int LikeNumber(Long pictureId) {
+        Picture picture = pictureRepository.findOne(pictureId);
+
+        int count = 0;
+
+        int size = picture.getLikes().size();
+
+        for(int i = 0; i < size; i++) {
+            if(picture.getLikes().get(i).getStatus() == LikeStatus.LIKE) {
+                count = count + 1;
+            }
+            else if(picture.getLikes().get(i).getStatus() == LikeStatus.DISLIKE) {
+                count = count - 1;
+            }
+        }
+        return count;
+    }
+
 }
