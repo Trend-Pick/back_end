@@ -1,17 +1,19 @@
 package fashion.look_book.controller;
 
 import fashion.look_book.Dto.Board.*;
+import fashion.look_book.Dto.PIcture.CreatePictureDto;
+import fashion.look_book.domain.*;
 import fashion.look_book.login.SessionConst;
-import fashion.look_book.domain.Comment;
-import fashion.look_book.domain.Member;
-import fashion.look_book.domain.Post;
-import fashion.look_book.service.CommentService;
-import fashion.look_book.service.PostService;
+import fashion.look_book.service.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -24,9 +26,13 @@ public class BoardController {
     // 2. 글쓰기를 클릭하면 글쓰는 페이지로 넘어간다.
     // 저장을 하면 다시 (1번)으로 돌아간다.
     // 3. 게시판 목록에서 게시글을 클릭하면 내용을 보여준다. 만약 자기가 쓴 글이라면 수정, 삭제 버튼도 보여준다.
-
+    @Value("${itemImgLocation}") // .properties 의 itemImgLocation 값을 itemImgLocation 변수에 넣어
+    private String imgLocation;
     private final PostService postService;
     private final CommentService commentService;
+    private final FileService fileService;
+    private final PictureService pictureService;
+    private final PostImgService postImgService;
     private final HttpSession session;
 
     @GetMapping("/post_list")
@@ -59,15 +65,22 @@ public class BoardController {
     }
 
     @PostMapping("/create_post") // 글쓰기 페이지에서 저장을 누르는거
-    public CreatePostResponse savePost(@RequestBody CreatePostRequest request) {
+    public CreatePostResponse savePost(@RequestParam String title,
+                                    @RequestParam String content
+                                    , @RequestParam MultipartFile imgInPost) throws Exception{
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        Post post = new Post(member, title, content);
+        Long postId = postService.savePost(post);
 
-        Post post = new Post(member, request.getTitle(), request.getContent());
-        Long id = postService.savePost(post);
-
-        return new CreatePostResponse(id);
+        if(!imgInPost.isEmpty()) {
+            postImgService.save(imgInPost,post);
+        }
+       // return new CreatePictureDto(postImg);
+        return new CreatePostResponse(postId);
     }
+
+
 
 
     @GetMapping("/post/{postId}") // 3번의 게시글 하나 클릭해서 들어가는 것
@@ -88,15 +101,30 @@ public class BoardController {
 
     @PutMapping("/update_post/{postId}")
     public UpdatePostResponse updatePost(@PathVariable ("postId") Long postId,
-                                           @RequestBody UpdatePostRequest request) {
+                                         @RequestParam String title,
+                                         @RequestParam String content
+                                        , @RequestParam(required=false) MultipartFile imgInPost)
+    throws Exception{
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-
         Post post = postService.findOne(postId);
 
+
         if(post.getPost_member().getId() == member.getId()) {
-            postService.updatePost(postId, request.getTitle(), request.getContent());
-        }
+            postService.updatePost(postId, title, content);
+            System.out.println("멀티파트파일 "+imgInPost);
+            if(imgInPost!=null) { //원본에는 이미지가 없었는데 수정했을 때는 이미지가 추가된 경우
+                if(postImgService.findByPostId(postId)==null){
+                    postImgService.save(imgInPost,post);
+                }
+               else{ //원본에도 이미지가 있었는데 수정 후 추가된 경우
+                    postImgService.updatePostImg(postId,imgInPost);
+                }
+            }else{ //원본에는 이미지가 있었는데 수정했을 때는 이미지가 없다면 원래 있던 postImg 삭제 필요
+               if(postImgService.findByPostId(postId)!=null)
+                   postImgService.deletePostImg(postId);
+            }
+            }
         else {
             return null;
         }
@@ -112,6 +140,7 @@ public class BoardController {
         Post post = postService.findOne(postId);
 
         if(post.getPost_member().getId() == member.getId()) {
+
             postService.delete_Post(postId);
         }
         else {

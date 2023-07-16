@@ -11,36 +11,36 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class HomeController {
 
-    private final MemberService memberService;
-
-    //@GetMapping("/home")
-    public CreateMemberDto test() {
-
-        Member member = new Member("hi", "1234", "abc", 24L, true);
-
-        Long id = memberService.join(member);
-
-        Member findMember = memberService.findOne(id);
-
-        return new CreateMemberDto(findMember);
-    }
-
-
-    @Data
-    static class CreateMemberDto {
-
-        private String id;
-        private String password;
-        private String nickname;
-        private Long age;
-        private boolean sex;
-
-        public CreateMemberDto(Member member) {
-            this.id = member.getUser_user_id();
-            this.password = member.getPassword();
-            this.nickname = member.getNickname();
-            this.age = member.getAge();
-            this.sex = member.isSex(); // boolean 타입은 is로
-        }
-    }
+//    private final MemberService memberService;
+//
+//    //@GetMapping("/home")
+//    public CreateMemberDto test() {
+//
+//        Member member = new Member("hi", "1234", "abc", 24L, true);
+//
+//        Long id = memberService.join(member);
+//
+//        Member findMember = memberService.findOne(id);
+//
+//        return new CreateMemberDto(findMember);
+//    }
+//
+//
+//    @Data
+//    static class CreateMemberDto {
+//
+//        private String id;
+//        private String password;
+//        private String nickname;
+//        private Long age;
+//        private boolean sex;
+//
+//        public CreateMemberDto(Member member) {
+//            this.id = member.getUser_user_id();
+//            this.password = member.getPassword();
+//            this.nickname = member.getNickname();
+//            this.age = member.getAge();
+//            this.sex = member.isSex(); // boolean 타입은 is로
+//        }
+//    }
 }

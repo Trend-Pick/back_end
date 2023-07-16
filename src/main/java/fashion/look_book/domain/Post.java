@@ -32,6 +32,9 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> commentList = new ArrayList<>();
 
+    @OneToOne(mappedBy = "post", orphanRemoval = true)
+    private PostImg postImg;
+
     public Post() {
     }
 

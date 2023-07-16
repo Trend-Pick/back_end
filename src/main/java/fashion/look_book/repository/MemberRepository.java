@@ -49,7 +49,7 @@ public class MemberRepository {
                 .findFirst();
     }
 
-    public List<Member> findExcept(String user_user_id) {
+    /*public List<Member> findExcept(String user_user_id) {
         //return em.createQuery()
-    }
+    }*/
 }

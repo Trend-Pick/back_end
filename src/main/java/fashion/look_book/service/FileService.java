@@ -1,9 +1,12 @@
 package fashion.look_book.service;
 
 
+import fashion.look_book.domain.PostImg;
+import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,6 +16,7 @@ import java.util.UUID;
 @Slf4j
 @Transactional
 public class FileService {
+
 
     // 파일 업로드
     public String uploadFiles(String uploadPath, String originalFileName, byte[] fileData) throws Exception{
