@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = false)
+@Transactional(readOnly = true)
 public class PostImgService {
     private final PictureRepository pictureRepository;
     private final MemberRepository memberRepository;
@@ -37,7 +37,6 @@ public class PostImgService {
         PostImg postImg = new PostImg(imgName, oriImgName, imgUrl, "Y", post);
 
         postImgRepository.save(postImg);
-
     }
 
    public PostImg findByPostId(Long postId){return postImgRepository.findOneByPostId(postId);}
@@ -51,6 +50,7 @@ public class PostImgService {
         return pictureRepository.findByMember(findMember);
     }
 
+    @Transactional
     public void updatePostImg(Long postId, MultipartFile imgInPost)
             throws Exception {
 
@@ -66,7 +66,7 @@ public class PostImgService {
                 String imgName = fileService.uploadFiles(imgLocation, oriImgName, imgInPost.getBytes());
                 String imgUrl = "/item/" + imgName;
 
-                postImgRepository.postImgUpdate(postId,imgName, oriImgName, imgUrl);
+                postImgRepository.postImgUpdate(postId, imgName, oriImgName, imgUrl);
 
             // 기존 이미지 파일 삭제
 
@@ -81,20 +81,9 @@ public class PostImgService {
             }
         }
     }
+
+    @Transactional
     public void deletePostImg(Long postId){
         postImgRepository.postImgDelete(postId);
     }
-    public Picture PictureByRandom (Member member){
-            List<Picture> allPicture = pictureRepository.findByMember(member);
-
-            Collections.shuffle(allPicture);
-
-            Picture picture = allPicture.get(0);
-
-            return picture;
-        }
-
-
-
-
 }

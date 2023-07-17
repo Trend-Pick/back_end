@@ -4,11 +4,12 @@ import fashion.look_book.Dto.Board.ImgInPostDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
-@Data
 @Entity
+@Getter
 @Table
 @NoArgsConstructor
 @AllArgsConstructor
@@ -44,26 +45,6 @@ public class PostImg {
         this.post = post;
     }
 
-    // for service
-//    public ImgEntity(String imgName, String oriImgName, String imgUrl) {
-//        this.imgName = imgName;
-//        this.oriImgName = oriImgName;
-//        this.imgUrl = imgUrl;
-//    }
-
-    // for service_patch_파라미터로 new entity 를 받음
-//    public void imgPatch(ImgEntity imgEntity){
-//        if(imgEntity.imgName != null){
-//            this.imgName = imgEntity.imgName;
-//        }
-//        if(imgEntity.oriImgName != null){
-//            this.oriImgName = imgEntity.oriImgName;
-//        }
-//        if(imgEntity.imgUrl != null){
-//            this.imgUrl = imgEntity.imgUrl;
-//        }
-//    }
-
     // postImgService 에서 이미지 수정할 때 사용함
     public void postImgUpdate(String imgName, String oriImgName, String imgUrl){
         this.imgName = imgName;
@@ -75,5 +56,4 @@ public class PostImg {
     public ImgInPostDto toDto(){
         return new ImgInPostDto(id,imgName,oriImgName,imgUrl,repimgYn);
     }
-
 }

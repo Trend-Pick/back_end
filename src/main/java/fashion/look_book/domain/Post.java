@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,14 +36,17 @@ public class Post {
     @OneToOne(mappedBy = "post", orphanRemoval = true)
     private PostImg postImg;
 
+    private LocalDateTime PostTime;
+
     public Post() {
     }
 
     @Builder
-    public Post (Member post_member, String title, String content) {
+    public Post (Member post_member, String title, String content, LocalDateTime PostTime) {
         this.post_member = post_member;
         this.title = title;
         this.content = content;
+        this.PostTime = PostTime;
 
         Comment.builder().post(this).build();
         // 연관관계 편의 메서드

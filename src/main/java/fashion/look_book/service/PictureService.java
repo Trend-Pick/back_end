@@ -1,20 +1,19 @@
 package fashion.look_book.service;
 
-import fashion.look_book.domain.Like;
-import fashion.look_book.domain.LikeStatus;
 import fashion.look_book.domain.Member;
 import fashion.look_book.domain.Picture;
 import fashion.look_book.repository.MemberRepository;
 import fashion.look_book.repository.PictureRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +22,7 @@ public class PictureService {
 
     private final PictureRepository pictureRepository;
     private final MemberRepository memberRepository;
+    private final LikeService likeService;
     private final FileService fileService;
 
     @Value("${itemImgLocation}") // .properties 의 itemImgLocation 값을 itemImgLocation 변수에 넣어
@@ -32,7 +32,6 @@ public class PictureService {
     public void save(Picture picture) throws Exception{
 
         pictureRepository.save(picture);
-
     }
 
     //삭제하려고 할 때 pictureId를 받아서 그 pictureId에 연결된 img를 삭제하는 식으로.
@@ -63,4 +62,27 @@ public class PictureService {
         return picture;
     }
 
+    public List<Long> RankingOfPicture() {
+        List<Picture> pictures = pictureRepository.findAll();
+
+        int size = pictures.size();
+
+        Map<Long, Integer> likeMap = new HashMap<>();
+
+        for (int i = 0; i < size; i++) {
+            Integer like = likeService.LikeNumber(pictures.get(i).getId());
+            likeMap.put(pictures.get(i).getId(), like);
+        }
+
+        List<Long> keySet = new ArrayList<>(likeMap.keySet());
+
+        keySet.sort((o1, o2) -> likeMap.get(o2).compareTo(likeMap.get(o1)));
+
+
+        return keySet;
+    }
+
+    public void RankingOfWeek() {
+        
+    }
 }

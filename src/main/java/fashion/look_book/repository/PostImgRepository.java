@@ -42,7 +42,8 @@ public class PostImgRepository {
         }catch(Exception e){
             return null;
         }
-        }
+    }
+
     public int postImgUpdate(Long postId,String imgName,String oriImgName,String imgUrl){
         PostImg postImg = findOneByPostId(postId);
         Long postImgId = postImg.getId();
@@ -54,17 +55,12 @@ public class PostImgRepository {
                 .setParameter("imgUrl",imgUrl)
                 .setParameter("postImgId",postImgId)
                 .executeUpdate();
-
-
     }
-    public void postImgDelete(Long postId){
+
+    public void postImgDelete(Long postId) {
         PostImg postImg = findOneByPostId(postId);
-        if(postImg!=null){
+        if(postImg!=null) {
         em.remove(postImg);
         }
-    }
-    public void delete(Long pictureId){
-        Picture findPicture = em.find(Picture.class, pictureId);
-        em.remove(findPicture);
     }
 }

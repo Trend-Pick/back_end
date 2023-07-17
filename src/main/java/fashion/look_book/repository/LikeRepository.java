@@ -3,6 +3,7 @@ package fashion.look_book.repository;
 import fashion.look_book.domain.Comment;
 import fashion.look_book.domain.Like;
 import fashion.look_book.domain.Member;
+import fashion.look_book.domain.Picture;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
@@ -31,4 +32,5 @@ public class LikeRepository {
                 .setParameter("name", memberId)
                 .getResultList();
     } // select l from Like l join l.like_member m on m.id = :id
+
 }

@@ -1,6 +1,7 @@
 package fashion.look_book.controller;
 
 import fashion.look_book.Dto.Vote.GetVoteDto;
+import fashion.look_book.Dto.Vote.RakingPictureDto;
 import fashion.look_book.domain.Like;
 import fashion.look_book.domain.LikeStatus;
 import fashion.look_book.domain.Member;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,7 +49,7 @@ public class VoteController {
 
         Picture picture = pictureService.findOne(pictureId);
 
-        Like like = new Like(member, picture, LikeStatus.LIKE);
+        Like like = new Like(member, picture, LikeStatus.LIKE, LocalDateTime.now());
         likeService.saveLike(like);
         picture.getLikes().add(like);
 
@@ -60,18 +63,22 @@ public class VoteController {
 
         Picture picture = pictureService.findOne(pictureId);
 
-        Like like = new Like(member, picture, LikeStatus.DISLIKE);
+        Like like = new Like(member, picture, LikeStatus.DISLIKE, LocalDateTime.now());
         likeService.saveLike(like);
         picture.getLikes().add(like);
 
         return "ok"; // 다시 /vote 로 리다이렉트
     }
 
-    /*@GetMapping("/list_pictures")
-    public int PictureList(@PathVariable Long pictureId) {
-        pictureService.findOne(pictureId);
+    // 누적 좋아요 순위
+    @GetMapping("pictures_ranking") // 이거 갈아업고 count 이용해서 하기
+    public RakingPictureDto PictureList() {
+        List<Long> pictures = pictureService.RankingOfPicture();
 
-        int count = likeService.LikeNumber(pictureId);
-        return count;
-    }*/
+        Long picture1 = pictures.get(0);
+        Long picture2 = pictures.get(1);
+        Long picture3 = pictures.get(2);
+
+        return new RakingPictureDto(picture1, picture2, picture3);
+    }
 }

@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,15 +37,18 @@ public class Picture {
 
     private String imgUrl;
 
+    private LocalDateTime pictureTime;
+
     public Picture() {
     }
 
     @Builder
-    public Picture (Member picture_member,String imgName, String oriImgName, String imgUrl) {
+    public Picture (Member picture_member, String imgName, String oriImgName, String imgUrl, LocalDateTime pictureTime) {
         this.picture_member = picture_member;
         this.imgName = imgName;
         this.oriImgName = oriImgName;
         this.imgUrl = imgUrl;
+        this.pictureTime = pictureTime;
 
         Like.builder().picture(this).build();
     }

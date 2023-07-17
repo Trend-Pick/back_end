@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -43,7 +45,7 @@ public class PictureController {
 
         Picture picture = Picture.builder()
                 .picture_member(member)
-                .imgName(imgName).oriImgName(oriImgName).imgUrl(imgUrl).build();
+                .imgName(imgName).oriImgName(oriImgName).imgUrl(imgUrl).pictureTime(LocalDateTime.now()).build();
 
         pictureService.save(picture);
         return new CreatePictureDto(picture);
@@ -52,9 +54,7 @@ public class PictureController {
     }
 
     @DeleteMapping("/delete_picture")
-    public ResponseEntity deletePicture(@RequestParam(value= "picture_id") Long pictureId)
-
-            throws Exception{
+    public ResponseEntity deletePicture(@RequestParam(value= "picture_id") Long pictureId) throws Exception{
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
 

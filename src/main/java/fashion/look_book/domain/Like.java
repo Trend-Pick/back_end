@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "likes")
 @Getter
@@ -32,14 +34,17 @@ public class Like {
     @Enumerated(EnumType.STRING)
     private LikeStatus status;
 
+    private LocalDateTime likeTime;
+
     public Like() {
     }
 
     @Builder
-    public Like (Member like_member, Picture picture, LikeStatus status) {
+    public Like (Member like_member, Picture picture, LikeStatus status, LocalDateTime likeTime) {
         this.like_member = like_member;
         this.picture = picture;
         this.status = status;
+        this.likeTime = likeTime;
     }
 
     public void update_like (Member like_member, Picture picture, LikeStatus status) {

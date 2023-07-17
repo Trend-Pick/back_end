@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,6 +27,7 @@ public class BoardController {
     // 2. 글쓰기를 클릭하면 글쓰는 페이지로 넘어간다.
     // 저장을 하면 다시 (1번)으로 돌아간다.
     // 3. 게시판 목록에서 게시글을 클릭하면 내용을 보여준다. 만약 자기가 쓴 글이라면 수정, 삭제 버튼도 보여준다.
+
     @Value("${itemImgLocation}") // .properties 의 itemImgLocation 값을 itemImgLocation 변수에 넣어
     private String imgLocation;
     private final PostService postService;
@@ -40,7 +42,7 @@ public class BoardController {
         List<Post> findPosts = postService.findAllPost();
 
         List<PostDtoTitle> postLists = findPosts.stream()
-                .map(p -> new PostDtoTitle(p.getTitle()))
+                .map(p -> new PostDtoTitle(p.getTitle(), p.getPostTime()))
                 .collect(Collectors.toList());
 
         return postLists;
@@ -56,6 +58,7 @@ public class BoardController {
     @AllArgsConstructor
     static class PostDtoTitle {
         private String title;
+        private LocalDateTime postTime;
     }
 
 
@@ -66,22 +69,18 @@ public class BoardController {
 
     @PostMapping("/create_post") // 글쓰기 페이지에서 저장을 누르는거
     public CreatePostResponse savePost(@RequestParam String title,
-                                    @RequestParam String content
-                                    , @RequestParam MultipartFile imgInPost) throws Exception{
+                                        @RequestParam String content,
+                                        @RequestParam MultipartFile imgInPost) throws Exception{
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        Post post = new Post(member, title, content);
+        Post post = new Post(member, title, content, LocalDateTime.now());
         Long postId = postService.savePost(post);
 
         if(!imgInPost.isEmpty()) {
-            postImgService.save(imgInPost,post);
+            postImgService.save(imgInPost, post);
         }
-       // return new CreatePictureDto(postImg);
         return new CreatePostResponse(postId);
     }
-
-
-
 
     @GetMapping("/post/{postId}") // 3번의 게시글 하나 클릭해서 들어가는 것
     public PostWithCommentDto createPost(@PathVariable ("postId") Long postId) {
@@ -115,10 +114,10 @@ public class BoardController {
 
             if(imgInPost!=null) { //원본에는 이미지가 없었는데 수정했을 때는 이미지가 추가된 경우
                 if(postImgService.findByPostId(postId)==null){
-                    postImgService.save(imgInPost,post);
+                    postImgService.save(imgInPost, post);
                 }
                else{ //원본에도 이미지가 있었는데 수정 후 추가된 경우
-                    postImgService.updatePostImg(postId,imgInPost);
+                    postImgService.updatePostImg(postId, imgInPost);
                 }
             }else{ //원본에는 이미지가 있었는데 수정했을 때는 이미지가 없다면 원래 있던 postImg 삭제 필요
                if(postImgService.findByPostId(postId)!=null)
@@ -165,7 +164,7 @@ public class BoardController {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Post post = postService.findOne(postId);
 
-        Comment comment = new Comment(member, request.getContent(), post);
+        Comment comment = new Comment(member, request.getContent(), post, LocalDateTime.now());
         Long id = commentService.save(comment);
 
         return new CreateCommentResponse(id);
@@ -194,7 +193,7 @@ public class BoardController {
 
 
     // 댓글 삭제하기
-        @DeleteMapping("/delete_comment/{commentId}")
+    @DeleteMapping("/delete_comment/{commentId}")
     public String deleteComment(@PathVariable ("commentId") Long commentId) {
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);

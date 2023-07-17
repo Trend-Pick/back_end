@@ -15,6 +15,7 @@ import java.util.List;
         allocationSize=1
 )
 public class Member {
+
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE,
         generator = "MEMBER_SEQ_GENERATOR")
     @Column(name = "member_id")
@@ -40,6 +41,9 @@ public class Member {
 
     @OneToMany(mappedBy = "post_member")
     private List<Post> postList = new ArrayList<>();
+
+    @OneToOne(mappedBy = "image_member")
+    private MemberImg memberImg;
 
     private String user_imgName;
 

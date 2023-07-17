@@ -26,6 +26,10 @@ public class PictureRepository {
         return em.find(Picture.class, id);
     }
 
+    public List<Picture> findAll() {
+        List<Picture> pictures = em.createQuery("select p from Picture p", Picture.class).getResultList();
+        return pictures;
+    }
 
     public List<Picture> findByMember(Member member) {
         Long memberId = member.getId();
@@ -47,4 +51,5 @@ public class PictureRepository {
                 .setParameter("member", memberId)
                 .getResultList();
     }
+
 }

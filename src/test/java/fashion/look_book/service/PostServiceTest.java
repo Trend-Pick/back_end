@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,8 +30,8 @@ class PostServiceTest {
 
         Post post = createPost(member);
 
-        Comment comment1 = new Comment(member, "comment1", post);
-        Comment comment2 = new Comment(member, "comment1", post);
+        Comment comment1 = new Comment(member, "comment1", post, LocalDateTime.now());
+        Comment comment2 = new Comment(member, "comment1", post, LocalDateTime.now());
         em.persist(comment1);
         em.persist(comment2);
 
@@ -49,14 +50,14 @@ class PostServiceTest {
 
 
     private Post createPost(Member member) {
-        Post post = new Post(member, "main", "content");
+        Post post = new Post(member, "main", "content", LocalDateTime.now());
         em.persist(post);
         // 게시글 생성
         return post;
     }
 
     private Member createMember() {
-        Member member = new Member("name", "1234", "hello", 24, true);
+        Member member = new Member("name", "1234", "hello");
         em.persist(member);
         return member;
     }

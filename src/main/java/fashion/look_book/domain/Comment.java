@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @SequenceGenerator(
@@ -30,14 +32,17 @@ public class Comment {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    private LocalDateTime commentTime;
+
     public Comment() {
     }
 
     @Builder
-    public Comment (Member comment_member, String content, Post post) {
+    public Comment (Member comment_member, String content, Post post, LocalDateTime commentTime) {
         this.comment_member = comment_member;
         this.content = content;
         this.post = post;
+        this.commentTime = commentTime;
     }
 
     public void update_comment (String content) {

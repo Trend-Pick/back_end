@@ -37,23 +37,10 @@ public class MemberRepository {
                 .getResultList();
     } // 중복회원 검증할 때 필요한 메서드
 
-    public List<Member> findByNickname(String nickname) {
-        return em.createQuery("select m from Member m where m.nickname = :userNickname", Member.class)
-                .setParameter("userNickname", nickname)
-                .getResultList();
-    }
-
     public Optional<Member> findByLoginId(String loginId) {
         return findAll().stream()
                 .filter(m -> m.getUser_user_id().equals(loginId))
                 .findFirst();
-    }
-
-
-    public List<Member> findExcept(String user_user_id) {
-        return em.createQuery("select m from Member m where m.user_user_id NOT LIKE :userid", Member.class)
-                .setParameter("userid", user_user_id)
-                .getResultList();
     }
 
 }

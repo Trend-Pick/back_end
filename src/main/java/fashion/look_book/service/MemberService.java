@@ -4,6 +4,7 @@ import fashion.look_book.domain.Member;
 import fashion.look_book.repository.MemberRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,9 @@ import java.util.*;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+
+    @Value("${itemImgLocation}") // .properties 의 itemImgLocation 값을 itemImgLocation 변수에 넣어
+    private String imgLocation;
 
     @Transactional
     public Long join(Member member) {
@@ -45,5 +49,6 @@ public class MemberService {
     public List<Member> findMembers() {
         return memberRepository.findAll();
     }
+
 
 }
