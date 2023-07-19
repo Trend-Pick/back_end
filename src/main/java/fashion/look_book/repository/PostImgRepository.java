@@ -33,7 +33,10 @@ public class PostImgRepository {
                 .setParameter("id", postId)
                 .getResultList();
     }
-
+    public List<PostImg> findAllPostImg(){
+        List<PostImg> allPostImg = em.createQuery("select p from PostImg p",PostImg.class).getResultList();
+        return allPostImg;
+    }
     public PostImg findOneByPostId(Long postId){
         try {
             return em.createQuery("select p from PostImg p where p.post.id = :id", PostImg.class)

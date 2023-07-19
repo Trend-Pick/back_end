@@ -38,7 +38,9 @@ public class PostImgService {
 
         postImgRepository.save(postImg);
     }
-
+    public List<PostImg> findAllPostImg(){
+        return postImgRepository.findAllPostImg();
+    }
    public PostImg findByPostId(Long postId){return postImgRepository.findOneByPostId(postId);}
 
     public PostImg findOne(Long postImgId) {

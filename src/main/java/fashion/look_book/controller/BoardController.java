@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,9 +42,30 @@ public class BoardController {
     public List<PostDtoTitle> postList() {
         List<Post> findPosts = postService.findAllPost();
 
-        List<PostDtoTitle> postLists = findPosts.stream()
+        List<PostImg> findPostImgs = postImgService.findAllPostImg();
+
+        List<PostDtoTitle> postLists = new ArrayList<>();
+        for(int i=0;i<findPostImgs.size();i++){
+            for(int j=0;j<findPosts.size();j++){
+                PostDtoTitle postDtoTitle;
+                if(findPostImgs.get(i).getPost().getId()==findPosts.get(j).getId()){
+
+                    postDtoTitle = new PostDtoTitle(findPosts.get(j).getTitle(),
+                            findPosts.get(j).getPostTime(),
+                            findPostImgs.get(i).getImgUrl());
+                }
+                else{
+                    postDtoTitle = new PostDtoTitle(findPosts.get(j).getTitle(),
+                            findPosts.get(j).getPostTime(),
+                            null);
+                }
+                postLists.add(postDtoTitle);
+            }
+        }
+
+       /* List<PostDtoTitle> postLists = findPosts.stream()
                 .map(p -> new PostDtoTitle(p.getTitle(), p.getPostTime()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
 
         return postLists;
     }
@@ -59,6 +81,7 @@ public class BoardController {
     static class PostDtoTitle {
         private String title;
         private LocalDateTime postTime;
+        private String postImgUrl;
     }
 
 
@@ -69,14 +92,14 @@ public class BoardController {
 
     @PostMapping("/create_post") // 글쓰기 페이지에서 저장을 누르는거
     public CreatePostResponse savePost(@RequestParam String title,
-                                        @RequestParam String content,
-                                        @RequestParam MultipartFile imgInPost) throws Exception{
+                                       @RequestParam String content,
+                                       @RequestParam(required = false) MultipartFile imgInPost) throws Exception{
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Post post = new Post(member, title, content, LocalDateTime.now());
         Long postId = postService.savePost(post);
 
-        if(!imgInPost.isEmpty()) {
+        if(imgInPost!=null) {
             postImgService.save(imgInPost, post);
         }
         return new CreatePostResponse(postId);
@@ -159,7 +182,7 @@ public class BoardController {
     // 댓글 만들기
     @PostMapping("/create/{postId}/comment")
     public CreateCommentResponse saveComment(@PathVariable ("postId") Long postId,
-                                            @RequestBody CreateCommentRequest request) {
+                                             @RequestBody CreateCommentRequest request) {
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Post post = postService.findOne(postId);
