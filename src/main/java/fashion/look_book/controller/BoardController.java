@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,12 +37,29 @@ public class BoardController {
     private final HttpSession session;
 
     @GetMapping("/post_list")
-    public List<PostListDto> postList() {
+    public List<PostDtoTitle> postList() {
         List<Post> findPosts = postService.findAllPost();
 
-        List<PostListDto> postLists = findPosts.stream()
-                .map(p -> new PostListDto(p.getTitle(), p.getContent(), p.getPostTime()))
-                .collect(Collectors.toList());
+        List<PostImg> findPostImgs = postImgService.findAllPostImg();
+
+        List<PostDtoTitle> postLists = new ArrayList<>();
+        for(int i=0;i<findPostImgs.size();i++){
+            for(int j=0;j<findPosts.size();j++){
+                PostDtoTitle postDtoTitle;
+                if(findPostImgs.get(i).getPost().getId()==findPosts.get(j).getId()){
+
+                    postDtoTitle = new PostDtoTitle(findPosts.get(j).getTitle(),
+                            findPosts.get(j).getPostTime(),
+                            findPostImgs.get(i).getImgUrl());
+                }
+                else{
+                    postDtoTitle = new PostDtoTitle(findPosts.get(j).getTitle(),
+                            findPosts.get(j).getPostTime(),
+                            null);
+                }
+                postLists.add(postDtoTitle);
+            }
+        }
 
         return postLists;
     }
@@ -53,20 +71,21 @@ public class BoardController {
     }
 
     @PostMapping("/create_post") // 글쓰기 페이지에서 저장을 누르는거
-    public CreatePostResponse savePost(@RequestParam CreatePostRequest createPostRequest) throws Exception{
+    public CreatePostResponse savePost(@RequestParam CreatePostRequest createPostRequest) throws Exception {
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Post post = new Post(member, createPostRequest.getTitle(), createPostRequest.getContent(), LocalDateTime.now());
         Long postId = postService.savePost(post);
 
-        if(!createPostRequest.getImgInPost().isEmpty()) {
+
+        if (createPostRequest.getImgInPost() != null) {
             postImgService.save(createPostRequest.getImgInPost(), post);
         }
         return new CreatePostResponse(postId);
     }
 
     @GetMapping("/post/{postId}") // 3번의 게시글 하나 클릭해서 들어가는 것
-    public PostWithCommentDto createPost(@PathVariable ("postId") Long postId) {
+    public PostWithCommentDto createPost (@PathVariable ("postId") Long postId) {
 
         Post post = postService.findOne(postId);
 
@@ -138,7 +157,7 @@ public class BoardController {
     // 댓글 만들기
     @PostMapping("/create/{postId}/comment")
     public CreateCommentResponse saveComment(@PathVariable ("postId") Long postId,
-                                            @RequestBody CreateCommentRequest request) {
+                                             @RequestBody CreateCommentRequest request) {
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Post post = postService.findOne(postId);

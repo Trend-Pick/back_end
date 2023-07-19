@@ -14,7 +14,7 @@ import java.util.List;
 @SequenceGenerator(
         name="POST_SEQ_GENERATOR",
         allocationSize=1
-        )
+)
 public class Post {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE,
@@ -33,8 +33,9 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> commentList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "post", orphanRemoval = true)
-    private PostImg postImg;
+//    @OneToOne(orphanRemoval = true)
+//    @JoinColumn(name="post_img")
+//    private PostImg postImg;
 
     private LocalDateTime PostTime;
 

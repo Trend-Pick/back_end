@@ -3,6 +3,7 @@ package fashion.look_book.repository;
 import fashion.look_book.domain.Member;
 import fashion.look_book.domain.Picture;
 import fashion.look_book.domain.Post;
+import fashion.look_book.domain.PostImg;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class PostRepository {
 
     public List<Post> findAllPost() {
         List<Post> AllPost = em.createQuery("select p from Post p", Post.class).getResultList();
+
         return AllPost;
     }
 

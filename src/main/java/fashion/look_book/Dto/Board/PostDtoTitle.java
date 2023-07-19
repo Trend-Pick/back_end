@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-public class PostListDto {
+public class PostDtoTitle {
     private String title;
-    private String content;
     private LocalDateTime postTime;
+    private String postImgUrl;
 }
