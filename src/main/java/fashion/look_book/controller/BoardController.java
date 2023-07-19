@@ -103,7 +103,7 @@ public class BoardController {
     @PutMapping("/update_post/{postId}")
     public UpdatePostResponse updatePost(@PathVariable ("postId") Long postId,
                                          @RequestParam UpdatePostRequest updatePostRequest)
-    throws Exception{
+            throws Exception{
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Post post = postService.findOne(postId);
@@ -116,14 +116,14 @@ public class BoardController {
                 if(postImgService.findByPostId(postId)==null){
                     postImgService.save(updatePostRequest.getImgInPost(), post);
                 }
-               else{ //원본에도 이미지가 있었는데 수정 후 추가된 경우
+                else{ //원본에도 이미지가 있었는데 수정 후 추가된 경우
                     postImgService.updatePostImg(postId, updatePostRequest.getImgInPost());
                 }
             }else{ //원본에는 이미지가 있었는데 수정했을 때는 이미지가 없다면 원래 있던 postImg 삭제 필요
-               if(postImgService.findByPostId(postId)!=null)
-                   postImgService.deletePostImg(postId);
+                if(postImgService.findByPostId(postId)!=null)
+                    postImgService.deletePostImg(postId);
             }
-            }
+        }
         else {
             return null;
         }
