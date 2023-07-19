@@ -1,6 +1,7 @@
 package fashion.look_book.repository;
 
 import fashion.look_book.domain.Member;
+import fashion.look_book.domain.Picture;
 import fashion.look_book.domain.Post;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -40,5 +41,12 @@ public class PostRepository {
     public void deletePost(Long id) {
         Post findPost = em.find(Post.class, id);
         em.remove(findPost);
+    }
+
+    public List<Post> MyPagePost(Long memberId) {
+        return em.createQuery("SELECT p FROM Post p where p.post_member.id = :id order by p.PostTime desc ", Post.class)
+                .setParameter("id", memberId)
+                .setMaxResults(6)
+                .getResultList();
     }
 }

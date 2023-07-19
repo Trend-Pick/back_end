@@ -39,16 +39,10 @@ public class PictureService {
         fileService.deleteFile(picture.getImgUrl());
 
         pictureRepository.delete(picture.getId());
-
     }
 
     public Picture findOne(Long pictureId) {
         return pictureRepository.findOne(pictureId);
-    }
-
-    public List<Picture> users_pictures (Long id) {
-        Member findMember = memberRepository.findOne(id);
-        return pictureRepository.findByMember(findMember);
     }
 
 
@@ -78,11 +72,11 @@ public class PictureService {
 
         keySet.sort((o1, o2) -> likeMap.get(o2).compareTo(likeMap.get(o1)));
 
-
         return keySet;
     }
 
-    public void RankingOfWeek() {
-        
+    public List<Picture> MyPagePicture(Long memberId) {
+        List<Picture> pictures = pictureRepository.MyPagePicture(memberId);
+        return pictures;
     }
 }

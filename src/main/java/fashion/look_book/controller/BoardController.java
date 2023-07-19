@@ -1,20 +1,18 @@
 package fashion.look_book.controller;
 
 import fashion.look_book.Dto.Board.*;
-import fashion.look_book.Dto.PIcture.CreatePictureDto;
 import fashion.look_book.domain.*;
 import fashion.look_book.login.SessionConst;
 import fashion.look_book.service.*;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -38,27 +36,14 @@ public class BoardController {
     private final HttpSession session;
 
     @GetMapping("/post_list")
-    public List<PostDtoTitle> postList() {
+    public List<PostListDto> postList() {
         List<Post> findPosts = postService.findAllPost();
 
-        List<PostDtoTitle> postLists = findPosts.stream()
-                .map(p -> new PostDtoTitle(p.getTitle(), p.getPostTime()))
+        List<PostListDto> postLists = findPosts.stream()
+                .map(p -> new PostListDto(p.getTitle(), p.getContent(), p.getPostTime()))
                 .collect(Collectors.toList());
 
         return postLists;
-    }
-
-    @Data
-    @AllArgsConstructor
-    static class Result<T> {
-        private T data;
-    }
-
-    @Data
-    @AllArgsConstructor
-    static class PostDtoTitle {
-        private String title;
-        private LocalDateTime postTime;
     }
 
 
@@ -68,16 +53,14 @@ public class BoardController {
     }
 
     @PostMapping("/create_post") // 글쓰기 페이지에서 저장을 누르는거
-    public CreatePostResponse savePost(@RequestParam String title,
-                                        @RequestParam String content,
-                                        @RequestParam MultipartFile imgInPost) throws Exception{
+    public CreatePostResponse savePost(@RequestParam CreatePostRequest createPostRequest) throws Exception{
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        Post post = new Post(member, title, content, LocalDateTime.now());
+        Post post = new Post(member, createPostRequest.getTitle(), createPostRequest.getContent(), LocalDateTime.now());
         Long postId = postService.savePost(post);
 
-        if(!imgInPost.isEmpty()) {
-            postImgService.save(imgInPost, post);
+        if(!createPostRequest.getImgInPost().isEmpty()) {
+            postImgService.save(createPostRequest.getImgInPost(), post);
         }
         return new CreatePostResponse(postId);
     }
@@ -100,9 +83,7 @@ public class BoardController {
 
     @PutMapping("/update_post/{postId}")
     public UpdatePostResponse updatePost(@PathVariable ("postId") Long postId,
-                                         @RequestParam String title,
-                                         @RequestParam String content
-                                        , @RequestParam(required=false) MultipartFile imgInPost)
+                                         @RequestParam UpdatePostRequest updatePostRequest)
     throws Exception{
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
@@ -110,14 +91,14 @@ public class BoardController {
 
 
         if(post.getPost_member().getId() == member.getId()) {
-            postService.updatePost(postId, title, content);
+            postService.updatePost(postId, updatePostRequest.getTitle(), updatePostRequest.getContent());
 
-            if(imgInPost!=null) { //원본에는 이미지가 없었는데 수정했을 때는 이미지가 추가된 경우
+            if(updatePostRequest.getImgInPost()!=null) { //원본에는 이미지가 없었는데 수정했을 때는 이미지가 추가된 경우
                 if(postImgService.findByPostId(postId)==null){
-                    postImgService.save(imgInPost, post);
+                    postImgService.save(updatePostRequest.getImgInPost(), post);
                 }
                else{ //원본에도 이미지가 있었는데 수정 후 추가된 경우
-                    postImgService.updatePostImg(postId, imgInPost);
+                    postImgService.updatePostImg(postId, updatePostRequest.getImgInPost());
                 }
             }else{ //원본에는 이미지가 있었는데 수정했을 때는 이미지가 없다면 원래 있던 postImg 삭제 필요
                if(postImgService.findByPostId(postId)!=null)
@@ -152,8 +133,6 @@ public class BoardController {
 
 
     // 여기서부터 댓글
-
-    // 세션 만들어지면 GetMapping
 
 
     // 댓글 만들기

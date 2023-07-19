@@ -52,4 +52,9 @@ public class PostService {
     public void delete_Post (Long postId) {
         postRepository.deletePost(postId);
     }
+
+    public List<Post> MyPagePost(Long memberId) {
+        List<Post> posts = postRepository.MyPagePost(memberId);
+        return posts;
+    }
 }

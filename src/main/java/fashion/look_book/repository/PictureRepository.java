@@ -46,10 +46,16 @@ public class PictureRepository {
 
     public List<Picture> CanLikePicture(Member member) {
         Long memberId = member.getId();
-        return em.createQuery("SELECT p FROM Picture p WHERE p NOT IN (SELECT l.picture FROM Like l WHERE l.like_member.id " +
-                        "= :member) AND p.picture_member.id <> :member", Picture.class)
+        return em.createQuery("select p from Picture p where p not in (select l.picture from Like l where l.like_member.id " +
+                        "= :member) and p.picture_member.id <> :member", Picture.class)
                 .setParameter("member", memberId)
                 .getResultList();
     }
 
+    public List<Picture> MyPagePicture(Long memberId) {
+        return em.createQuery("SELECT p FROM Picture p where p.picture_member.id = :id order by p.pictureTime desc ", Picture.class)
+                .setParameter("id", memberId)
+                .setMaxResults(6)
+                .getResultList();
+    }
 }

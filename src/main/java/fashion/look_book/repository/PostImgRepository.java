@@ -26,14 +26,6 @@ public class PostImgRepository {
         return em.find(PostImg.class, id);
     }
 
-
-    public List<PostImg> findByPost(Post post) {
-        Long postId = post.getId();
-        return em.createQuery("select p from PostImg p where p.post.id = :id", PostImg.class)
-                .setParameter("id", postId)
-                .getResultList();
-    }
-
     public PostImg findOneByPostId(Long postId){
         try {
             return em.createQuery("select p from PostImg p where p.post.id = :id", PostImg.class)

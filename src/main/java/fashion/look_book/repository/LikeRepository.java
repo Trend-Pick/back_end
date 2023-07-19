@@ -33,4 +33,8 @@ public class LikeRepository {
                 .getResultList();
     } // select l from Like l join l.like_member m on m.id = :id
 
+    public List<Like> MonthLike() {
+        return em.createQuery("select l from Like l where l.likeTime between local date ('2023-7-1') and local date ('2023-7-31')", Like.class)
+                .getResultList();
+    }
 }

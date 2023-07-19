@@ -1,14 +1,23 @@
 package fashion.look_book.controller;
 
 import fashion.look_book.Dto.MyPage.MemberPictureDto;
+import fashion.look_book.Dto.MyPage.MyPagePictureDto;
+import fashion.look_book.Dto.MyPage.MyPagePostDto;
 import fashion.look_book.domain.Member;
 import fashion.look_book.domain.MemberImg;
+import fashion.look_book.domain.Picture;
+import fashion.look_book.domain.Post;
 import fashion.look_book.login.SessionConst;
 import fashion.look_book.service.MemberImgService;
+import fashion.look_book.service.PictureService;
+import fashion.look_book.service.PostService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -17,20 +26,38 @@ public class MyPageController {
 
     private final HttpSession session;
     private final MemberImgService memberImgService;
+    private final PostService postService;
+    private final PictureService pictureService;
 
     @GetMapping("/my_page") // 처음 페이지이고, 사진 최신 6개 보여주기
-    public void MyPagePictures() {
+    public List<MyPagePictureDto> MyPagePictures() {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
-        /* member.getPictureList();
-        member.getPostList();
-        /////////////// 여기부분 쿼리로 받아오기
-         */
+        List<Picture> pictures = pictureService.MyPagePicture(member.getId());
+
+
+        List<MyPagePictureDto> pictureList = pictures.stream()
+                .map(p -> new MyPagePictureDto(p.getId()))
+                .collect(Collectors.toList());
+
+        return pictureList;
     }
 
-    @GetMapping("/my_page/post") // 최신 Post 6개 보여주기
-    public void MyPagePosts() {
 
+
+    @GetMapping("/my_page/post") // 최신 Post 6개 보여주기
+    public List<MyPagePostDto> MyPagePosts() {
+        Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        List<Post> posts = postService.MyPagePost(member.getId());
+
+
+        List<MyPagePostDto> postList = posts.stream()
+                .map(p -> new MyPagePostDto(p.getTitle(), p.getContent(), p.getPostTime()))
+                .collect(Collectors.toList());
+
+        return postList;
+        // content 내용 길면 자르기
     }
 
     @GetMapping("/update/member/picture") // 대표사진 수정

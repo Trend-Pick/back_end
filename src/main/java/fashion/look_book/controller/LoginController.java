@@ -46,8 +46,7 @@ public class LoginController {
         return null;
     }
 
-
-
+    
     @PostMapping("/member/add")
     public addMemberDtoResponse saveMember(@RequestBody addMemberDtoRequest request) {
         Member member = new Member(request.getUser_user_id(), request.getPassword(), request.getNickname());

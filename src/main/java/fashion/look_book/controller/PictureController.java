@@ -68,7 +68,6 @@ public class PictureController {
         }
 
         return ResponseEntity.ok().build();
-        //  codyImgService.save(picture_member,codyImg);
 
     }
 }

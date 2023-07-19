@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,5 +21,5 @@ public class UpdatePostRequest {
     @NotEmpty
     private String content;
 
-
+    MultipartFile imgInPost;
 }
