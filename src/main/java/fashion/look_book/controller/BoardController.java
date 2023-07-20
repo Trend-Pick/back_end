@@ -71,15 +71,16 @@ public class BoardController {
     }
 
     @PostMapping("/create_post") // 글쓰기 페이지에서 저장을 누르는거
-    public CreatePostResponse savePost(@RequestParam CreatePostRequest createPostRequest) throws Exception {
+    public CreatePostResponse savePost(@RequestParam String title,
+                                       @RequestParam String content,
+                                       @RequestParam(required = false) MultipartFile imgInPost) throws Exception{
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        Post post = new Post(member, createPostRequest.getTitle(), createPostRequest.getContent(), LocalDateTime.now());
+        Post post = new Post(member, title, content, LocalDateTime.now());
         Long postId = postService.savePost(post);
 
-
-        if (createPostRequest.getImgInPost() != null) {
-            postImgService.save(createPostRequest.getImgInPost(), post);
+        if(imgInPost!=null) {
+            postImgService.save(imgInPost, post);
         }
         return new CreatePostResponse(postId);
     }
@@ -88,14 +89,14 @@ public class BoardController {
     public PostWithCommentDto createPost (@PathVariable ("postId") Long postId) {
 
         Post post = postService.findOne(postId);
-
+        PostImg postImg = postImgService.findByPostId(postId);
         List<Comment> commentList = commentService.post_comment(postId);
 
         List<CommentDtoContent> commentDtoContents = commentList.stream()
                 .map(c -> new CommentDtoContent(c.getContent()))
                 .collect((Collectors.toList()));
 
-        return new PostWithCommentDto(post, commentDtoContents);
+        return new PostWithCommentDto(post, postImg.getImgUrl(),commentDtoContents);
         // 자기 게시글이면 수정, 삭제 버튼 보이게
         // 프론트분들이랑 상의하기
     }
