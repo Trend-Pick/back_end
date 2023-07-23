@@ -1,7 +1,9 @@
 package fashion.look_book.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,6 +27,9 @@ public class Member {
     @NotEmpty
     @Size(min = 6, max = 12)
     private String user_user_id;
+
+    @NotEmpty
+    private String email;
 
     @NotEmpty
     @Size(min = 6, max = 12)
@@ -61,8 +66,9 @@ public class Member {
 
     // 생성자
     @Builder
-    public Member(String user_user_id, String password, String nickname) {
+    public Member(String user_user_id, String email, String password, String nickname) {
         this.user_user_id = user_user_id;
+        this.email = email;
         this.password = password;
         this.nickname = nickname;
     }

@@ -25,7 +25,12 @@ public class MemberRepository {
     public Member findOne(Long id) {
         return em.find(Member.class, id);
     }
-
+    public Member findOneByEmail(String email){
+        return em.createQuery("select m from Member m  where m.email=:email",
+                        Member.class)
+                .setParameter("email",email)
+                .getSingleResult();
+    }
     public List<Member> findAll() {
         List<Member> members = em.createQuery("select m from Member m", Member.class).getResultList();
         return members;
@@ -41,6 +46,17 @@ public class MemberRepository {
         return findAll().stream()
                 .filter(m -> m.getUser_user_id().equals(loginId))
                 .findFirst();
+    }
+    public List<Member> findByEmail(String email) {
+        return em.createQuery("select m from Member m where m.email = :email", Member.class)
+                .setParameter("email",email)
+                .getResultList();
+    }
+    public int updatePassword(String email,String memberPw){
+        return em.createQuery("update Member as p set p.password = :password where p.email= :email")
+                .setParameter("email",email)
+                .setParameter("password",memberPw)
+                .executeUpdate();
     }
 
 }

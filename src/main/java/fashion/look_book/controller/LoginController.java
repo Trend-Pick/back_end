@@ -10,7 +10,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -40,7 +44,6 @@ public class LoginController {
         회원가입
      **/
 
-
     @GetMapping("/member/add")
     public String addMember() {
         return null;
@@ -48,14 +51,27 @@ public class LoginController {
 
     
     @PostMapping("/member/add")
-    public addMemberDtoResponse saveMember(@RequestBody addMemberDtoRequest request) {
-        Member member = new Member(request.getUser_user_id(), request.getPassword(), request.getNickname());
+    public ResponseEntity<?> saveMember(@RequestBody @Valid addMemberDtoRequest request, Errors errors) {
+        if(errors.hasErrors()) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        Member member = new Member(request.getUser_user_id(), request.getEmail(), request.getPassword(), request.getNickname());
 
         Long id = memberService.join(member);
 
-        return new addMemberDtoResponse(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
+    /**
+     비밀번호 찾기
+ **/
+    @PostMapping("/mailConfirm")
+    public boolean confirmMail(@RequestBody InputCodeRequest request ){
+        return memberService.verifyJoinEmail(request.getInputCode());
+        //false면 프론트에서 다시 인증번호 받기 누르도록.
+    }
+    @PostMapping("/member/findPassword")
+    public void findPassword(@RequestBody InputEmailRequest request) throws Exception {
+        memberService.findPassword(request.getEmail());
+    }
 
 
     /**
