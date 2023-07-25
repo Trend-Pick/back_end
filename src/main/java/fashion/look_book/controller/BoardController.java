@@ -91,14 +91,14 @@ public class BoardController {
     public PostWithCommentDto createPost (@PathVariable ("postId") Long postId) {
 
         Post post = postService.findOne(postId);
-
+        PostImg postImg = postImgService.findByPostId(postId);
         List<Comment> commentList = commentService.post_comment(postId);
 
         List<CommentDtoContent> commentDtoContents = commentList.stream()
                 .map(c -> new CommentDtoContent(c.getContent(), c.getComment_member().getMemberImg().getImgUrl()))
                 .collect((Collectors.toList()));
 
-        return new PostWithCommentDto(post, commentDtoContents);
+        return new PostWithCommentDto(post, postImg.getImgUrl(),commentDtoContents);
         // 자기 게시글이면 수정, 삭제 버튼 보이게
         // 프론트분들이랑 상의하기
     }
