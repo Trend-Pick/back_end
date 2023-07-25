@@ -1,14 +1,14 @@
 package fashion.look_book.repository;
 
-import fashion.look_book.domain.Comment;
-import fashion.look_book.domain.Like;
-import fashion.look_book.domain.Member;
-import fashion.look_book.domain.Picture;
+import fashion.look_book.domain.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -26,15 +26,73 @@ public class LikeRepository {
         return em.find(Like.class, id);
     }
 
-    public List<Like> findByMember(Member member) {
-        Long memberId = member.getId();
-        return em.createQuery("select l from Like l where l.like_member = :name", Like.class)
-                .setParameter("name", memberId)
-                .getResultList();
-    } // select l from Like l join l.like_member m on m.id = :id
 
-    public List<Like> MonthLike() {
-        return em.createQuery("select l from Like l where l.likeTime between local date ('2023-7-1') and local date ('2023-7-31')", Like.class)
+    /*public List<Picture> weeklyLike() {
+        LocalDateTime oneWeek = LocalDateTime.now().minusWeeks(1);
+
+        return em.createQuery("SELECT l.picture, " +
+                        "SUM(CASE WHEN l.status = :likeStatus THEN 1 " +
+                        "         WHEN l.status = :dislikeStatus THEN -1 " +
+                        "         ELSE 0 END) as likeDislikeDifference " +
+                        "FROM Like l " +
+                        "WHERE l.likeTime >= :oneWeek " +
+                        "GROUP BY l.picture " +
+                        "ORDER BY likeDislikeDifference DESC")
+                .setParameter("oneWeek", oneWeek)
+                .setParameter("likeStatus", LikeStatus.LIKE)
+                .setParameter("dislikeStatus", LikeStatus.DISLIKE)
+                .setMaxResults(3)
                 .getResultList();
+
+    }*/
+
+    public interface PictureIdProjection {
+        Long getId();
+    }
+
+    public List<Picture> weeklyLike() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startOfWeek = now.with(DayOfWeek.MONDAY);
+        LocalDateTime endOfWeek = startOfWeek.plusDays(7);
+
+        List<Picture> pictures = em.createQuery("SELECT l.picture " +
+                        "FROM Like l " +
+                        "WHERE l.likeTime >= :startOfWeek " +
+                        "AND l.likeTime < :endOfWeek " +
+                        "GROUP BY l.picture.id " +
+                        "ORDER BY SUM(CASE WHEN l.status = :likeStatus THEN 1 " +
+                        "                  WHEN l.status = :dislikeStatus THEN -1 " +
+                        "                  ELSE 0 END) DESC", Picture.class)
+                .setParameter("startOfWeek", startOfWeek)
+                .setParameter("endOfWeek", endOfWeek)
+                .setParameter("likeStatus", LikeStatus.LIKE)
+                .setParameter("dislikeStatus", LikeStatus.DISLIKE)
+                .setMaxResults(3)
+                .getResultList();
+
+        return pictures;
+    }
+
+    public List<Picture> monthlyLike() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startOfMonth = now.withDayOfMonth(1);
+        LocalDateTime endOfMonth = startOfMonth.plusMonths(1);
+
+        List<Picture> pictures = em.createQuery("SELECT l.picture " +
+                        "FROM Like l " +
+                        "WHERE l.likeTime >= :startOfMonth " +
+                        "AND l.likeTime < :endOfMonth " +
+                        "GROUP BY l.picture.id " +
+                        "ORDER BY SUM(CASE WHEN l.status = :likeStatus THEN 1 " +
+                        "                  WHEN l.status = :dislikeStatus THEN -1 " +
+                        "                  ELSE 0 END) DESC", Picture.class)
+                .setParameter("startOfMonth", startOfMonth)
+                .setParameter("endOfMonth", endOfMonth)
+                .setParameter("likeStatus", LikeStatus.LIKE)
+                .setParameter("dislikeStatus", LikeStatus.DISLIKE)
+                .setMaxResults(3)
+                .getResultList();
+
+        return pictures;
     }
 }

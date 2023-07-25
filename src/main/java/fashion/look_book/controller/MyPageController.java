@@ -51,13 +51,13 @@ public class MyPageController {
 
         List<Post> posts = postService.MyPagePost(member.getId());
 
-
         List<MyPagePostDto> postList = posts.stream()
                 .map(p -> new MyPagePostDto(p.getTitle(), p.getContent(), p.getPostTime()))
                 .collect(Collectors.toList());
 
         return postList;
         // content 내용 길면 자르기
+
     }
 
     @GetMapping("/update/member/picture") // 대표사진 수정
@@ -78,12 +78,12 @@ public class MyPageController {
             if(memberImgService.findByMemberId(memberId)==null){
                 memberImgService.saveImg(newImg, member);
             }
-            else{ //원본에도 이미지가 있었는데 수정 후 추가된 경우
+            else { //원본에도 이미지가 있었는데 수정 후 추가된 경우
                 MemberImg memberImg = memberImgService.findByMemberId(memberId);
                 Long memberImgId = memberImg.getId();
                 memberImgService.updateImg(memberImgId, newImg);
             }
-        } else{ //원본에는 이미지가 있었는데 수정했을 때는 이미지가 없다면 원래 있던 postImg 삭제 필요
+        } else { //원본에는 이미지가 있었는데 수정했을 때는 이미지가 없다면 원래 있던 postImg 삭제 필요
         if(memberImgService.findByMemberId(memberId)!=null)
             memberImgService.deleteImg(memberId);
         }

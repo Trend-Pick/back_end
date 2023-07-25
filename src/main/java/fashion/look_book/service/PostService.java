@@ -39,11 +39,6 @@ public class PostService {
         return postRepository.findOne(postId);
     }
 
-    public List<Post> memberPost(Long id) {
-        Member findMember = memberRepository.findOne(id);
-        return postRepository.findByMember(findMember);
-    } // member 한 사람의 post 목록들
-
     public List<Post> findAllPost() {
         return postRepository.findAllPost();
     }

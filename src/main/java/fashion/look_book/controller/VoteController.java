@@ -1,14 +1,13 @@
 package fashion.look_book.controller;
 
+import fashion.look_book.Dto.Board.PostDtoTitle;
 import fashion.look_book.Dto.Vote.GetVoteDto;
-import fashion.look_book.Dto.Vote.RakingPictureDto;
-import fashion.look_book.domain.Like;
-import fashion.look_book.domain.LikeStatus;
-import fashion.look_book.domain.Member;
-import fashion.look_book.domain.Picture;
+import fashion.look_book.Dto.Vote.MonthlyRankingDto;
+import fashion.look_book.Dto.Vote.RankingPictureDto;
+import fashion.look_book.Dto.Vote.WeeklyRankingDto;
+import fashion.look_book.domain.*;
 import fashion.look_book.login.SessionConst;
 import fashion.look_book.service.LikeService;
-import fashion.look_book.service.MemberService;
 import fashion.look_book.service.PictureService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +17,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
 public class VoteController {
 
-    private final MemberService memberService;
     private final PictureService pictureService;
     private final LikeService likeService;
     private final HttpSession session;
@@ -71,14 +69,60 @@ public class VoteController {
     }
 
     // 누적 좋아요 순위
-    @GetMapping("pictures_ranking") // 이거 갈아업고 count 이용해서 하기
-    public RakingPictureDto PictureList() {
+    @GetMapping("pictures_ranking")
+    public List<RankingPictureDto> PictureList() {
         List<Long> pictures = pictureService.RankingOfPicture();
+        List<Long> RankingId = new ArrayList<>();
+        List<Long> RankingNumber = new ArrayList<>();
+        List<RankingPictureDto> PictureList = new ArrayList<>();
+        RankingPictureDto rankingPictureDto;
 
-        Long picture1 = pictures.get(0);
-        Long picture2 = pictures.get(1);
-        Long picture3 = pictures.get(2);
+        for(int i = 0; i < 3; i++) {
+            RankingId.add(pictures.get(i));
+            RankingNumber.add(likeService.LikeNumber(pictures.get(i)));
+            rankingPictureDto = new RankingPictureDto(RankingId.get(i), RankingNumber.get(i));
+            PictureList.add(rankingPictureDto);
+        }
 
-        return new RakingPictureDto(picture1, picture2, picture3);
+        return PictureList;
     }
+
+    // 주간 좋아요 순위
+    @GetMapping("weekly_ranking")
+    public List<WeeklyRankingDto> weeklyRanking() {
+        List<Picture> pictures = likeService.RankingOfWeek();
+        List<Long> weekRankingId = new ArrayList<>();
+        List<Long> weekRankingNumber = new ArrayList<>();
+        List<WeeklyRankingDto> weeklyList = new ArrayList<>();
+        WeeklyRankingDto weeklyRankingDto;
+
+        for(int i = 0; i < pictures.size(); i++) {
+            weekRankingId.add(pictures.get(i).getId());
+            weekRankingNumber.add(likeService.LikeNumber(weekRankingId.get(i)));
+            weeklyRankingDto = new WeeklyRankingDto(weekRankingId.get(i), weekRankingNumber.get(i));
+            weeklyList.add(weeklyRankingDto);
+        }
+
+        return weeklyList;
+    }
+
+    // 월간 좋아요 순위
+    @GetMapping("monthly_ranking")
+    public List<MonthlyRankingDto> monthlyRanking() {
+        List<Picture> pictures = likeService.RankingOfMonth();
+        List<Long> monthRankingId = new ArrayList<>();
+        List<Long> monthRankingNumber = new ArrayList<>();
+        List<MonthlyRankingDto> monthlyList = new ArrayList<>();
+        MonthlyRankingDto monthlyRankingDto;
+
+        for(int i = 0; i < pictures.size(); i++) {
+            monthRankingId.add(pictures.get(i).getId());
+            monthRankingNumber.add(likeService.LikeNumber(monthRankingId.get(i)));
+            monthlyRankingDto = new MonthlyRankingDto(monthRankingId.get(i), monthRankingNumber.get(i));
+            monthlyList.add(monthlyRankingDto);
+        }
+
+        return monthlyList;
+    }
+    // 오류 있음 (찾아오는건 그건데 영향을 받네?)
 }

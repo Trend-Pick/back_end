@@ -42,11 +42,14 @@ public class MemberRepository {
                 .getResultList();
     } // 중복회원 검증할 때 필요한 메서드
 
+
+
     public Optional<Member> findByLoginId(String loginId) {
         return findAll().stream()
                 .filter(m -> m.getUser_user_id().equals(loginId))
                 .findFirst();
     }
+
     public List<Member> findByEmail(String email) {
         return em.createQuery("select m from Member m where m.email = :email", Member.class)
                 .setParameter("email",email)

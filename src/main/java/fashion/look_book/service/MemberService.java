@@ -105,19 +105,27 @@ public class MemberService {
             throw new IllegalStateException();
         }
     }
+
+    public void validateDuplicateMemberUserId (String userId) {
+        List<Member> findMember = memberRepository.findById(userId);
+        if (!findMember.isEmpty()) {
+            System.out.println("중복");
+            // 예외처리하기
+        } else {
+            System.out.println("중복 X");
+            // 예외처리하기
+        }
+    }
+
     private void validateDuplicateMemberByEmail (Member member){
         List<Member> findMember = memberRepository.findByEmail(member.getEmail());
         if(!findMember.isEmpty()) {
             throw new IllegalStateException();
         }
     }
+
     public Member findOne(Long memberId) {
         return memberRepository.findOne(memberId);
     }
-
-    public List<Member> findMembers() {
-        return memberRepository.findAll();
-    }
-
 
 }

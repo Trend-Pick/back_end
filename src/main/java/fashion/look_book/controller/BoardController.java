@@ -5,7 +5,6 @@ import fashion.look_book.domain.*;
 import fashion.look_book.login.SessionConst;
 import fashion.look_book.service.*;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -49,11 +48,13 @@ public class BoardController {
                 if(findPostImgs.get(i).getPost().getId()==findPosts.get(j).getId()){
 
                     postDtoTitle = new PostDtoTitle(findPosts.get(j).getTitle(),
+                            findPosts.get(i).getContent(),
                             findPosts.get(j).getPostTime(),
                             findPostImgs.get(i).getImgUrl());
                 }
                 else{
                     postDtoTitle = new PostDtoTitle(findPosts.get(j).getTitle(),
+                            findPosts.get(j).getContent(),
                             findPosts.get(j).getPostTime(),
                             null);
                 }
@@ -78,9 +79,10 @@ public class BoardController {
         Post post = new Post(member, createPostRequest.getTitle(), createPostRequest.getContent(), LocalDateTime.now());
         Long postId = postService.savePost(post);
 
-        if(imgInPost!=null) {
+        if (imgInPost != null) {
             postImgService.save(imgInPost, post);
         }
+
         return new CreatePostResponse(postId);
     }
 
@@ -92,7 +94,7 @@ public class BoardController {
         List<Comment> commentList = commentService.post_comment(postId);
 
         List<CommentDtoContent> commentDtoContents = commentList.stream()
-                .map(c -> new CommentDtoContent(c.getContent()))
+                .map(c -> new CommentDtoContent(c.getContent(), c.getComment_member().getMemberImg().getImgUrl()))
                 .collect((Collectors.toList()));
 
         return new PostWithCommentDto(post, postImg.getImgUrl(),commentDtoContents);
@@ -102,7 +104,9 @@ public class BoardController {
 
     @PutMapping("/update_post/{postId}")
     public UpdatePostResponse updatePost(@PathVariable ("postId") Long postId,
-                                         @RequestParam UpdatePostRequest updatePostRequest)
+                                         @RequestParam String title,
+                                         @RequestParam String content,
+                                         @RequestParam(required = false) MultipartFile imgInPost)
             throws Exception{
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
@@ -110,14 +114,14 @@ public class BoardController {
 
 
         if(post.getPost_member().getId() == member.getId()) {
-            postService.updatePost(postId, updatePostRequest.getTitle(), updatePostRequest.getContent());
+            postService.updatePost(postId, title, content);
 
-            if(updatePostRequest.getImgInPost()!=null) { //원본에는 이미지가 없었는데 수정했을 때는 이미지가 추가된 경우
+            if(imgInPost!=null) { //원본에는 이미지가 없었는데 수정했을 때는 이미지가 추가된 경우
                 if(postImgService.findByPostId(postId)==null){
-                    postImgService.save(updatePostRequest.getImgInPost(), post);
+                    postImgService.save(imgInPost, post);
                 }
                 else{ //원본에도 이미지가 있었는데 수정 후 추가된 경우
-                    postImgService.updatePostImg(postId, updatePostRequest.getImgInPost());
+                    postImgService.updatePostImg(postId, imgInPost);
                 }
             }else{ //원본에는 이미지가 있었는데 수정했을 때는 이미지가 없다면 원래 있던 postImg 삭제 필요
                 if(postImgService.findByPostId(postId)!=null)
