@@ -26,31 +26,7 @@ public class LikeRepository {
         return em.find(Like.class, id);
     }
 
-
     /*public List<Picture> weeklyLike() {
-        LocalDateTime oneWeek = LocalDateTime.now().minusWeeks(1);
-
-        return em.createQuery("SELECT l.picture, " +
-                        "SUM(CASE WHEN l.status = :likeStatus THEN 1 " +
-                        "         WHEN l.status = :dislikeStatus THEN -1 " +
-                        "         ELSE 0 END) as likeDislikeDifference " +
-                        "FROM Like l " +
-                        "WHERE l.likeTime >= :oneWeek " +
-                        "GROUP BY l.picture " +
-                        "ORDER BY likeDislikeDifference DESC")
-                .setParameter("oneWeek", oneWeek)
-                .setParameter("likeStatus", LikeStatus.LIKE)
-                .setParameter("dislikeStatus", LikeStatus.DISLIKE)
-                .setMaxResults(3)
-                .getResultList();
-
-    }*/
-
-    public interface PictureIdProjection {
-        Long getId();
-    }
-
-    public List<Picture> weeklyLike() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime startOfWeek = now.with(DayOfWeek.MONDAY);
         LocalDateTime endOfWeek = startOfWeek.plusDays(7);
@@ -71,21 +47,46 @@ public class LikeRepository {
                 .getResultList();
 
         return pictures;
+    }*/
+    public List<Object[]> weeklyLike() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startOfWeek = now.with(DayOfWeek.MONDAY);
+        LocalDateTime endOfWeek = startOfWeek.plusDays(7);
+
+        List<Object[]> resultList = em.createQuery(
+                        "SELECT l.picture, " +
+                                "SUM(CASE WHEN l.status = :likeStatus THEN 1 " +
+                                "         WHEN l.status = :dislikeStatus THEN -1 " +
+                                "         ELSE 0 END) as likeDislikeDifference " +
+                                "FROM Like l " +
+                                "WHERE l.likeTime >= :startOfWeek " +
+                                "AND l.likeTime < :endOfWeek " +
+                                "GROUP BY l.picture.id " +
+                                "ORDER BY likeDislikeDifference DESC", Object[].class)
+                .setParameter("startOfWeek", startOfWeek)
+                .setParameter("endOfWeek", endOfWeek)
+                .setParameter("likeStatus", LikeStatus.LIKE)
+                .setParameter("dislikeStatus", LikeStatus.DISLIKE)
+                .setMaxResults(3)
+                .getResultList();
+
+        return resultList;
     }
 
-    public List<Picture> monthlyLike() {
+    public List<Object[]> monthlyLike() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime startOfMonth = now.withDayOfMonth(1);
         LocalDateTime endOfMonth = startOfMonth.plusMonths(1);
 
-        List<Picture> pictures = em.createQuery("SELECT l.picture " +
+        List<Object[]> pictures = em.createQuery("SELECT l.picture, " +
+                        "SUM(CASE WHEN l.status = :likeStatus THEN 1 " +
+                        "         WHEN l.status = :dislikeStatus THEN -1 " +
+                        "         ELSE 0 END) as likeDislikeDifference " +
                         "FROM Like l " +
                         "WHERE l.likeTime >= :startOfMonth " +
                         "AND l.likeTime < :endOfMonth " +
                         "GROUP BY l.picture.id " +
-                        "ORDER BY SUM(CASE WHEN l.status = :likeStatus THEN 1 " +
-                        "                  WHEN l.status = :dislikeStatus THEN -1 " +
-                        "                  ELSE 0 END) DESC", Picture.class)
+                        "ORDER BY likeDislikeDifference DESC", Object[].class)
                 .setParameter("startOfMonth", startOfMonth)
                 .setParameter("endOfMonth", endOfMonth)
                 .setParameter("likeStatus", LikeStatus.LIKE)

@@ -2,6 +2,7 @@ package fashion.look_book.password;
 
 import java.util.Random;
 
+// 임시 비밀번호 무작위로 해주는 것
 public class TempKey {
     private boolean lowerCheck;
     private int size;

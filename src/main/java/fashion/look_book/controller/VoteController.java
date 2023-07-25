@@ -90,16 +90,15 @@ public class VoteController {
     // 주간 좋아요 순위
     @GetMapping("weekly_ranking")
     public List<WeeklyRankingDto> weeklyRanking() {
-        List<Picture> pictures = likeService.RankingOfWeek();
-        List<Long> weekRankingId = new ArrayList<>();
-        List<Long> weekRankingNumber = new ArrayList<>();
+        List<Object[]> pictures = likeService.RankingOfWeek();
         List<WeeklyRankingDto> weeklyList = new ArrayList<>();
-        WeeklyRankingDto weeklyRankingDto;
 
-        for(int i = 0; i < pictures.size(); i++) {
-            weekRankingId.add(pictures.get(i).getId());
-            weekRankingNumber.add(likeService.LikeNumber(weekRankingId.get(i)));
-            weeklyRankingDto = new WeeklyRankingDto(weekRankingId.get(i), weekRankingNumber.get(i));
+        for (Object[] result : pictures) {
+            Picture picture = (Picture) result[0];
+            Long likeDislikeDifference = (Long) result[1];
+
+            Long pictureId = picture.getId();
+            WeeklyRankingDto weeklyRankingDto = new WeeklyRankingDto(pictureId, likeDislikeDifference);
             weeklyList.add(weeklyRankingDto);
         }
 
@@ -109,20 +108,18 @@ public class VoteController {
     // 월간 좋아요 순위
     @GetMapping("monthly_ranking")
     public List<MonthlyRankingDto> monthlyRanking() {
-        List<Picture> pictures = likeService.RankingOfMonth();
-        List<Long> monthRankingId = new ArrayList<>();
-        List<Long> monthRankingNumber = new ArrayList<>();
+        List<Object[]> pictures = likeService.RankingOfMonth();
         List<MonthlyRankingDto> monthlyList = new ArrayList<>();
-        MonthlyRankingDto monthlyRankingDto;
 
-        for(int i = 0; i < pictures.size(); i++) {
-            monthRankingId.add(pictures.get(i).getId());
-            monthRankingNumber.add(likeService.LikeNumber(monthRankingId.get(i)));
-            monthlyRankingDto = new MonthlyRankingDto(monthRankingId.get(i), monthRankingNumber.get(i));
+        for (Object[] result : pictures) {
+            Picture picture = (Picture) result[0];
+            Long likeDislikeDifference = (Long) result[1];
+
+            Long pictureId = picture.getId();
+            MonthlyRankingDto monthlyRankingDto = new MonthlyRankingDto(pictureId, likeDislikeDifference);
             monthlyList.add(monthlyRankingDto);
         }
 
         return monthlyList;
     }
-    // 오류 있음 (찾아오는건 그건데 영향을 받네?)
 }

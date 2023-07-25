@@ -66,9 +66,11 @@ public class LoginController {
     public void validationId(@RequestParam String userId) {
         memberService.validateDuplicateMemberUserId(userId);
     }
+
     /**
      비밀번호 찾기
  **/
+
     @PostMapping("/mailConfirm")
     public boolean confirmMail(@RequestBody InputCodeRequest request ) {
         return memberService.verifyJoinEmail(request.getInputCode());

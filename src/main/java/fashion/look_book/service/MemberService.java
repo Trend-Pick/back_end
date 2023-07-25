@@ -44,10 +44,12 @@ public class MemberService {
 
         return key.toString();
     }
+
     @Transactional
     public boolean verifyJoinEmail(String inputKey){
         if(inputKey.equals(this.ePw)){
-            Member member1 = new Member(this.member.getUser_user_id(),this.member.getEmail(),this.member.getPassword(),this.member.getNickname());
+            Member member1 = new Member(this.member.getUser_user_id(), this.member.getEmail(),
+                                        this.member.getPassword(), this.member.getNickname());
             memberRepository.save(member1);
             return true;
         }
@@ -55,6 +57,7 @@ public class MemberService {
             return false;
         }
     }
+
     @Transactional
     public void findPassword(String email) throws Exception {
         List<Member> findMember = memberRepository.findByEmail(email);
@@ -83,15 +86,7 @@ public class MemberService {
         message.setFrom(new InternetAddress("trend132@naver.com","Trend-Pick admin"));
         javaMailSender.send(message);
     }
-    @Transactional
-    public boolean verifyFindPasswordEmail(String inputKey){
-        if(inputKey.equals(this.findPwCode)){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
+
     private void validateDuplicateMember (Member member) {
         List<Member> findMember = memberRepository.findById(member.getUser_user_id());
         if(!findMember.isEmpty()) {
