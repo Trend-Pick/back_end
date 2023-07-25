@@ -17,5 +17,6 @@ public class CreatePostRequest {
     @NotEmpty
     private String content;
 
-    private MultipartFile imgInPost;
+    // MultipartFile imgInPost;
+
 }

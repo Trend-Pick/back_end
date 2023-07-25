@@ -72,12 +72,11 @@ public class BoardController {
     }
 
     @PostMapping("/create_post") // 글쓰기 페이지에서 저장을 누르는거
-    public CreatePostResponse savePost(@RequestParam String title,
-                                       @RequestParam String content,
-                                       @RequestParam(required = false) MultipartFile imgInPost) throws Exception {
+    public CreatePostResponse savePost(@RequestPart(value="createPostRequest") CreatePostRequest createPostRequest,
+                                       @RequestPart (value="imgInPost" ,required = false) MultipartFile imgInPost) throws Exception{
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        Post post = new Post(member, title, content, LocalDateTime.now());
+        Post post = new Post(member, createPostRequest.getTitle(), createPostRequest.getContent(), LocalDateTime.now());
         Long postId = postService.savePost(post);
 
         if (imgInPost != null) {
