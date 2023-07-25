@@ -72,9 +72,10 @@ public class LoginController {
  **/
 
     @PostMapping("/mailConfirm")
-    public boolean confirmMail(@RequestBody InputCodeRequest request ) {
+    public boolean confirmMail(@RequestBody InputCodeRequest request) {
         return memberService.verifyJoinEmail(request.getInputCode());
         //false면 프론트에서 다시 인증번호 받기 누르도록.
+        // 나중에 회원가입 때 이메일 인증 받을 때를 대비해서 만들어 놓은 것
     }
 
     @PostMapping("/member/findPassword")

@@ -51,11 +51,6 @@ public class LikeService {
         return count;
     }
 
-    /*public List<Picture> RankingOfWeek() {
-        List<Picture> weeklyLike = likeRepository.weeklyLike();
-        return weeklyLike;
-    }*/
-
     public List<Object[]> RankingOfWeek() {
         List<Object[]> weeklyLike = likeRepository.weeklyLike();
         return weeklyLike;

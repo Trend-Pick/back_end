@@ -1,5 +1,6 @@
 package fashion.look_book.controller;
 
+import fashion.look_book.Dto.LoginDtos.ChangePWDto;
 import fashion.look_book.Dto.MyPage.MemberPictureDto;
 import fashion.look_book.Dto.MyPage.MyPagePictureDto;
 import fashion.look_book.Dto.MyPage.MyPagePostDto;
@@ -9,6 +10,7 @@ import fashion.look_book.domain.Picture;
 import fashion.look_book.domain.Post;
 import fashion.look_book.login.SessionConst;
 import fashion.look_book.service.MemberImgService;
+import fashion.look_book.service.MemberService;
 import fashion.look_book.service.PictureService;
 import fashion.look_book.service.PostService;
 import jakarta.servlet.http.HttpSession;
@@ -28,6 +30,7 @@ public class MyPageController {
     private final MemberImgService memberImgService;
     private final PostService postService;
     private final PictureService pictureService;
+    private final MemberService memberService;
 
     @GetMapping("/my_page") // 처음 페이지이고, 사진 최신 6개 보여주기
     public List<MyPagePictureDto> MyPagePictures() {
@@ -87,5 +90,13 @@ public class MyPageController {
         if(memberImgService.findByMemberId(memberId)!=null)
             memberImgService.deleteImg(memberId);
         }
+    }
+
+    @PutMapping("/change_password")
+    public Long ChangePassword(@RequestBody ChangePWDto changePWDto) {
+        Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        Long memberId = member.getId();
+        memberService.updateMember(memberId, changePWDto.getPassword());
+        return member.getId();
     }
 }

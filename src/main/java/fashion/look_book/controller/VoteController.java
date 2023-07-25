@@ -1,6 +1,5 @@
 package fashion.look_book.controller;
 
-import fashion.look_book.Dto.Board.PostDtoTitle;
 import fashion.look_book.Dto.Vote.GetVoteDto;
 import fashion.look_book.Dto.Vote.MonthlyRankingDto;
 import fashion.look_book.Dto.Vote.RankingPictureDto;

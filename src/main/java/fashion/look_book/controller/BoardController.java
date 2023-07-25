@@ -73,7 +73,7 @@ public class BoardController {
 
     @PostMapping("/create_post") // 글쓰기 페이지에서 저장을 누르는거
     public CreatePostResponse savePost(@RequestPart(value="createPostRequest") CreatePostRequest createPostRequest,
-                                       @RequestPart (value="imgInPost" ,required = false) MultipartFile imgInPost) throws Exception{
+                                       @RequestPart (value="imgInPost", required = false) MultipartFile imgInPost) throws Exception{
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Post post = new Post(member, createPostRequest.getTitle(), createPostRequest.getContent(), LocalDateTime.now());
@@ -97,7 +97,7 @@ public class BoardController {
                 .map(c -> new CommentDtoContent(c.getContent(), c.getComment_member().getMemberImg().getImgUrl()))
                 .collect((Collectors.toList()));
 
-        return new PostWithCommentDto(post, postImg.getImgUrl(),commentDtoContents);
+        return new PostWithCommentDto(post, postImg.getImgUrl(), commentDtoContents);
         // 자기 게시글이면 수정, 삭제 버튼 보이게
         // 프론트분들이랑 상의하기
     }

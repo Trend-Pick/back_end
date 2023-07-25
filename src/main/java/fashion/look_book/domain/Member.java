@@ -66,4 +66,7 @@ public class Member {
         this.nickname = nickname;
     }
 
+    public void update_password (String password) {
+        this.password = password;
+    }
 }

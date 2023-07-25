@@ -1,6 +1,7 @@
 package fashion.look_book.service;
 
 import fashion.look_book.domain.Member;
+import fashion.look_book.domain.Post;
 import fashion.look_book.password.TempKey;
 import fashion.look_book.repository.MemberRepository;
 import jakarta.mail.Message;
@@ -36,6 +37,7 @@ public class MemberService {
         memberRepository.save(member);
         return member.getId();
     }
+
     @Transactional
     public String createKey() {
         StringBuffer key = new StringBuffer();
@@ -56,24 +58,24 @@ public class MemberService {
         else{
             return false;
         }
-    }
+    } // 나중에 회원가입할 때 이메일 인증 필요할 때 사용할 메서드
 
     @Transactional
     public void findPassword(String email) throws Exception {
         List<Member> findMember = memberRepository.findByEmail(email);
         if(findMember.isEmpty()) {
             throw new IllegalStateException();
-        }//저장된 email이 없으면 예외발생
+        } //저장된 email이 없으면 예외발생
         Member member = memberRepository.findOneByEmail(email);
         MimeMessage message = javaMailSender.createMimeMessage();
         String memberKey = new TempKey().getKey(6,false);
         String memberPw = BCrypt.hashpw(memberKey,BCrypt.gensalt()).substring(0,12);
-        // findPasswordDto.findPw(email,memberPw);
-        memberRepository.updatePassword(email,memberPw);
+
+        memberRepository.updatePassword(email, memberPw);
 
         message.addRecipients(Message.RecipientType.TO,email);
         message.setSubject("Trend Pick 임시 비밀번호 발급.");
-        this.findPwCode = createKey();
+        // this.findPwCode = createKey();
         String body = "<div>"
                 + "<h3> 임시비밀번호 발급</h3>"
                 + "<br>"+member.getUser_user_id()+"님"
@@ -123,4 +125,11 @@ public class MemberService {
         return memberRepository.findOne(memberId);
     }
 
+    @Transactional
+    public Long updateMember(Long memberId, String password) {
+        Member findMember = memberRepository.findOne(memberId);
+        findMember.update_password(password);
+
+        return findMember.getId();
+    }
 }

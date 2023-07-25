@@ -55,7 +55,7 @@ public class MemberRepository {
                 .setParameter("email",email)
                 .getResultList();
     }
-    public int updatePassword(String email,String memberPw){
+    public int updatePassword(String email, String memberPw){
         return em.createQuery("update Member as p set p.password = :password where p.email= :email")
                 .setParameter("email",email)
                 .setParameter("password",memberPw)
