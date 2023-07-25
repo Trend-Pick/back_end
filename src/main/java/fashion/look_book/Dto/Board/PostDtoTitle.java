@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PostDtoTitle {
     private String title;
+    private String content;
     private LocalDateTime postTime;
     private String postImgUrl;
 }

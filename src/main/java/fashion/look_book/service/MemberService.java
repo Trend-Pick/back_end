@@ -42,13 +42,19 @@ public class MemberService {
         }
     }
 
+    public void validateDuplicateMemberUserId (String userId) {
+        List<Member> findMember = memberRepository.findById(userId);
+        if(!findMember.isEmpty()) {
+            System.out.println("중복");
+            // 예외처리하기
+        }
+        else {
+            System.out.println("중복 X");
+            // 예외처리하기
+        }
+    }
+
     public Member findOne(Long memberId) {
         return memberRepository.findOne(memberId);
     }
-
-    public List<Member> findMembers() {
-        return memberRepository.findAll();
-    }
-
-
 }

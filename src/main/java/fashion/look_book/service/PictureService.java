@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 public class PictureService {
 
     private final PictureRepository pictureRepository;
-    private final MemberRepository memberRepository;
     private final LikeService likeService;
     private final FileService fileService;
 
@@ -61,10 +60,10 @@ public class PictureService {
 
         int size = pictures.size();
 
-        Map<Long, Integer> likeMap = new HashMap<>();
+        Map<Long, Long> likeMap = new HashMap<>();
 
         for (int i = 0; i < size; i++) {
-            Integer like = likeService.LikeNumber(pictures.get(i).getId());
+            Long like = likeService.LikeNumber(pictures.get(i).getId());
             likeMap.put(pictures.get(i).getId(), like);
         }
 
@@ -74,6 +73,7 @@ public class PictureService {
 
         return keySet;
     }
+
 
     public List<Picture> MyPagePicture(Long memberId) {
         List<Picture> pictures = pictureRepository.MyPagePicture(memberId);

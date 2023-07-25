@@ -49,13 +49,6 @@ public class Member {
     @OneToOne(mappedBy = "image_member")
     private MemberImg memberImg;
 
-    private String user_imgName;
-
-    private String user_oriImgName;
-
-    private String user_imgUrl;
-
-
     public Member() {
     }
 

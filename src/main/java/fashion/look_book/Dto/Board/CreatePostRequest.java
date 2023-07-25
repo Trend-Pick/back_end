@@ -1,14 +1,10 @@
 package fashion.look_book.Dto.Board;
 
-import fashion.look_book.domain.Post;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -21,6 +17,5 @@ public class CreatePostRequest {
     @NotEmpty
     private String content;
 
-    MultipartFile imgInPost;
-
+    private MultipartFile imgInPost;
 }

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +22,6 @@ import java.util.List;
 public class LikeService {
 
     private final LikeRepository likeRepository;
-    private final MemberRepository memberRepository;
     private final PictureRepository pictureRepository;
 
     @Transactional
@@ -33,30 +33,10 @@ public class LikeService {
         return likeRepository.findOne(likeId);
     }
 
-    public List<Like> like_users(Long id) {
-        Member findMember = memberRepository.findOne(id);
-        return likeRepository.findByMember(findMember);
-    }
-
-    @Transactional
-    public void change_like(Long id, Long pictureId, Like like) {
-
-        Member member = memberRepository.findOne(id);
+    public Long LikeNumber(Long pictureId) {
         Picture picture = pictureRepository.findOne(pictureId);
 
-        if(like.getStatus() == LikeStatus.LIKE) {
-            like.update_like(member, picture, LikeStatus.DISLIKE);
-        }
-
-        else if(like.getStatus() == LikeStatus.DISLIKE) {
-            like.update_like(member, picture, LikeStatus.LIKE);
-        }
-    }
-
-    public int LikeNumber(Long pictureId) {
-        Picture picture = pictureRepository.findOne(pictureId);
-
-        int count = 0;
+        Long count = 0L;
 
         int size = picture.getLikes().size();
 
@@ -71,4 +51,13 @@ public class LikeService {
         return count;
     }
 
+    public List<Picture> RankingOfWeek() {
+        List<Picture> weeklyLike = likeRepository.weeklyLike();
+        return weeklyLike;
+    }
+
+    public List<Picture> RankingOfMonth() {
+        List<Picture> monthlyLike = likeRepository.monthlyLike();
+        return monthlyLike;
+    }
 }

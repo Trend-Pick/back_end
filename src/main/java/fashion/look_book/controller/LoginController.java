@@ -56,11 +56,18 @@ public class LoginController {
         return new addMemberDtoResponse(id);
     }
 
+    // 중복확인 버튼
+    // 새로운 페이지가 아니라 아이디만 Post매핑으로 보내서 검증하는 식으로
+    @PostMapping("/validation/id")
+    public void validationId(@RequestParam String userId) {
+        memberService.validateDuplicateMemberUserId(userId);
+    }
 
 
     /**
          로그인, 로그아웃
      **/
+
 
     @PostMapping("/login")
     public LoginDtoResponse login (@Valid LoginDtoRequest request, BindingResult bindingResult,

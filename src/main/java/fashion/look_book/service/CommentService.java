@@ -31,11 +31,6 @@ public class CommentService {
         return commentRepository.findOne(commentId);
     }
 
-    public List<Comment> users_comment(Long id) {
-        Member findMember = memberRepository.findOne(id);
-        return commentRepository.findByMember(findMember);
-    }
-
     public List<Comment> post_comment(Long id) {
         Post findPost = postRepository.findOne(id);
         return commentRepository.findByPost(findPost);
