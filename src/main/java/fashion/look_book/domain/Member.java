@@ -1,5 +1,6 @@
 package fashion.look_book.domain;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -7,9 +8,12 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
+import org.hibernate.validator.constraints.Range;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -25,18 +29,15 @@ public class Member {
     private Long id;
 
     @NotEmpty
-    @Size(min = 6, max = 12)
     private String user_user_id;
 
     @NotEmpty
     private String email;
 
     @NotEmpty
-    @Size(min = 6, max = 12)
     private String password;
 
     @NotEmpty
-    @Size(min = 4, max = 10)
     private String nickname;
 
     @OneToMany(mappedBy = "picture_member")

@@ -34,6 +34,7 @@ public class PictureService {
     }
 
     //삭제하려고 할 때 pictureId를 받아서 그 pictureId에 연결된 img를 삭제하는 식으로.
+    @Transactional
     public void delete(Picture picture) throws Exception {
         fileService.deleteFile(picture.getImgUrl());
 

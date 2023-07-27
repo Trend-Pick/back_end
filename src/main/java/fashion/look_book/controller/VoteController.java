@@ -7,6 +7,7 @@ import fashion.look_book.Dto.Vote.WeeklyRankingDto;
 import fashion.look_book.domain.*;
 import fashion.look_book.login.SessionConst;
 import fashion.look_book.service.LikeService;
+import fashion.look_book.service.MemberService;
 import fashion.look_book.service.PictureService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import java.util.List;
 public class VoteController {
 
     private final PictureService pictureService;
+    private final MemberService memberService;
     private final LikeService likeService;
     private final HttpSession session;
 
@@ -32,10 +34,9 @@ public class VoteController {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         Picture picture = pictureService.PictureByRandom(member);
+        Long id = picture.getId();
 
-        Long pictureId = picture.getId();
-
-        return new GetVoteDto(pictureId);
+        return new GetVoteDto(id);
     }
 
 

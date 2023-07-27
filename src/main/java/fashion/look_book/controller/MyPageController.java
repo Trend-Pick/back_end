@@ -15,6 +15,7 @@ import fashion.look_book.service.PictureService;
 import fashion.look_book.service.PostService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,7 +38,6 @@ public class MyPageController {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         List<Picture> pictures = pictureService.MyPagePicture(member.getId());
-
 
         List<MyPagePictureDto> pictureList = pictures.stream()
                 .map(p -> new MyPagePictureDto(p.getId()))
@@ -93,7 +93,7 @@ public class MyPageController {
     }
 
     @PutMapping("/change_password")
-    public Long ChangePassword(@RequestBody ChangePWDto changePWDto) {
+    public Long ChangePassword(@Validated @RequestBody ChangePWDto changePWDto) {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Long memberId = member.getId();
         memberService.updateMember(memberId, changePWDto.getPassword());

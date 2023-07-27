@@ -5,11 +5,13 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.Optional;
+
 @Data
 @AllArgsConstructor
 public class CommentDtoContent {
     @NotEmpty
     private String content;
 
-    private String imgUrl;
+    private Optional<String> imgUrl;
 }

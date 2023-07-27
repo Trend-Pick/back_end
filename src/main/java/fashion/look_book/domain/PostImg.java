@@ -46,14 +46,10 @@ public class PostImg {
     }
 
     // postImgService 에서 이미지 수정할 때 사용함
-    public void postImgUpdate(String imgName, String oriImgName, String imgUrl){
+    public void postImgUpdate(String imgName, String oriImgName, String imgUrl) {
         this.imgName = imgName;
         this.oriImgName = oriImgName;
         this.imgUrl = imgUrl;
     }
 
-    // 글+이미지 찾을 때 사용함
-    public ImgInPostDto toDto(){
-        return new ImgInPostDto(id,imgName,oriImgName,imgUrl,repimgYn);
-    }
 }

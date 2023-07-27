@@ -1,10 +1,7 @@
 package fashion.look_book.service;
 
 import fashion.look_book.domain.*;
-import fashion.look_book.repository.CommentRepository;
-import fashion.look_book.repository.LikeRepository;
-import fashion.look_book.repository.MemberRepository;
-import fashion.look_book.repository.PostRepository;
+import fashion.look_book.repository.*;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,8 +15,7 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final MemberRepository memberRepository;
-    private final CommentRepository commentRepository;
+    private final PostImgRepository postImgRepository;
 
     @Transactional
     public Long savePost(Post post) {
@@ -46,6 +42,7 @@ public class PostService {
     @Transactional
     public void delete_Post (Long postId) {
         postRepository.deletePost(postId);
+        postImgRepository.postImgDelete(postId);
     }
 
     public List<Post> MyPagePost(Long memberId) {

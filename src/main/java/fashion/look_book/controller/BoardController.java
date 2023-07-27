@@ -7,12 +7,15 @@ import fashion.look_book.service.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -94,7 +97,7 @@ public class BoardController {
         List<Comment> commentList = commentService.post_comment(postId);
 
         List<CommentDtoContent> commentDtoContents = commentList.stream()
-                .map(c -> new CommentDtoContent(c.getContent(), c.getComment_member().getMemberImg().getImgUrl()))
+                .map(c -> new CommentDtoContent(c.getContent(), Optional.ofNullable(c.getComment_member().getMemberImg().getImgUrl())))
                 .collect((Collectors.toList()));
 
         return new PostWithCommentDto(post, postImg.getImgUrl(), commentDtoContents);
@@ -104,8 +107,7 @@ public class BoardController {
 
     @PutMapping("/update_post/{postId}")
     public UpdatePostResponse updatePost(@PathVariable ("postId") Long postId,
-                                         @RequestParam String title,
-                                         @RequestParam String content,
+                                         @RequestPart(value="createPostRequest") CreatePostRequest createPostRequest,
                                          @RequestParam(required = false) MultipartFile imgInPost)
             throws Exception{
 
@@ -114,7 +116,7 @@ public class BoardController {
 
 
         if(post.getPost_member().getId() == member.getId()) {
-            postService.updatePost(postId, title, content);
+            postService.updatePost(postId, createPostRequest.getTitle(), createPostRequest.getContent());
 
             if(imgInPost!=null) { //원본에는 이미지가 없었는데 수정했을 때는 이미지가 추가된 경우
                 if(postImgService.findByPostId(postId)==null){
@@ -136,7 +138,7 @@ public class BoardController {
     }
 
     @DeleteMapping("/delete_post/{postId}")
-    public String deletePost(@PathVariable ("postId") Long postId) {
+    public ResponseEntity<?> deletePost(@PathVariable ("postId") Long postId) {
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
@@ -147,10 +149,10 @@ public class BoardController {
             postService.delete_Post(postId);
         }
         else {
-            return null;
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        return "ok";
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 
@@ -160,22 +162,27 @@ public class BoardController {
 
     // 댓글 만들기
     @PostMapping("/create/{postId}/comment")
-    public CreateCommentResponse saveComment(@PathVariable ("postId") Long postId,
+    public ResponseEntity<?> saveComment(@PathVariable ("postId") Long postId,
                                              @RequestBody CreateCommentRequest request) {
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Post post = postService.findOne(postId);
 
-        Comment comment = new Comment(member, request.getContent(), post, LocalDateTime.now());
-        Long id = commentService.save(comment);
+        if(post != null) {
+            Comment comment = new Comment(member, request.getContent(), post, LocalDateTime.now());
+            Long id = commentService.save(comment);
+        }
+        else {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
 
-        return new CreateCommentResponse(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 
     // 댓글 수정하기
     @PutMapping("/update_comment/{postId}/{CommentId}")
-    public UpdateCommentResponse updatePost(@PathVariable ("postId") Long postId,
+    public ResponseEntity<?> updatePost(@PathVariable ("postId") Long postId,
                                             @PathVariable ("CommentId") Long commentId,
                                             @RequestBody UpdateCommentRequest request) {
 
@@ -187,10 +194,10 @@ public class BoardController {
             commentService.updateComment(commentId, request.getContent());
         }
         else {
-            return null;
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        return new UpdateCommentResponse(commentId);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 

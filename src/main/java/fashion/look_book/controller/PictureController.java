@@ -68,6 +68,5 @@ public class PictureController {
         }
 
         return ResponseEntity.ok().build();
-
     }
 }
