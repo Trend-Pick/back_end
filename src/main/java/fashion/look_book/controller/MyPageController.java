@@ -63,7 +63,7 @@ public class MyPageController {
 
     }
 
-    @GetMapping("/update/member/picture") // 대표사진 수정
+    @GetMapping("/update/member/picture") // 대표사진 수정 NullPointException
     public MemberPictureDto UpdatePicturePage() {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         MemberImg img = member.getMemberImg();
@@ -73,23 +73,13 @@ public class MyPageController {
     }
 
     @PutMapping("/update/member/picture") // 대표사진 수정 누르기
-    public void UpdatePicture(@RequestParam(required=false) MultipartFile newImg) throws Exception {
+    public void UpdatePicture(@RequestParam MultipartFile newImg) throws Exception {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Long memberId = member.getId();
 
-        if(newImg!=null) { //원본에는 이미지가 없었는데 수정했을 때는 이미지가 추가된 경우
-            if(memberImgService.findByMemberId(memberId)==null){
-                memberImgService.saveImg(newImg, member);
-            }
-            else { //원본에도 이미지가 있었는데 수정 후 추가된 경우
-                MemberImg memberImg = memberImgService.findByMemberId(memberId);
-                Long memberImgId = memberImg.getId();
-                memberImgService.updateImg(memberImgId, newImg);
-            }
-        } else { //원본에는 이미지가 있었는데 수정했을 때는 이미지가 없다면 원래 있던 postImg 삭제 필요
-        if(memberImgService.findByMemberId(memberId)!=null)
-            memberImgService.deleteImg(memberId);
-        }
+        MemberImg memberImg = memberImgService.findByMemberId(memberId);
+        Long memberImgId = memberImg.getId();
+        memberImgService.updateImg(memberImgId, newImg);
     }
 
     @PutMapping("/change_password")

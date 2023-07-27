@@ -33,14 +33,13 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> commentList = new ArrayList<>();
 
-//    @OneToOne(orphanRemoval = true)
-//    @JoinColumn(name="post_img")
-//    private PostImg postImg;
-
     private LocalDateTime PostTime;
 
     public Post() {
     }
+
+    @OneToOne(mappedBy = "post")
+    private PostImg postImg;
 
     @Builder
     public Post (Member post_member, String title, String content, LocalDateTime PostTime) {

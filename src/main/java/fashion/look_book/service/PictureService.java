@@ -27,6 +27,9 @@ public class PictureService {
     @Value("${itemImgLocation}") // .properties 의 itemImgLocation 값을 itemImgLocation 변수에 넣어
     private String imgLocation;
 
+    @Value("{default.image.address}")
+    private String defaultImage;
+
     @Transactional
     public void save(Picture picture) throws Exception{
 

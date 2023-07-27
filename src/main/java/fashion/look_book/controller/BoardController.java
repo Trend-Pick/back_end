@@ -41,29 +41,17 @@ public class BoardController {
     @GetMapping("/post_list")
     public List<PostDtoTitle> postList() {
         List<Post> findPosts = postService.findAllPost();
-
         List<PostImg> findPostImgs = postImgService.findAllPostImg();
 
-        List<PostDtoTitle> postLists = new ArrayList<>();
-        for(int i=0;i<findPostImgs.size();i++){
-            for(int j=0;j<findPosts.size();j++){
-                PostDtoTitle postDtoTitle;
-                if(findPostImgs.get(i).getPost().getId()==findPosts.get(j).getId()){
+        List<PostDtoTitle> postLists = findPosts.stream()
+                .map(c -> {
+                    String imgUrl = Optional.ofNullable(c.getPostImg())
+                            .map(PostImg::getImgUrl)
+                            .orElse(null);
+                    return new PostDtoTitle(c.getTitle(), c.getContent(), c.getPostTime(), imgUrl);
+                })
+                .collect((Collectors.toList()));
 
-                    postDtoTitle = new PostDtoTitle(findPosts.get(j).getTitle(),
-                            findPosts.get(i).getContent(),
-                            findPosts.get(j).getPostTime(),
-                            findPostImgs.get(i).getImgUrl());
-                }
-                else{
-                    postDtoTitle = new PostDtoTitle(findPosts.get(j).getTitle(),
-                            findPosts.get(j).getContent(),
-                            findPosts.get(j).getPostTime(),
-                            null);
-                }
-                postLists.add(postDtoTitle);
-            }
-        }
 
         return postLists;
     }
@@ -90,15 +78,20 @@ public class BoardController {
     }
 
     @GetMapping("/post/{postId}") // 3번의 게시글 하나 클릭해서 들어가는 것
-    public PostWithCommentDto createPost (@PathVariable ("postId") Long postId) {
+    public PostWithCommentDto post (@PathVariable ("postId") Long postId) {
 
         Post post = postService.findOne(postId);
         PostImg postImg = postImgService.findByPostId(postId);
         List<Comment> commentList = commentService.post_comment(postId);
 
         List<CommentDtoContent> commentDtoContents = commentList.stream()
-                .map(c -> new CommentDtoContent(c.getContent(), Optional.ofNullable(c.getComment_member().getMemberImg().getImgUrl())))
-                .collect((Collectors.toList()));
+                .map(c -> {
+                    String imgUrl = Optional.ofNullable(c.getComment_member().getMemberImg())
+                            .map(MemberImg::getImgUrl)
+                            .orElse(null);
+                    return new CommentDtoContent(c.getContent(), imgUrl);
+                })
+                .collect(Collectors.toList());
 
         return new PostWithCommentDto(post, postImg.getImgUrl(), commentDtoContents);
         // 자기 게시글이면 수정, 삭제 버튼 보이게

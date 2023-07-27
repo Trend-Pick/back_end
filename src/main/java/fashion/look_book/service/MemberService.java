@@ -23,6 +23,7 @@ import java.util.*;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final JavaMailSender javaMailSender;
+    private final MemberImgService memberImgService;
     private String ePw;
     private String findPwCode;
     private Member member;
