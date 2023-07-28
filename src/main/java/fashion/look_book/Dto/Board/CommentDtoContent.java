@@ -13,5 +13,5 @@ public class CommentDtoContent {
     @NotEmpty
     private String content;
 
-    private String imgUrl;
+    private byte[] imgUrl;
 }
