@@ -48,7 +48,12 @@ public class BoardController {
                     String imgUrl = Optional.ofNullable(c.getPostImg())
                             .map(PostImg::getImgUrl)
                             .orElse(null);
-                    return new PostDtoTitle(c.getTitle(), c.getContent(), c.getPostTime(), imgUrl);
+                    try {
+                        return new PostDtoTitle(c.getTitle(), c.getContent(), c.getPostTime(), fileService.getImage(imgUrl));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
                 })
                 .collect((Collectors.toList()));
 
@@ -89,7 +94,12 @@ public class BoardController {
                     String imgUrl = Optional.ofNullable(c.getComment_member().getMemberImg())
                             .map(MemberImg::getImgUrl)
                             .orElse(null);
-                    return new CommentDtoContent(c.getContent(), imgUrl);
+                    try {
+                        return new CommentDtoContent(c.getContent(), fileService.getImage(imgUrl));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
                 })
                 .collect(Collectors.toList());
 
