@@ -1,8 +1,6 @@
 package fashion.look_book.repository;
 
-import fashion.look_book.domain.Member;
 import fashion.look_book.domain.MemberImg;
-import fashion.look_book.domain.PostImg;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;

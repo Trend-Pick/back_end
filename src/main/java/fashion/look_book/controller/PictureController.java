@@ -38,10 +38,9 @@ public class PictureController {
         String imgName = "";
         String imgUrl = "";
 
-        imgName = fileService.uploadFiles(imgLocation,oriImgName,codyImg.getBytes());
+        imgName = fileService.uploadFiles(imgLocation, oriImgName, codyImg.getBytes());
 
         imgUrl = imgLocation+"/"+ imgName;
-
 
         Picture picture = Picture.builder()
                 .picture_member(member)

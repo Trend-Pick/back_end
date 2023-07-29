@@ -118,7 +118,7 @@ public class BoardController {
                 else{ //원본에도 이미지가 있었는데 수정 후 추가된 경우
                     postImgService.updatePostImg(postId, imgInPost);
                 }
-            }else{ //원본에는 이미지가 있었는데 수정했을 때는 이미지가 없다면 원래 있던 postImg 삭제 필요
+            } else{ //원본에는 이미지가 있었는데 수정했을 때는 이미지가 없다면 원래 있던 postImg 삭제 필요
                 if(postImgService.findByPostId(postId)!=null)
                     postImgService.deletePostImg(postId);
             }

@@ -39,7 +39,6 @@ public class CommentService {
     @Transactional
     public Long updateComment(Long commentId, String content) {
         Comment findComment = commentRepository.findOne(commentId);
-        // findOne으로 찾아온 findItem은 영속상태이다.
 
         findComment.update_comment(content);
         return findComment.getId();

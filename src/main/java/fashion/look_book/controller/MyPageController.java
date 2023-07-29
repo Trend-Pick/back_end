@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -66,8 +67,15 @@ public class MyPageController {
     @GetMapping("/update/member/picture") // 대표사진 수정 NullPointException
     public MemberPictureDto UpdatePicturePage() {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        MemberImg img = member.getMemberImg();
-        Long imgId = img.getId();
+        Long imgId;
+        if(member.getMemberImg() != null) {
+            MemberImg img = member.getMemberImg();
+            imgId = img.getId();
+        }
+
+        else {
+            imgId = null;
+        }
 
         return new MemberPictureDto(imgId);
     }
