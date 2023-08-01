@@ -57,7 +57,7 @@ public class PostImgRepository {
     public void postImgDelete(Long postId) {
         PostImg postImg = findOneByPostId(postId);
         if(postImg!=null) {
-        em.remove(postImg);
+            em.remove(postImg);
         }
     }
 }

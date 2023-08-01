@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -29,8 +32,11 @@ public class MemberImgService {
         String memberImgName = imgInMember.getOriginalFilename();
         String imgName = "";
         String imgUrl = "";
-        imgName = s3FileService.upload(imgInMember);
-        imgUrl = imgName;
+        Map<String, String> result = s3FileService.upload(imgInMember);
+        String s3FileName = result.get("s3FileName");
+        String s3Url = result.get("s3Url");
+        imgName = s3FileName;
+        imgUrl = s3Url;
         MemberImg memberImg = new MemberImg(member, imgName, memberImgName, imgUrl);
 
         memberImgRepository.save(memberImg);
@@ -48,11 +54,16 @@ public class MemberImgService {
     public void updateImg(Long memberImgId, MultipartFile imgInMember) throws Exception {
         MemberImg memberImg = findOne(memberImgId);
 
+        s3FileService.deleteImage(memberImg.getImgName());
+
         String memberImgName = imgInMember.getOriginalFilename();
         String imgName = "";
         String imgUrl = "";
-        imgName = s3FileService.upload(imgInMember);
-        imgUrl = imgName;
+        Map<String, String> result = s3FileService.upload(imgInMember);
+        String s3FileName = result.get("s3FileName");
+        String s3Url = result.get("s3Url");
+        imgName = s3FileName;
+        imgUrl = s3Url;
 
         memberImg.update_memberImg(imgName, memberImgName, imgUrl);
     }

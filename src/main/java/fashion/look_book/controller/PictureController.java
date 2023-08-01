@@ -1,6 +1,5 @@
 package fashion.look_book.controller;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
 import fashion.look_book.Dto.PIcture.CreatePictureDto;
 import fashion.look_book.domain.*;
 import fashion.look_book.login.SessionConst;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 
 @RestController
@@ -46,9 +46,11 @@ public class PictureController {
         String imgName = "";
         String imgUrl = "";
 
-        imgName = s3FileService.upload(codyImg);
-
-        imgUrl = imgName;
+        Map<String, String> result = s3FileService.upload(codyImg);
+        String s3FileName = result.get("s3FileName");
+        String s3Url = result.get("s3Url");
+        imgName = s3FileName;
+        imgUrl = s3Url;
 
         Picture picture = Picture.builder()
                 .picture_member(member)

@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -33,8 +34,11 @@ public class PostImgService {
         String oriImgName = imgInPost.getOriginalFilename();
         String imgName = "";
         String imgUrl = "";
-        imgName = s3FileService.upload(imgInPost);
-        imgUrl = imgName;
+        Map<String, String> result = s3FileService.upload(imgInPost);
+        String s3FileName = result.get("s3FileName");
+        String s3Url = result.get("s3Url");
+        imgName = s3FileName;
+        imgUrl = s3Url;
         PostImg postImg = new PostImg(imgName, oriImgName, imgUrl, "Y", post);
 
         postImgRepository.save(postImg);
@@ -68,8 +72,11 @@ public class PostImgService {
 
                 // 수정한 이미지 파일 저장
                 String oriImgName = imgInPost.getOriginalFilename();
-                String imgName = s3FileService.upload(imgInPost);
-                String imgUrl = imgName;
+                Map<String, String> result = s3FileService.upload(imgInPost);
+                String s3FileName = result.get("s3FileName");
+                String s3Url = result.get("s3Url");
+                String imgName = s3FileName;
+                String imgUrl = s3Url;
 
                 postImgRepository.postImgUpdate(postId, imgName, oriImgName, imgUrl);
 
@@ -90,5 +97,7 @@ public class PostImgService {
     @Transactional
     public void deletePostImg(Long postId){
         postImgRepository.postImgDelete(postId);
+        PostImg postImg = findOne(postId);
+        s3FileService.deleteImage(postImg.getImgName());
     }
 }
