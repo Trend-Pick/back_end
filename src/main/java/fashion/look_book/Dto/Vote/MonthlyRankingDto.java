@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class MonthlyRankingDto {
-    private Long pictureId;
+    private String imgUrl;
     private Long Like;
 }

@@ -23,8 +23,9 @@ public class PostImgService {
     private final MemberRepository memberRepository;
     private final FileService fileService;
     private final PostImgRepository postImgRepository;
+    private final S3FileService s3FileService;
 
-    @Value("${itemImgLocation}") // .properties 의 itemImgLocation 값을 itemImgLocation 변수에 넣어
+    @Value("${cloud.aws.s3.bucket}") // .properties 의 itemImgLocation 값을 itemImgLocation 변수에 넣어
     private String imgLocation;
 
     @Transactional
@@ -32,12 +33,14 @@ public class PostImgService {
         String oriImgName = imgInPost.getOriginalFilename();
         String imgName = "";
         String imgUrl = "";
-        imgName = fileService.uploadFiles(imgLocation, oriImgName, imgInPost.getBytes());
-        imgUrl = imgLocation + "/" + imgName;
+        imgName = s3FileService.upload(imgInPost);
+        imgUrl = imgName;
         PostImg postImg = new PostImg(imgName, oriImgName, imgUrl, "Y", post);
 
         postImgRepository.save(postImg);
     }
+
+
     public List<PostImg> findAllPostImg(){
         return postImgRepository.findAllPostImg();
     }
@@ -60,13 +63,13 @@ public class PostImgService {
             PostImg postImg = postImgRepository.findOneByPostId(postId);
 
                 if (!StringUtils.isEmpty(postImg.getImgName())) {
-                    fileService.deleteFile(imgLocation + "/" + postImg.getImgName());
+                    s3FileService.deleteImage(postImg.getImgName());
                 }
 
                 // 수정한 이미지 파일 저장
                 String oriImgName = imgInPost.getOriginalFilename();
-                String imgName = fileService.uploadFiles(imgLocation, oriImgName, imgInPost.getBytes());
-                String imgUrl = "/item/" + imgName;
+                String imgName = s3FileService.upload(imgInPost);
+                String imgUrl = imgName;
 
                 postImgRepository.postImgUpdate(postId, imgName, oriImgName, imgUrl);
 
@@ -78,7 +81,7 @@ public class PostImgService {
 
             // 기존 이미지 파일 삭제 후 데베에서도 삭제
             if (!StringUtils.isEmpty(postImg.getImgName())) {
-                fileService.deleteFile(imgLocation + "/" + postImg.getImgName());
+                s3FileService.deleteImage( postImg.getImgName());
                 postImgRepository.postImgDelete(postId);
             }
         }

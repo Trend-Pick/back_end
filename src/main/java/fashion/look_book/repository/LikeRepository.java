@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 @Repository
@@ -28,8 +29,8 @@ public class LikeRepository {
 
     public List<Object[]> weeklyLike() {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime startOfWeek = now.with(DayOfWeek.MONDAY);
-        LocalDateTime endOfWeek = startOfWeek.plusDays(7);
+        LocalDateTime thisMonday = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).withHour(0).withMinute(0).withSecond(0);
+        LocalDateTime nextSunday = now.with(TemporalAdjusters.next(DayOfWeek.SUNDAY)).withHour(11).withMinute(59).withSecond(59);
 
         List<Object[]> resultList = em.createQuery(
                         "SELECT l.picture, " +
@@ -41,8 +42,8 @@ public class LikeRepository {
                                 "AND l.likeTime < :endOfWeek " +
                                 "GROUP BY l.picture.id " +
                                 "ORDER BY likeDislikeDifference DESC", Object[].class)
-                .setParameter("startOfWeek", startOfWeek)
-                .setParameter("endOfWeek", endOfWeek)
+                .setParameter("startOfWeek", thisMonday)
+                .setParameter("endOfWeek", nextSunday)
                 .setParameter("likeStatus", LikeStatus.LIKE)
                 .setParameter("dislikeStatus", LikeStatus.DISLIKE)
                 .setMaxResults(3)

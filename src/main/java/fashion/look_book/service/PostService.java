@@ -16,6 +16,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final PostImgRepository postImgRepository;
+    private final S3FileService s3FileService;
 
     @Transactional
     public Long savePost(Post post) {

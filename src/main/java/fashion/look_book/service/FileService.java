@@ -14,7 +14,7 @@ import java.util.UUID;
 public class FileService {
 
     // 파일 업로드
-    public String uploadFiles(String uploadPath, String originalFileName, byte[] fileData) throws Exception{
+    public String uploadFiles (String uploadPath, String originalFileName, byte[] fileData) throws Exception{
 
         // 완전 랜덤한 id 값 생성
         UUID uuid = UUID.randomUUID();
@@ -66,6 +66,7 @@ public class FileService {
 
         return fileArray;
     }
+
     // 파일 삭제
     public void deleteFile(String filePath) throws Exception{
 

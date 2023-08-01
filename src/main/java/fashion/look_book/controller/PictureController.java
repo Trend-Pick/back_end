@@ -1,9 +1,12 @@
 package fashion.look_book.controller;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import fashion.look_book.Dto.PIcture.CreatePictureDto;
 import fashion.look_book.domain.*;
 import fashion.look_book.login.SessionConst;
 import fashion.look_book.service.FileService;
 import fashion.look_book.service.PictureService;
+import fashion.look_book.service.S3FileService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,9 +25,14 @@ public class PictureController {
     private final PictureService pictureService;
     private final FileService fileService;
     private final HttpSession session;
+    private final AmazonS3 amazonS3;
+    private final S3FileService s3FileService;
 
-    @Value("${itemImgLocation}") // .properties 의 itemImgLocation 값을 itemImgLocation 변수에 넣어
+    @Value("${cloud.aws.s3.bucket}") // .properties 의 itemImgLocation 값을 itemImgLocation 변수에 넣어
     private String imgLocation;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     @PostMapping("/create_picture")
     public CreatePictureDto savePicture(@RequestParam("cody_img") MultipartFile codyImg)
@@ -38,9 +46,9 @@ public class PictureController {
         String imgName = "";
         String imgUrl = "";
 
-        imgName = fileService.uploadFiles(imgLocation, oriImgName, codyImg.getBytes());
+        imgName = s3FileService.upload(codyImg);
 
-        imgUrl = imgLocation+"/"+ imgName;
+        imgUrl = imgName;
 
         Picture picture = Picture.builder()
                 .picture_member(member)

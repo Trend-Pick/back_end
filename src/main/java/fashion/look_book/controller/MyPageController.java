@@ -41,7 +41,7 @@ public class MyPageController {
         List<Picture> pictures = pictureService.MyPagePicture(member.getId());
 
         List<MyPagePictureDto> pictureList = pictures.stream()
-                .map(p -> new MyPagePictureDto(p.getId()))
+                .map(p -> new MyPagePictureDto(p.getImgUrl()))
                 .collect(Collectors.toList());
 
         return pictureList;
@@ -67,17 +67,13 @@ public class MyPageController {
     @GetMapping("/update/member/picture") // 대표사진 수정 NullPointException
     public MemberPictureDto UpdatePicturePage() {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        Long imgId;
-        if(member.getMemberImg() != null) {
-            MemberImg img = member.getMemberImg();
-            imgId = img.getId();
+        String imgUrl = member.getMemberImg().getImgUrl();
+
+        if (member.getMemberImg() == null) {
+            return new MemberPictureDto(null);
         }
 
-        else {
-            imgId = null;
-        }
-
-        return new MemberPictureDto(imgId);
+        return new MemberPictureDto(imgUrl);
     }
 
     @PutMapping("/update/member/picture") // 대표사진 수정 누르기
@@ -86,8 +82,13 @@ public class MyPageController {
         Long memberId = member.getId();
 
         MemberImg memberImg = memberImgService.findByMemberId(memberId);
-        Long memberImgId = memberImg.getId();
-        memberImgService.updateImg(memberImgId, newImg);
+        if(memberImg != null) {
+            Long memberImgId = memberImg.getId();
+            memberImgService.updateImg(memberImgId, newImg);
+        }
+        else {
+            memberImgService.saveImg(member, newImg);
+        }
     }
 
     @PutMapping("/change_password")

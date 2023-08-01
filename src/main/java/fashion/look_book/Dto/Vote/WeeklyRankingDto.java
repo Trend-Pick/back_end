@@ -8,6 +8,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class WeeklyRankingDto {
-    private Long pictureId;
+    private String imgUrl;
     private Long Like;
 }

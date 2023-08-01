@@ -12,5 +12,5 @@ public class PostDtoTitle {
     private String content;
     private LocalDateTime postTime;
     //private String postImgUrl;
-    private byte[] postImgUrl;
+    private String postImgUrl;
 }

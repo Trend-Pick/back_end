@@ -5,9 +5,9 @@ import lombok.Data;
 @Data
 public class GetVoteDto {
 
-    private Long id;
+    private String url;
 
-    public GetVoteDto(Long id) {
-        this.id = id;
+    public GetVoteDto(String url) {
+        this.url = url;
     }
 }

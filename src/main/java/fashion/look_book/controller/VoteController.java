@@ -34,11 +34,10 @@ public class VoteController {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         Picture picture = pictureService.PictureByRandom(member);
-        Long id = picture.getId();
+        String url = picture.getImgUrl();
 
-        return new GetVoteDto(id);
+        return new GetVoteDto(url);
     }
-
 
     // 받아와서 좋아요 누르면 좋아요 상태로 like만들고
     @PostMapping("/vote/like/{pictureId}")
@@ -73,14 +72,17 @@ public class VoteController {
     public List<RankingPictureDto> PictureList() {
         List<Long> pictures = pictureService.RankingOfPicture();
         List<Long> RankingId = new ArrayList<>();
+        List<String> RankingUrl = new ArrayList<>();
         List<Long> RankingNumber = new ArrayList<>();
         List<RankingPictureDto> PictureList = new ArrayList<>();
         RankingPictureDto rankingPictureDto;
 
         for(int i = 0; i < 3; i++) {
+            Picture picture = pictureService.findOne(pictures.get(i));
             RankingId.add(pictures.get(i));
+            RankingUrl.add(picture.getImgUrl());
             RankingNumber.add(likeService.LikeNumber(pictures.get(i)));
-            rankingPictureDto = new RankingPictureDto(RankingId.get(i), RankingNumber.get(i));
+            rankingPictureDto = new RankingPictureDto(RankingId.get(i), RankingUrl.get(i), RankingNumber.get(i));
             PictureList.add(rankingPictureDto);
         }
 
@@ -97,8 +99,8 @@ public class VoteController {
             Picture picture = (Picture) result[0];
             Long likeDislikeDifference = (Long) result[1];
 
-            Long pictureId = picture.getId();
-            WeeklyRankingDto weeklyRankingDto = new WeeklyRankingDto(pictureId, likeDislikeDifference);
+            String ImgUrl = picture.getImgUrl();
+            WeeklyRankingDto weeklyRankingDto = new WeeklyRankingDto(ImgUrl, likeDislikeDifference);
             weeklyList.add(weeklyRankingDto);
         }
 
@@ -115,8 +117,8 @@ public class VoteController {
             Picture picture = (Picture) result[0];
             Long likeDislikeDifference = (Long) result[1];
 
-            Long pictureId = picture.getId();
-            MonthlyRankingDto monthlyRankingDto = new MonthlyRankingDto(pictureId, likeDislikeDifference);
+            String imgUrl = picture.getImgUrl();
+            MonthlyRankingDto monthlyRankingDto = new MonthlyRankingDto(imgUrl, likeDislikeDifference);
             monthlyList.add(monthlyRankingDto);
         }
 

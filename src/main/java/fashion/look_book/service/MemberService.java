@@ -28,7 +28,7 @@ public class MemberService {
     private String findPwCode;
     private Member member;
 
-    @Value("${itemImgLocation}") // .properties 의 itemImgLocation 값을 itemImgLocation 변수에 넣어
+    @Value("${cloud.aws.s3.bucket}") // .properties 의 itemImgLocation 값을 itemImgLocation 변수에 넣어
     private String imgLocation;
 
     @Transactional

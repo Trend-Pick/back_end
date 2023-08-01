@@ -11,12 +11,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
 
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -29,19 +34,20 @@ public class BoardController {
     // 저장을 하면 다시 (1번)으로 돌아간다.
     // 3. 게시판 목록에서 게시글을 클릭하면 내용을 보여준다. 만약 자기가 쓴 글이라면 수정, 삭제 버튼도 보여준다.
 
-    @Value("${itemImgLocation}") // .properties 의 itemImgLocation 값을 itemImgLocation 변수에 넣어
+    @Value("${cloud.aws.s3.bucket}") // .properties 의 itemImgLocation 값을 itemImgLocation 변수에 넣어
     private String imgLocation;
+
     private final PostService postService;
     private final CommentService commentService;
     private final FileService fileService;
     private final PictureService pictureService;
     private final PostImgService postImgService;
     private final HttpSession session;
+    private final S3FileService s3FileService;
 
     @GetMapping("/post_list")
     public List<PostDtoTitle> postList() {
         List<Post> findPosts = postService.findAllPost();
-        List<PostImg> findPostImgs = postImgService.findAllPostImg();
 
         List<PostDtoTitle> postLists = findPosts.stream()
                 .map(c -> {
@@ -49,7 +55,7 @@ public class BoardController {
                             .map(PostImg::getImgUrl)
                             .orElse(null);
                     try {
-                        return new PostDtoTitle(c.getTitle(), c.getContent(), c.getPostTime(), fileService.getImage(imgUrl));
+                        return new PostDtoTitle(c.getTitle(), c.getContent(), c.getPostTime(), imgUrl);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -68,7 +74,7 @@ public class BoardController {
     }
 
     @PostMapping("/create_post") // 글쓰기 페이지에서 저장을 누르는거
-    public CreatePostResponse savePost(@RequestPart(value="createPostRequest") CreatePostRequest createPostRequest,
+    public CreatePostResponse savePost(@RequestPart (value="createPostRequest") CreatePostRequest createPostRequest,
                                        @RequestPart (value="imgInPost", required = false) MultipartFile imgInPost) throws Exception{
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
@@ -95,13 +101,17 @@ public class BoardController {
                             .map(MemberImg::getImgUrl)
                             .orElse(null);
                     try {
-                        return new CommentDtoContent(c.getContent(), fileService.getImage(imgUrl));
+                        return new CommentDtoContent(c.getContent(), imgUrl);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     return null;
                 })
                 .collect(Collectors.toList());
+
+        if (postImg == null) {
+            return new PostWithCommentDto(post, null, commentDtoContents);
+        }
 
         return new PostWithCommentDto(post, postImg.getImgUrl(), commentDtoContents);
         // 자기 게시글이면 수정, 삭제 버튼 보이게
@@ -166,7 +176,7 @@ public class BoardController {
     // 댓글 만들기
     @PostMapping("/create/{postId}/comment")
     public ResponseEntity<?> saveComment(@PathVariable ("postId") Long postId,
-                                             @RequestBody CreateCommentRequest request) {
+                                         @RequestBody CreateCommentRequest request) {
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Post post = postService.findOne(postId);
@@ -220,5 +230,12 @@ public class BoardController {
         }
 
         return "ok";
+    }
+
+    private S3Client createS3Client() {
+        return S3Client.builder()
+                .region(Region.AP_NORTHEAST_2)
+                .credentialsProvider(DefaultCredentialsProvider.create())
+                .build();
     }
 }

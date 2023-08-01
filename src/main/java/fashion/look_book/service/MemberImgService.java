@@ -18,18 +18,19 @@ public class MemberImgService {
     private final MemberImgRepository memberImgRepository;
     private final MemberRepository memberRepository;
     private final FileService fileService;
+    private final S3FileService s3FileService;
 
-    @Value("${itemImgLocation}") // .properties 의 itemImgLocation 값을 itemImgLocation 변수에 넣어
+    @Value("${cloud.aws.s3.bucket}") // .properties 의 itemImgLocation 값을 itemImgLocation 변수에 넣어
     private String imgLocation;
 
     @Transactional
-    public void saveImg(MultipartFile imgInMember, Member member) throws Exception{
+    public void saveImg(Member member, MultipartFile imgInMember) throws Exception{
 
         String memberImgName = imgInMember.getOriginalFilename();
         String imgName = "";
         String imgUrl = "";
-        imgName = fileService.uploadFiles(imgLocation, memberImgName, imgInMember.getBytes());
-        imgUrl = imgLocation + "/" + imgName;
+        imgName = s3FileService.upload(imgInMember);
+        imgUrl = imgName;
         MemberImg memberImg = new MemberImg(member, imgName, memberImgName, imgUrl);
 
         memberImgRepository.save(memberImg);
@@ -50,8 +51,8 @@ public class MemberImgService {
         String memberImgName = imgInMember.getOriginalFilename();
         String imgName = "";
         String imgUrl = "";
-        imgName = fileService.uploadFiles(imgLocation, memberImgName, imgInMember.getBytes());
-        imgUrl = imgLocation + "/" + imgName;
+        imgName = s3FileService.upload(imgInMember);
+        imgUrl = imgName;
 
         memberImg.update_memberImg(imgName, memberImgName, imgUrl);
     }

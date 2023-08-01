@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class MemberPictureDto {
-    private Long id;
-    public MemberPictureDto(Long id) {
-        this.id = id;
+    private String imgUrl;
+    public MemberPictureDto(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }
