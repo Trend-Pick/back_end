@@ -68,8 +68,8 @@ public class LoginController {
     // 중복확인 버튼
     // 새로운 페이지가 아니라 아이디만 Post매핑으로 보내서 검증하는 식으로
     @PostMapping("/validation/id")
-    public void validationId(@RequestParam String userId) {
-        memberService.validateDuplicateMemberUserId(userId);
+    public boolean validationId(@RequestParam String userId) {
+        return memberService.validateDuplicateMemberUserId(userId);
         // 프론트쪽에서 중복인지 아닌지 알려주기
     }
 
