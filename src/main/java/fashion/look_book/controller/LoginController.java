@@ -71,6 +71,7 @@ public class LoginController {
     @PostMapping("/validation/id")
     public boolean validationId(@RequestParam String userId) {
         return memberService.validateDuplicateMemberUserId(userId);
+        // 프론트쪽에서 중복인지 아닌지 알려주기
     }
 
     /**
