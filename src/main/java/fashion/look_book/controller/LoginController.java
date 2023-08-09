@@ -96,17 +96,19 @@ public class LoginController {
     **/
 
     @PostMapping("/login")
-    public LoginDtoResponse login (@Valid LoginDtoRequest request, BindingResult bindingResult,
-                                   HttpServletRequest httpServletRequest) {
+    public ResponseEntity<?> login (@Validated @RequestBody LoginDtoRequest request, BindingResult bindingResult,
+                                    HttpServletRequest httpServletRequest) {
         if(bindingResult.hasErrors()) {
-            return null; // 로그인 페이지로 리다이렉트
+            log.info("로그인 오류");
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            // 로그인 페이지로 리다이렉트
         }
 
         Member loginMember = loginService.login(request.getUser_user_id(), request.getPassword());
 
         if(loginMember == null) {
             bindingResult.reject("loginFail");
-            return null; // 여기도 로그인 실패로 리다이렉트
+            return new ResponseEntity(HttpStatus.BAD_REQUEST); // 여기도 로그인 실패로 리다이렉트
         }
 
         HttpSession session = httpServletRequest.getSession();
@@ -114,8 +116,9 @@ public class LoginController {
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
         // 세션에 로그인 회원 정보를 보관
 
-        return new LoginDtoResponse(loginMember.getId());
+        return new ResponseEntity(HttpStatus.OK);
     }
+
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout (HttpServletRequest httpServletRequest) {
