@@ -25,20 +25,12 @@ public class CommentRepository {
         return em.find(Comment.class, id);
     }
 
-    public List<Comment> findByMember(Member member) {
-        Long memberId = member.getId();
-        return em.createQuery("select c from Comment c where c.comment_member = :name", Comment.class)
-                .setParameter("name", memberId)
-                .getResultList();
-    }
-
     public List<Comment> findByPost(Post post) {
         Long postId = post.getId();
-        return em.createQuery("select c from Comment c where c.post.id = :post", Comment.class)
-                .setParameter("post", postId)
+        return em.createQuery("select c from Comment c where c.post.id = :postId", Comment.class)
+                .setParameter("postId", postId)
                 .getResultList();
     }
-
 
     public void deleteComment(Long id) {
         Comment findComment = em.find(Comment.class, id);

@@ -44,6 +44,7 @@ public class S3FileService {
         String s3Url = amazonS3.getUrl(bucket, s3FileName).toString();
 
         Map<String, String> result = new HashMap<>();
+
         result.put("s3FileName", s3FileName);
         result.put("s3Url", s3Url);
 

@@ -26,17 +26,12 @@ public class PostImgRepository {
         return em.find(PostImg.class, id);
     }
 
-    public List<PostImg> findAllPostImg(){
-        List<PostImg> allPostImg = em.createQuery("select p from PostImg p",PostImg.class).getResultList();
-        return allPostImg;
-    }
-
-    public PostImg findOneByPostId(Long postId){
+    public PostImg findOneByPostId(Long postId) {
         try {
             return em.createQuery("select p from PostImg p where p.post.id = :id", PostImg.class)
                     .setParameter("id", postId)
                     .getSingleResult();
-        }catch(Exception e){
+        } catch(Exception e) {
             return null;
         }
     }

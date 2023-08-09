@@ -71,7 +71,6 @@ public class VoteController {
     @GetMapping("pictures_ranking")
     public List<RankingPictureDto> PictureList() {
         List<Long> pictures = pictureService.RankingOfPicture();
-        List<Long> RankingId = new ArrayList<>();
         List<String> RankingUrl = new ArrayList<>();
         List<Long> RankingNumber = new ArrayList<>();
         List<RankingPictureDto> PictureList = new ArrayList<>();
@@ -79,10 +78,9 @@ public class VoteController {
 
         for(int i = 0; i < 3; i++) {
             Picture picture = pictureService.findOne(pictures.get(i));
-            RankingId.add(pictures.get(i));
             RankingUrl.add(picture.getImgUrl());
             RankingNumber.add(likeService.LikeNumber(pictures.get(i)));
-            rankingPictureDto = new RankingPictureDto(RankingId.get(i), RankingUrl.get(i), RankingNumber.get(i));
+            rankingPictureDto = new RankingPictureDto(RankingUrl.get(i), RankingNumber.get(i));
             PictureList.add(rankingPictureDto);
         }
 

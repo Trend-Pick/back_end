@@ -45,18 +45,10 @@ public class PostImgService {
     }
 
 
-    public List<PostImg> findAllPostImg(){
-        return postImgRepository.findAllPostImg();
-    }
    public PostImg findByPostId(Long postId){return postImgRepository.findOneByPostId(postId);}
 
     public PostImg findOne(Long postImgId) {
         return postImgRepository.findOne(postImgId);
-    }
-
-    public List<Picture> users_pictures (Long id) {
-        Member findMember = memberRepository.findOne(id);
-        return pictureRepository.findByMember(findMember);
     }
 
     @Transactional
@@ -83,7 +75,7 @@ public class PostImgService {
             // 기존 이미지 파일 삭제
 
         }
-        else{
+        else {
             PostImg postImg = postImgRepository.findOneByPostId(postId);
 
             // 기존 이미지 파일 삭제 후 데베에서도 삭제

@@ -5,6 +5,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 @Configuration
 public class CorsConfig {
@@ -25,8 +26,14 @@ public class CorsConfig {
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
-        source.registerCorsConfiguration("/**", config); // "/**"
+        source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
+    }
+
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://3.35.99.247:3000")
+                .allowedMethods("GET", "POST", "PUT", "DELETE");
     }
 
 }

@@ -27,19 +27,12 @@ public class PictureRepository {
     }
 
     public List<Picture> findAll() {
-        List<Picture> pictures = em.createQuery("select p from Picture p", Picture.class).getResultList();
+        List<Picture> pictures = em.createQuery("select p from Picture p", Picture.class)
+                .getResultList();
         return pictures;
     }
 
-    public List<Picture> findByMember(Member member) {
-        Long memberId = member.getId();
-        return em.createQuery("select p from Picture p where p.picture_member.id = :id", Picture.class)
-                .setParameter("id", memberId)
-                .getResultList();
-        // 쿼리에 select p from Picture p join p.picture_member m on m.id = :id로 수정해보자 (차이점 뭔지 이해해야함)
-    }
-
-    public void delete(Long pictureId){
+    public void delete(Long pictureId) {
         Picture findPicture = em.find(Picture.class, pictureId);
         em.remove(findPicture);
     }

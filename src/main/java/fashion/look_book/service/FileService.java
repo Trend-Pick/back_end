@@ -13,7 +13,7 @@ import java.util.UUID;
 @Transactional
 public class FileService {
 
-    // 파일 업로드
+    // 파일 업로드  -  로컬에서 테스트할 때 쓴 거고 이제 안쓰이는 것들
     public String uploadFiles (String uploadPath, String originalFileName, byte[] fileData) throws Exception{
 
         // 완전 랜덤한 id 값 생성

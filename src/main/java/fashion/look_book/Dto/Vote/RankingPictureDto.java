@@ -7,7 +7,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class RankingPictureDto {
-    private Long pictureId;
     private String imgUrl;
     private Long Like;
 }

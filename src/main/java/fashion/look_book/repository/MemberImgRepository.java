@@ -21,19 +21,12 @@ public class MemberImgRepository {
         return em.find(MemberImg.class, id);
     }
 
-    public void postImgDelete (Long Id) {
-        MemberImg memberImg = findOne(Id);
-        if(memberImg!=null) {
-            em.remove(memberImg);
-        }
-    }
-
-    public MemberImg findByMemberId(Long memberId){
+    public MemberImg findByMemberId (Long memberId) {
         try {
             return em.createQuery("select i from MemberImg i where i.image_member.id = :id", MemberImg.class)
                     .setParameter("id", memberId)
                     .getSingleResult();
-        }catch(Exception e){
+        }catch (Exception e) {
             return null;
         }
     }

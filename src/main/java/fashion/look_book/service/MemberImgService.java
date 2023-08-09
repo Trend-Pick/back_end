@@ -67,9 +67,4 @@ public class MemberImgService {
 
         memberImg.update_memberImg(imgName, memberImgName, imgUrl);
     }
-
-    @Transactional
-    public void deleteImg(Long memberId) {
-        memberImgRepository.postImgDelete(memberId);
-    }
 }

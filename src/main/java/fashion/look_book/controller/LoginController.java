@@ -8,6 +8,7 @@ import fashion.look_book.login.SessionConst;
 import fashion.look_book.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -68,9 +69,8 @@ public class LoginController {
     // 중복확인 버튼
     // 새로운 페이지가 아니라 아이디만 Post매핑으로 보내서 검증하는 식으로
     @PostMapping("/validation/id")
-    public void validationId(@RequestParam String userId) {
-        memberService.validateDuplicateMemberUserId(userId);
-        // 프론트쪽에서 중복인지 아닌지 알려주기
+    public boolean validationId(@RequestParam String userId) {
+        return memberService.validateDuplicateMemberUserId(userId);
     }
 
     /**
@@ -94,21 +94,18 @@ public class LoginController {
          로그인, 로그아웃
     **/
 
-
     @PostMapping("/login")
-    public ResponseEntity<?> login (@Validated LoginDtoRequest request, BindingResult bindingResult,
+    public LoginDtoResponse login (@Valid LoginDtoRequest request, BindingResult bindingResult,
                                    HttpServletRequest httpServletRequest) {
         if(bindingResult.hasErrors()) {
-            log.info("로그인 오류");
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-            // 로그인 페이지로 리다이렉트
+            return null; // 로그인 페이지로 리다이렉트
         }
 
         Member loginMember = loginService.login(request.getUser_user_id(), request.getPassword());
 
         if(loginMember == null) {
             bindingResult.reject("loginFail");
-            return new ResponseEntity(HttpStatus.BAD_REQUEST); // 여기도 로그인 실패로 리다이렉트
+            return null; // 여기도 로그인 실패로 리다이렉트
         }
 
         HttpSession session = httpServletRequest.getSession();
@@ -116,7 +113,7 @@ public class LoginController {
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
         // 세션에 로그인 회원 정보를 보관
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new LoginDtoResponse(loginMember.getId());
     }
 
     @PostMapping("/logout")

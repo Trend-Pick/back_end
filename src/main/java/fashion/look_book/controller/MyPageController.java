@@ -64,7 +64,7 @@ public class MyPageController {
 
     }
 
-    @GetMapping("/update/member/picture") // 대표사진 수정 NullPointException
+    @GetMapping("/update/member/picture")
     public MemberPictureDto UpdatePicturePage() {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         String imgUrl = member.getMemberImg().getImgUrl();

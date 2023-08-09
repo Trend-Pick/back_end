@@ -40,15 +40,6 @@ public class MemberService {
     }
 
     @Transactional
-    public String createKey() {
-        StringBuffer key = new StringBuffer();
-        Random rnd = new Random();
-        key.append((rnd.nextInt(10000)));
-
-        return key.toString();
-    }
-
-    @Transactional
     public boolean verifyJoinEmail(String inputKey){
         if(inputKey.equals(this.ePw)){
             Member member1 = new Member(this.member.getUser_user_id(), this.member.getEmail(),
@@ -104,21 +95,16 @@ public class MemberService {
         }
     }
 
-    public void validateDuplicateMemberUserId (String userId) {
+    public boolean validateDuplicateMemberUserId (String userId) {
         List<Member> findMember = memberRepository.findById(userId);
         if (!findMember.isEmpty()) {
             System.out.println("중복");
+            return true;
             // 예외처리하기
         } else {
             System.out.println("중복 X");
             // 예외처리하기
-        }
-    }
-
-    private void validateDuplicateMemberByEmail (Member member){
-        List<Member> findMember = memberRepository.findByEmail(member.getEmail());
-        if(!findMember.isEmpty()) {
-            throw new IllegalStateException();
+            return false;
         }
     }
 

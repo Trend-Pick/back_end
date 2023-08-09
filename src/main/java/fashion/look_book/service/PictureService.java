@@ -2,18 +2,13 @@ package fashion.look_book.service;
 
 import fashion.look_book.domain.Member;
 import fashion.look_book.domain.Picture;
-import fashion.look_book.repository.MemberRepository;
 import fashion.look_book.repository.PictureRepository;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

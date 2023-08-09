@@ -27,15 +27,9 @@ public class PostRepository {
         return em.find(Post.class, id);
     }
 
-    public List<Post> findByMember(Member member) {
-        Long memberId = member.getId();
-        return em.createQuery("select p from Post p where p.post_member.id = :name", Post.class)
-                .setParameter("name", memberId)
-                .getResultList();
-    }
-
     public List<Post> findAllPost() {
-        List<Post> AllPost = em.createQuery("select p from Post p", Post.class).getResultList();
+        List<Post> AllPost = em.createQuery("select p from Post p", Post.class)
+                .getResultList();
 
         return AllPost;
     }

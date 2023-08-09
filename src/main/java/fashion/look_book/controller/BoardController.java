@@ -15,9 +15,7 @@ import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
-import java.net.URL;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -62,7 +60,6 @@ public class BoardController {
                     return null;
                 })
                 .collect((Collectors.toList()));
-
 
         return postLists;
     }
@@ -120,8 +117,8 @@ public class BoardController {
 
     @PutMapping("/update_post/{postId}")
     public UpdatePostResponse updatePost(@PathVariable ("postId") Long postId,
-                                         @RequestPart(value="createPostRequest") CreatePostRequest createPostRequest,
-                                         @RequestParam(required = false) MultipartFile imgInPost)
+                                         @RequestPart (value="createPostRequest") CreatePostRequest createPostRequest,
+                                         @RequestParam (required = false) MultipartFile imgInPost)
             throws Exception{
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
@@ -183,7 +180,7 @@ public class BoardController {
 
         if(post != null) {
             Comment comment = new Comment(member, request.getContent(), post, LocalDateTime.now());
-            Long id = commentService.save(comment);
+            commentService.save(comment);
         }
         else {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -230,12 +227,5 @@ public class BoardController {
         }
 
         return "ok";
-    }
-
-    private S3Client createS3Client() {
-        return S3Client.builder()
-                .region(Region.AP_NORTHEAST_2)
-                .credentialsProvider(DefaultCredentialsProvider.create())
-                .build();
     }
 }
