@@ -11,15 +11,13 @@ import fashion.look_book.service.MemberService;
 import fashion.look_book.service.PictureService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin(origins = "http://3.35.99.247:3000", maxAge = 3600)
 @RestController
 @RequiredArgsConstructor
 public class VoteController {

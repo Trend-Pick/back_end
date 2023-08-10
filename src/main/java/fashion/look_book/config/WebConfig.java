@@ -3,7 +3,10 @@ package fashion.look_book.config;
 import fashion.look_book.login.LoginCheckInterceptor;
 import fashion.look_book.login.LoginInterceptor;
 import fashion.look_book.login.LoginMemberArgumentResolver;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -22,13 +25,16 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 스프링이 제공하는 메서드를 인터셉터 해야함
+        registry.addInterceptor(new CorsInterceptor()) // CORS 설정 인터셉터
+                .order(1);
+
         registry.addInterceptor(new LoginInterceptor())
-                .order(1)
+                .order(2)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/css/**", "/*.ico", "/error");
 
         registry.addInterceptor(new LoginCheckInterceptor())
-                .order(2)
+                .order(3)
                 .addPathPatterns("/**")
                 .excludePathPatterns ("/", "/member/add", "/login", "/logout", "/mailConfirm",
                         "/member/findPassword", "/validation/id",

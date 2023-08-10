@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-
+@CrossOrigin(origins = "http://3.35.99.247:3000", maxAge = 3600)
 @RestController
 @RequiredArgsConstructor
 public class PictureController {

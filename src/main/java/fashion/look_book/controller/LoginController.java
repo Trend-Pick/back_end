@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
+@CrossOrigin(origins = "http://3.35.99.247:3000", maxAge = 3600)
 @RestController
 @RequiredArgsConstructor
 public class LoginController {

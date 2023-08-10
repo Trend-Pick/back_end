@@ -12,7 +12,7 @@ public class PostWithCommentDto {
     private String postImgUrl;
     private List<CommentDtoContent> commentList;
 
-    public PostWithCommentDto(Post post,String postImgUrl,List<CommentDtoContent> commentList) {
+    public PostWithCommentDto(Post post, String postImgUrl, List<CommentDtoContent> commentList) {
         this.title = post.getTitle();
         this.content = post.getContent();
         this.postImgUrl = postImgUrl;
