@@ -35,6 +35,7 @@ public class MemberService {
     public Long join(Member member) {
         validateDuplicateMember(member);
         validateDuplicateMemberByNickname(member);
+        validateDuplicateEmail(member);
         memberRepository.save(member);
         return member.getId();
     }
@@ -90,6 +91,13 @@ public class MemberService {
 
     private void validateDuplicateMemberByNickname (Member member) {
         List<Member> findMember = memberRepository.findById(member.getNickname());
+        if(!findMember.isEmpty()) {
+            throw new IllegalStateException();
+        }
+    }
+
+    private void validateDuplicateEmail (Member member) {
+        List<Member> findMember = memberRepository.findByEmail(member.getEmail());
         if(!findMember.isEmpty()) {
             throw new IllegalStateException();
         }
