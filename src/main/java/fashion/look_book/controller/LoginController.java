@@ -8,7 +8,6 @@ import fashion.look_book.login.SessionConst;
 import fashion.look_book.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,8 +25,6 @@ public class LoginController {
     private final MemberService memberService;
     private final LoginService loginService;
 
-
-    /////////////////// 여기 잘못됨
     @GetMapping("/")
     public String homeLogin (@Login LoginDtoRequest loginMember) {
 
@@ -70,9 +67,8 @@ public class LoginController {
     // 중복확인 버튼
     // 새로운 페이지가 아니라 아이디만 Post매핑으로 보내서 검증하는 식으로
     @PostMapping("/validation/id")
-    public boolean validationId(@RequestParam String userId) {
-        return memberService.validateDuplicateMemberUserId(userId);
-        // 프론트쪽에서 중복인지 아닌지 알려주기
+    public boolean validationId(@RequestBody validationRequest request) {
+        return memberService.validateDuplicateMemberUserId(request.getUser_user_id());
     }
 
     /**
