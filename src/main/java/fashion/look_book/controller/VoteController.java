@@ -33,8 +33,9 @@ public class VoteController {
 
         Picture picture = pictureService.PictureByRandom(member);
         String url = picture.getImgUrl();
+        Long id = picture.getId();
 
-        return new GetVoteDto(url);
+        return new GetVoteDto(url, id);
     }
 
     // 받아와서 좋아요 누르면 좋아요 상태로 like만들고
