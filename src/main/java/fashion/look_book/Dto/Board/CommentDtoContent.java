@@ -16,4 +16,6 @@ public class CommentDtoContent {
     private String imgUrl;
 
     private Long id;
+
+    private String user_nickname;
 }

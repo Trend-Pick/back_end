@@ -53,7 +53,7 @@ public class BoardController {
                             .map(PostImg::getImgUrl)
                             .orElse(null);
                     try {
-                        return new PostDtoTitle(c.getTitle(), c.getContent(), c.getPostTime(), imgUrl, c.getId());
+                        return new PostDtoTitle(c.getTitle(), c.getContent(), c.getPostTime(), imgUrl, c.getId(), c.getPost_member().getNickname());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -98,7 +98,7 @@ public class BoardController {
                             .map(MemberImg::getImgUrl)
                             .orElse(null);
                     try {
-                        return new CommentDtoContent(c.getContent(), imgUrl, c.getId());
+                        return new CommentDtoContent(c.getContent(), imgUrl, c.getId(), c.getComment_member().getNickname());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

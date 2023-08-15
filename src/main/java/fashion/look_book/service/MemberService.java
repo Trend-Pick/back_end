@@ -106,13 +106,8 @@ public class MemberService {
     public boolean validateDuplicateMemberUserId (String userId) {
         List<Member> findMember = memberRepository.findById(userId);
         if (!findMember.isEmpty()) {
-            System.out.println("중복");
             return true;
-            // 예외처리하기
         } else {
-            System.out.println(userId);
-            System.out.println("중복 X");
-            // 예외처리하기
             return false;
         }
     }
