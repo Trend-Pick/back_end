@@ -112,6 +112,24 @@ public class MemberService {
         }
     }
 
+    public boolean validateByNickname (String nickname) {
+        List<Member> findMember = memberRepository.findById(nickname);
+        if(!findMember.isEmpty()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean validateByEmail (String email) {
+        List<Member> findMember = memberRepository.findByEmail(email);
+        if(!findMember.isEmpty()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public Member findOne(Long memberId) {
         return memberRepository.findOne(memberId);
     }

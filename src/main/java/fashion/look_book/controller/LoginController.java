@@ -71,6 +71,16 @@ public class LoginController {
         return memberService.validateDuplicateMemberUserId(request.getUser_user_id());
     }
 
+    @PostMapping("/validation/nickname")
+    public boolean validationNickname(@RequestBody validationNickname request) {
+        return memberService.validateByNickname(request.getNickname());
+    }
+
+    @PostMapping("/validation/email")
+    public boolean validationEmail(@RequestBody validationEmail request) {
+        return memberService.validateByEmail(request.getEmail());
+    }
+
     /**
      비밀번호 찾기
     **/

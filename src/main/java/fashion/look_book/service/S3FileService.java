@@ -35,8 +35,10 @@ public class S3FileService {
         // filename을 랜덤으로 생성
 
         ObjectMetadata objMeta = new ObjectMetadata();
+        objMeta.setContentType("image/jpeg"); // 여기 이 부분
         objMeta.setContentLength(multipartFile.getInputStream().available());
         // file 사이즈 알려주는거
+        objMeta.setContentDisposition("inline");
 
         amazonS3.putObject(bucket, s3FileName, multipartFile.getInputStream(), objMeta);
         // S3의 메서드인데 파일 stream을 열어서 S3에 파일을 업로드 하는 기능
