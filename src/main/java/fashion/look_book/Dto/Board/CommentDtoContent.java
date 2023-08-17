@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Data
@@ -18,4 +19,6 @@ public class CommentDtoContent {
     private Long id;
 
     private String user_nickname;
+
+    private LocalDateTime time;
 }

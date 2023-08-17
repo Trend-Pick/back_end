@@ -7,6 +7,7 @@ import fashion.look_book.domain.PostImg;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,12 +24,13 @@ public class PostRepository {
         em.persist(post);
     }
 
+    @EntityGraph(attributePaths = {"member"})
     public Post findOne(Long id) {
         return em.find(Post.class, id);
     }
 
     public List<Post> findAllPost() {
-        List<Post> AllPost = em.createQuery("select p from Post p", Post.class)
+        List<Post> AllPost = em.createQuery("select p from Post p join fetch p.post_member", Post.class)
                 .getResultList();
 
         return AllPost;
