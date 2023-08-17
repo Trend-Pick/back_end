@@ -35,7 +35,7 @@ public class PictureController {
     private String bucket;
 
     @PostMapping("/create_picture")
-    public CreatePictureDto savePicture(@RequestParam("cody_img") MultipartFile codyImg)
+    public CreatePictureDto savePicture(@RequestPart(value="cody_img") MultipartFile codyImg)
             throws Exception{
         // PictureCreateDto pictureDto = new PictureCreateDto.builder()
         // 여기서 날라왔을 때
