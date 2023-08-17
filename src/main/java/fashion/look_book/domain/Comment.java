@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
         name="COMMENT_SEQ_GENERATOR",
         allocationSize=1
 )
-public class Comment {
+public class Comment extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "COMMENT_SEQ_GENERATOR")
@@ -34,6 +34,7 @@ public class Comment {
 
     private LocalDateTime commentTime;
 
+
     public Comment() {
     }
 
@@ -47,5 +48,10 @@ public class Comment {
 
     public void update_comment (String content) {
         this.content = content;
+    }
+
+    public void update_commentTime(LocalDateTime updateTime)
+    {
+        this.getLastModifiedDate();
     }
 }

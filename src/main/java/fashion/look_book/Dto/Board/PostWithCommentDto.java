@@ -11,6 +11,7 @@ public class PostWithCommentDto {
     private String title;
     private String content;
     private LocalDateTime time;
+    private LocalDateTime updateTime;
     private String user_nickname;
     private Long id;
     private String postImgUrl;
@@ -20,6 +21,7 @@ public class PostWithCommentDto {
         this.title = post.getTitle();
         this.content = post.getContent();
         this.time = post.getPostTime();
+        this.updateTime = post.getLastModifiedDate();
         this.user_nickname = user_nickname;
         this.id = id;
         this.postImgUrl = postImgUrl;

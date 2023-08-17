@@ -15,7 +15,7 @@ import java.util.List;
         name="POST_SEQ_GENERATOR",
         allocationSize=1
 )
-public class Post {
+public class Post extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "POST_SEQ_GENERATOR")
@@ -55,5 +55,10 @@ public class Post {
     public void update_post (String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void update_postTime(LocalDateTime time)
+    {
+        this.getLastModifiedDate();
     }
 }

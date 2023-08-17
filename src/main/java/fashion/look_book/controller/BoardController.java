@@ -89,7 +89,7 @@ public class BoardController {
     public PostWithCommentDto post (@PathVariable ("postId") Long postId) {
 
         Post post = postService.findOne(postId);
-        PostImg postImg = postImgService.findByPostId(postId);
+        PostImg postImg = postImgService    .findByPostId(postId);
         List<Comment> commentList = commentService.post_comment(postId);
 
         List<CommentDtoContent> commentDtoContents = commentList.stream()
@@ -131,13 +131,16 @@ public class BoardController {
             if(imgInPost!=null) { //원본에는 이미지가 없었는데 수정했을 때는 이미지가 추가된 경우
                 if(postImgService.findByPostId(postId)==null){
                     postImgService.save(imgInPost, post);
+                    post.update_postTime(LocalDateTime.now());
                 }
                 else{ //원본에도 이미지가 있었는데 수정 후 추가된 경우
                     postImgService.updatePostImg(postId, imgInPost);
+                    post.update_postTime(LocalDateTime.now());
                 }
             } else{ //원본에는 이미지가 있었는데 수정했을 때는 이미지가 없다면 원래 있던 postImg 삭제 필요
                 if(postImgService.findByPostId(postId)!=null)
                     postImgService.deletePostImg(postId);
+                post.update_postTime(LocalDateTime.now());
             }
         }
         else {
@@ -202,10 +205,13 @@ public class BoardController {
 
         if(comment.getComment_member().getId() == member.getId()) {
             commentService.updateComment(commentId, request.getContent());
+            comment.update_commentTime(LocalDateTime.now());
         }
         else {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
+
+        comment.update_commentTime(LocalDateTime.now());
 
         return new ResponseEntity(HttpStatus.OK);
     }
