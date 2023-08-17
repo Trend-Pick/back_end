@@ -12,14 +12,16 @@ public class PostWithCommentDto {
     private String content;
     private LocalDateTime time;
     private String user_nickname;
+    private Long id;
     private String postImgUrl;
     private List<CommentDtoContent> commentList;
 
-    public PostWithCommentDto(Post post, String user_nickname, String postImgUrl, List<CommentDtoContent> commentList) {
+    public PostWithCommentDto(Post post, String user_nickname, Long id, String postImgUrl, List<CommentDtoContent> commentList) {
         this.title = post.getTitle();
         this.content = post.getContent();
         this.time = post.getPostTime();
         this.user_nickname = user_nickname;
+        this.id = id;
         this.postImgUrl = postImgUrl;
         this.commentList = commentList;
     }

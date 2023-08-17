@@ -1,9 +1,8 @@
 package fashion.look_book.controller;
 
+import fashion.look_book.Dto.Board.CommentDtoContent;
 import fashion.look_book.Dto.LoginDtos.ChangePWDto;
-import fashion.look_book.Dto.MyPage.MemberPictureDto;
-import fashion.look_book.Dto.MyPage.MyPagePictureDto;
-import fashion.look_book.Dto.MyPage.MyPagePostDto;
+import fashion.look_book.Dto.MyPage.*;
 import fashion.look_book.domain.Member;
 import fashion.look_book.domain.MemberImg;
 import fashion.look_book.domain.Picture;
@@ -35,33 +34,52 @@ public class MyPageController {
     private final MemberService memberService;
 
     @GetMapping("/my_page") // 처음 페이지이고, 사진 최신 6개 보여주기
-    public List<MyPagePictureDto> MyPagePictures() {
+    public MyPagePictureDto MyPagePictures() {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         List<Picture> pictures = pictureService.MyPagePicture(member.getId());
 
-        List<MyPagePictureDto> pictureList = pictures.stream()
-                .map(p -> new MyPagePictureDto(p.getImgUrl()))
+        List<MyPictureDto> pictureList = pictures.stream()
+                .map(p -> {
+                    String imgUrl = Optional.ofNullable(p.getPicture_member().getMemberImg())
+                            .map(MemberImg::getImgUrl)
+                            .orElse(null);
+                    try {
+                        return new MyPictureDto(p.getImgUrl());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                })
                 .collect(Collectors.toList());
 
-        return pictureList;
+        return new MyPagePictureDto(member, pictureList);
     }
 
 
 
     @GetMapping("/my_page/post") // 최신 Post 6개 보여주기
-    public List<MyPagePostDto> MyPagePosts() {
+    public MyPagePostDto MyPagePosts() {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         List<Post> posts = postService.MyPagePost(member.getId());
 
-        List<MyPagePostDto> postList = posts.stream()
-                .map(p -> new MyPagePostDto(p.getTitle(), p.getContent(), p.getPostTime()))
+        List<MyPostDto> postList = posts.stream()
+                .map(p -> {
+                    String imgUrl = Optional.ofNullable(p.getPost_member().getMemberImg())
+                            .map(MemberImg::getImgUrl)
+                            .orElse(null);
+                    try {
+                        return new MyPostDto(p.getContent(), p.getPostImg().getImgName(), p.getPostTime());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                })
                 .collect(Collectors.toList());
 
-        return postList;
+        return new MyPagePostDto(member, postList);
         // content 내용 길면 자르기
-
     }
 
     @GetMapping("/update/member/picture")
