@@ -118,7 +118,7 @@ public class BoardController {
     @PutMapping("/update_post/{postId}")
     public UpdatePostResponse updatePost(@PathVariable ("postId") Long postId,
                                          @RequestPart (value="createPostRequest") CreatePostRequest createPostRequest,
-                                         @RequestParam (required = false) MultipartFile imgInPost)
+                                         @RequestPart (value="imgInPost", required = false) MultipartFile imgInPost)
             throws Exception{
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);

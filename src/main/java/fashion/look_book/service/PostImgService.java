@@ -88,8 +88,8 @@ public class PostImgService {
 
     @Transactional
     public void deletePostImg(Long postId){
+        PostImg postImg = findByPostId(postId);
         postImgRepository.postImgDelete(postId);
-        PostImg postImg = findOne(postId);
         s3FileService.deleteImage(postImg.getImgName());
     }
 }
