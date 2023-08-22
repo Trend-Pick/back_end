@@ -16,8 +16,8 @@ public class MyPagePostDto {
     private String password;
     private List<MyPostDto> postlist;
 
-    public MyPagePostDto(Member member, List<MyPostDto> postlist) {
-        this.member_url = member.getMemberImg().getImgUrl();
+    public MyPagePostDto(String imgUrl, Member member, List<MyPostDto> postlist) {
+        this.member_url = imgUrl;
         this.nickname = member.getNickname();
         this.email = member.getEmail();
         this.user_user_id = member.getUser_user_id();

@@ -39,21 +39,25 @@ public class MyPageController {
 
         List<Picture> pictures = pictureService.MyPagePicture(member.getId());
 
-        List<MyPictureDto> pictureList = pictures.stream()
-                .map(p -> {
-                    String imgUrl = Optional.ofNullable(p.getPicture_member().getMemberImg())
-                            .map(MemberImg::getImgUrl)
-                            .orElse(null);
-                    try {
-                        return new MyPictureDto(p.getImgUrl());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                })
-                .collect(Collectors.toList());
+        List<MyPictureDto> pictureList = pictures.stream().map((p) -> {
+            String imgUrl = p != null ? p.getImgUrl() : null;
+            if (imgUrl != null) {
+                try {
+                    return new MyPictureDto(imgUrl);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            return null;
+        }).collect(Collectors.toList());
+        String imgUrl;
+        if (member.getMemberImg() == null) {
+            imgUrl = "https://trendpick-photo.s3.ap-northeast-2.amazonaws.com/7494fad9-a612-4f9f-9011-00595ef7ace9-1.jfif";
+        } else {
+            imgUrl = member.getMemberImg().getImgUrl();
+        }
 
-        return new MyPagePictureDto(member, pictureList);
+        return new MyPagePictureDto(imgUrl, member, pictureList);
     }
 
 
@@ -64,31 +68,36 @@ public class MyPageController {
 
         List<Post> posts = postService.MyPagePost(member.getId());
 
-        List<MyPostDto> postList = posts.stream()
-                .map(p -> {
-                    String imgUrl = Optional.ofNullable(p.getPost_member().getMemberImg())
-                            .map(MemberImg::getImgUrl)
-                            .orElse(null);
-                    try {
-                        return new MyPostDto(p.getContent(), p.getPostImg().getImgName(), p.getPostTime());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                })
-                .collect(Collectors.toList());
+        List<MyPostDto> postList = posts.stream().map((p) -> {
+            if (p != null) {
+                try {
+                    return new MyPostDto(p.getTitle(), p.getContent(), p.getPostTime());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            return null;
+        }).collect(Collectors.toList());
 
-        return new MyPagePostDto(member, postList);
-        // content 내용 길면 자르기
+        String imgUrl;
+
+        if (member.getMemberImg() == null) {
+            imgUrl = "https://trendpick-photo.s3.ap-northeast-2.amazonaws.com/7494fad9-a612-4f9f-9011-00595ef7ace9-1.jfif";
+        } else {
+            imgUrl = member.getMemberImg().getImgUrl();
+        }
+
+        return new MyPagePostDto(imgUrl, member, postList);
     }
 
     @GetMapping("/update/member/picture")
     public MemberPictureDto UpdatePicturePage() {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        String imgUrl = member.getMemberImg().getImgUrl();
-
+        String imgUrl;
         if (member.getMemberImg() == null) {
-            return new MemberPictureDto(null);
+            imgUrl = "https://trendpick-photo.s3.ap-northeast-2.amazonaws.com/7494fad9-a612-4f9f-9011-00595ef7ace9-1.jfif";
+        } else {
+            imgUrl = member.getMemberImg().getImgUrl();
         }
 
         return new MemberPictureDto(imgUrl);

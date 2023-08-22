@@ -14,8 +14,8 @@ public class MyPagePictureDto {
     private String password;
     private List<MyPictureDto> pictures;
 
-    public MyPagePictureDto(Member member, List<MyPictureDto> pictures) {
-        this.member_url = member.getMemberImg().getImgUrl();
+    public MyPagePictureDto(String imgUrl, Member member, List<MyPictureDto> pictures) {
+        this.member_url = imgUrl;
         this.nickname = member.getNickname();
         this.email = member.getEmail();
         this.user_user_id = member.getUser_user_id();

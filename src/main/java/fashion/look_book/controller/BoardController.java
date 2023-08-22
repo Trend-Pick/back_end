@@ -107,10 +107,10 @@ public class BoardController {
                 .collect(Collectors.toList());
 
         if (postImg == null) {
-            return new PostWithCommentDto(post, post.getPost_member().getNickname(), post.getPost_member().getId(), null, commentDtoContents);
+            return new PostWithCommentDto(post, post.getPost_member().getNickname(), post.getPost_member().getUser_user_id(), null, commentDtoContents);
         }
 
-        return new PostWithCommentDto(post, post.getPost_member().getNickname(), post.getPost_member().getId(), postImg.getImgUrl(), commentDtoContents);
+        return new PostWithCommentDto(post, post.getPost_member().getNickname(), post.getPost_member().getUser_user_id(), postImg.getImgUrl(), commentDtoContents);
         // 자기 게시글이면 수정, 삭제 버튼 보이게
         // 프론트분들이랑 상의하기
     }

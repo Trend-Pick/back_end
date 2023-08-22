@@ -77,9 +77,11 @@ public class VoteController {
 
         for(int i = 0; i < 3; i++) {
             Picture picture = pictureService.findOne(pictures.get(i));
+            Member member = picture.getPicture_member();
             RankingUrl.add(picture.getImgUrl());
             RankingNumber.add(likeService.LikeNumber(pictures.get(i)));
-            rankingPictureDto = new RankingPictureDto(RankingUrl.get(i), RankingNumber.get(i));
+            rankingPictureDto = new RankingPictureDto(member.getNickname(), member.getMemberImg().getImgUrl(),
+                    RankingUrl.get(i), RankingNumber.get(i));
             PictureList.add(rankingPictureDto);
         }
 
@@ -96,8 +98,11 @@ public class VoteController {
             Picture picture = (Picture) result[0];
             Long likeDislikeDifference = (Long) result[1];
 
+            Member member = picture.getPicture_member();
+
             String ImgUrl = picture.getImgUrl();
-            WeeklyRankingDto weeklyRankingDto = new WeeklyRankingDto(ImgUrl, likeDislikeDifference);
+            WeeklyRankingDto weeklyRankingDto = new WeeklyRankingDto(member.getNickname(),
+                    member.getMemberImg().getImgUrl(), ImgUrl, likeDislikeDifference);
             weeklyList.add(weeklyRankingDto);
         }
 
@@ -114,8 +119,11 @@ public class VoteController {
             Picture picture = (Picture) result[0];
             Long likeDislikeDifference = (Long) result[1];
 
+            Member member = picture.getPicture_member();
+
             String imgUrl = picture.getImgUrl();
-            MonthlyRankingDto monthlyRankingDto = new MonthlyRankingDto(imgUrl, likeDislikeDifference);
+            MonthlyRankingDto monthlyRankingDto = new MonthlyRankingDto(member.getNickname(),
+                    member.getMemberImg().getImgUrl(), imgUrl, likeDislikeDifference);
             monthlyList.add(monthlyRankingDto);
         }
 
