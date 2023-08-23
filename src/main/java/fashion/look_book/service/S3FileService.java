@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class S3FileService {
 
     @Value("${cloud.aws.s3.bucket}")
@@ -30,6 +32,7 @@ public class S3FileService {
     private final AmazonS3 amazonS3;
 
 
+    @Transactional
     public Map<String, String> upload (MultipartFile multipartFile) throws IOException {
         String s3FileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
         // filename을 랜덤으로 생성
@@ -53,7 +56,9 @@ public class S3FileService {
         return result;
     }
 
+    @Transactional
     public void deleteImage(String fileName) {
+        System.out.println("filename = " + fileName);
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
     }
 }

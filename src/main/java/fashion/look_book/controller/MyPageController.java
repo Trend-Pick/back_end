@@ -8,10 +8,7 @@ import fashion.look_book.domain.MemberImg;
 import fashion.look_book.domain.Picture;
 import fashion.look_book.domain.Post;
 import fashion.look_book.login.SessionConst;
-import fashion.look_book.service.MemberImgService;
-import fashion.look_book.service.MemberService;
-import fashion.look_book.service.PictureService;
-import fashion.look_book.service.PostService;
+import fashion.look_book.service.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -32,6 +29,7 @@ public class MyPageController {
     private final PostService postService;
     private final PictureService pictureService;
     private final MemberService memberService;
+    private final LikeService likeService;
 
     @GetMapping("/my_page") // 처음 페이지이고, 사진 최신 6개 보여주기
     public MyPagePictureDto MyPagePictures() {
@@ -43,7 +41,7 @@ public class MyPageController {
             String imgUrl = p != null ? p.getImgUrl() : null;
             if (imgUrl != null) {
                 try {
-                    return new MyPictureDto(imgUrl);
+                    return new MyPictureDto(imgUrl, p.getId(), likeService.LikeNumber(p.getId()));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -51,6 +49,7 @@ public class MyPageController {
             return null;
         }).collect(Collectors.toList());
         String imgUrl;
+        Long imgId;
         if (member.getMemberImg() == null) {
             imgUrl = "https://trendpick-photo.s3.ap-northeast-2.amazonaws.com/7494fad9-a612-4f9f-9011-00595ef7ace9-1.jfif";
         } else {
@@ -63,6 +62,7 @@ public class MyPageController {
 
 
     @GetMapping("/my_page/post") // 최신 Post 6개 보여주기
+    // 사진이랑 내가 쓴거 다 보내주기
     public MyPagePostDto MyPagePosts() {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
@@ -71,7 +71,12 @@ public class MyPageController {
         List<MyPostDto> postList = posts.stream().map((p) -> {
             if (p != null) {
                 try {
-                    return new MyPostDto(p.getTitle(), p.getContent(), p.getPostTime());
+                    if (p.getPostImg() == null) {
+                        return new MyPostDto(p.getTitle(), p.getContent(), null, p.getCreatedDate(), p.getId());
+                    }
+                    else {
+                    return new MyPostDto(p.getTitle(), p.getContent(), p.getPostImg().getImgUrl(), p.getCreatedDate(), p.getId());
+                    }
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -82,7 +87,7 @@ public class MyPageController {
         String imgUrl;
 
         if (member.getMemberImg() == null) {
-            imgUrl = "https://trendpick-photo.s3.ap-northeast-2.amazonaws.com/7494fad9-a612-4f9f-9011-00595ef7ace9-1.jfif";
+            imgUrl = null;
         } else {
             imgUrl = member.getMemberImg().getImgUrl();
         }
@@ -95,7 +100,7 @@ public class MyPageController {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         String imgUrl;
         if (member.getMemberImg() == null) {
-            imgUrl = "https://trendpick-photo.s3.ap-northeast-2.amazonaws.com/7494fad9-a612-4f9f-9011-00595ef7ace9-1.jfif";
+            imgUrl = null;
         } else {
             imgUrl = member.getMemberImg().getImgUrl();
         }

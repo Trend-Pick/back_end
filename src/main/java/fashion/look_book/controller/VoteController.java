@@ -80,8 +80,14 @@ public class VoteController {
             Member member = picture.getPicture_member();
             RankingUrl.add(picture.getImgUrl());
             RankingNumber.add(likeService.LikeNumber(pictures.get(i)));
-            rankingPictureDto = new RankingPictureDto(member.getNickname(), member.getMemberImg().getImgUrl(),
-                    RankingUrl.get(i), RankingNumber.get(i));
+            if(member.getMemberImg() == null) {
+                rankingPictureDto = new RankingPictureDto(member.getNickname(), null,
+                        RankingUrl.get(i), RankingNumber.get(i));
+            }
+            else {
+                rankingPictureDto = new RankingPictureDto(member.getNickname(), member.getMemberImg().getImgUrl(),
+                        RankingUrl.get(i), RankingNumber.get(i));
+            }
             PictureList.add(rankingPictureDto);
         }
 
@@ -101,8 +107,15 @@ public class VoteController {
             Member member = picture.getPicture_member();
 
             String ImgUrl = picture.getImgUrl();
-            WeeklyRankingDto weeklyRankingDto = new WeeklyRankingDto(member.getNickname(),
-                    member.getMemberImg().getImgUrl(), ImgUrl, likeDislikeDifference);
+            WeeklyRankingDto weeklyRankingDto;
+            if(member.getMemberImg() == null) {
+                weeklyRankingDto = new WeeklyRankingDto(member.getNickname(),
+                        null, ImgUrl, likeDislikeDifference);
+            }
+            else {
+                weeklyRankingDto = new WeeklyRankingDto(member.getNickname(),
+                        member.getMemberImg().getImgUrl(), ImgUrl, likeDislikeDifference);
+            }
             weeklyList.add(weeklyRankingDto);
         }
 
@@ -122,8 +135,15 @@ public class VoteController {
             Member member = picture.getPicture_member();
 
             String imgUrl = picture.getImgUrl();
-            MonthlyRankingDto monthlyRankingDto = new MonthlyRankingDto(member.getNickname(),
-                    member.getMemberImg().getImgUrl(), imgUrl, likeDislikeDifference);
+            MonthlyRankingDto monthlyRankingDto;
+            if(member.getMemberImg() == null) {
+                monthlyRankingDto = new MonthlyRankingDto(member.getNickname(),
+                        null, imgUrl, likeDislikeDifference);
+            }
+            else {
+                monthlyRankingDto = new MonthlyRankingDto(member.getNickname(),
+                        member.getMemberImg().getImgUrl(), imgUrl, likeDislikeDifference);
+            }
             monthlyList.add(monthlyRankingDto);
         }
 

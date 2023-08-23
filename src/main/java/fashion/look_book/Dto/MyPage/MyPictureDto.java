@@ -9,4 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MyPictureDto {
     private String url;
+    private Long pictureId;
+    private Long likes;
 }
