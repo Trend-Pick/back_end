@@ -21,7 +21,7 @@ public class PostWithCommentDto {
     public PostWithCommentDto(Post post, String user_nickname, String user_id, String postImgUrl, List<CommentDtoContent> commentList) {
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.time = post.getPostTime();
+        this.time = post.getCreatedDate();
         this.updateTime = post.getLastModifiedDate();
         this.id = post.getId();
         this.user_nickname = user_nickname;

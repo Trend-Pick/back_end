@@ -13,5 +13,7 @@ import java.time.LocalDateTime;
 public class MyPostDto {
     private String title;
     private String content;
+    private String postUrl;
     private LocalDateTime time;
+    private Long id;
 }

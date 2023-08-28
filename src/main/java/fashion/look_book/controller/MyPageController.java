@@ -61,7 +61,7 @@ public class MyPageController {
 
 
 
-    @GetMapping("/my_page/post") // 최신 Post 6개 보여주기
+    @GetMapping("/my_page/post")
     // 사진이랑 내가 쓴거 다 보내주기
     public MyPagePostDto MyPagePosts() {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);

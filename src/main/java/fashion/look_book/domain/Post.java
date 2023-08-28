@@ -33,8 +33,6 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> commentList = new ArrayList<>();
 
-    private LocalDateTime PostTime;
-
     public Post() {
     }
 
@@ -42,11 +40,10 @@ public class Post extends BaseEntity {
     private PostImg postImg;
 
     @Builder
-    public Post (Member post_member, String title, String content, LocalDateTime PostTime) {
+    public Post (Member post_member, String title, String content) {
         this.post_member = post_member;
         this.title = title;
         this.content = content;
-        this.PostTime = PostTime;
 
         Comment.builder().post(this).build();
         // 연관관계 편의 메서드

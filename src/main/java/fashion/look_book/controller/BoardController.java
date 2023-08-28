@@ -53,7 +53,7 @@ public class BoardController {
                             .map(PostImg::getImgUrl)
                             .orElse(null);
                     try {
-                        return new PostDtoTitle(c.getTitle(), c.getContent(), c.getPostTime(), imgUrl, c.getId(), c.getPost_member().getNickname());
+                        return new PostDtoTitle(c.getTitle(), c.getContent(), c.getCreatedDate(), c.getLastModifiedDate(), imgUrl, c.getId(), c.getPost_member().getNickname());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -75,7 +75,7 @@ public class BoardController {
                                        @RequestPart (value="imgInPost", required = false) MultipartFile imgInPost) throws Exception{
 
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        Post post = new Post(member, createPostRequest.getTitle(), createPostRequest.getContent(), LocalDateTime.now());
+        Post post = new Post(member, createPostRequest.getTitle(), createPostRequest.getContent());
         Long postId = postService.savePost(post);
 
         if (imgInPost != null) {
@@ -98,7 +98,7 @@ public class BoardController {
                             .map(MemberImg::getImgUrl)
                             .orElse(null);
                     try {
-                        return new CommentDtoContent(c.getContent(), imgUrl, c.getId(), c.getComment_member().getNickname(), c.getCommentTime());
+                        return new CommentDtoContent(c.getContent(), imgUrl, c.getId(), c.getComment_member().getNickname(), c.getComment_member().getUser_user_id(), c.getCommentTime());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

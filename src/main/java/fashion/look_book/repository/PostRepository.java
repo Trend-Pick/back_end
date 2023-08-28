@@ -42,9 +42,8 @@ public class PostRepository {
     }
 
     public List<Post> MyPagePost(Long memberId) {
-        return em.createQuery("SELECT p FROM Post p where p.post_member.id = :id order by p.PostTime desc ", Post.class)
+        return em.createQuery("SELECT p FROM Post p where p.post_member.id = :id", Post.class)
                 .setParameter("id", memberId)
-                .setMaxResults(6)
                 .getResultList();
     }
 }

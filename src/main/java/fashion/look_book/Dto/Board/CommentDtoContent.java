@@ -20,5 +20,7 @@ public class CommentDtoContent {
 
     private String user_nickname;
 
+    private String user_user_id;
+
     private LocalDateTime time;
 }

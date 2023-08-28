@@ -48,7 +48,6 @@ public class PictureRepository {
     public List<Picture> MyPagePicture(Long memberId) {
         return em.createQuery("SELECT p FROM Picture p where p.picture_member.id = :id order by p.pictureTime desc ", Picture.class)
                 .setParameter("id", memberId)
-                .setMaxResults(6)
                 .getResultList();
     }
 }

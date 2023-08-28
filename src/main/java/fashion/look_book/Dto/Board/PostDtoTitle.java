@@ -11,6 +11,7 @@ public class PostDtoTitle {
     private String title;
     private String content;
     private LocalDateTime postTime;
+    private LocalDateTime lastTime;
     private String postImgUrl;
     private Long id;
     private String user_nickname;
