@@ -19,5 +19,9 @@
 - 개발 언어 : HTML, CSS, JavaScript,  Java
 - 개발 도구 : Visual Studio Code, IntelliJ IDEA, Postman
 - 주요 기술 : React, Spring boot, Spring Data JPA, MySQL
-- 배포 환경 : AWS EC2, S3, RDS 
+- 배포 환경 : AWS EC2, S3, RDS
 
+
+
+#### ** 테이블 설계 **
+![Trend_pick 테이블](https://github.com/Trend-Pick/back_end/assets/102280807/862f9313-966a-4e4a-b9f5-5ba2534a2e85)
