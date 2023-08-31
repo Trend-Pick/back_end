@@ -42,8 +42,6 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-	implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.0.33'
-	runtimeOnly 'com.h2database:h2'
 	implementation 'com.mysql:mysql-connector-j'
 
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
