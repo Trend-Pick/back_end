@@ -31,9 +31,8 @@ public class CommentService {
         return commentRepository.findOne(commentId);
     }
 
-    public List<Comment> post_comment(Long id) {
-        Post findPost = postRepository.findOne(id);
-        return commentRepository.findByPost(findPost);
+    public List<Comment> post_comment(Post post) {
+        return commentRepository.findByPost(post);
     }
 
     @Transactional

@@ -24,13 +24,17 @@ public class PostRepository {
         em.persist(post);
     }
 
-    @EntityGraph(attributePaths = {"member"})
-    public Post findOne(Long id) {
-        return em.find(Post.class, id);
+    public Post findOne(Long postId) {
+        return em.createQuery("select p from Post p join fetch p.post_member left join fetch p.postImg where " +
+                "p.id = :id", Post.class)
+                .setParameter("id", postId)
+                .getSingleResult();
     }
 
+    @EntityGraph(attributePaths = {"post_member", "postImg"})
     public List<Post> findAllPost() {
-        List<Post> AllPost = em.createQuery("select p from Post p join fetch p.post_member", Post.class)
+        List<Post> AllPost = em.createQuery("select p from Post p join fetch p.post_member m " +
+                        "left join fetch m.memberImg mi left join fetch p.postImg i order by p.createdDate desc ", Post.class)
                 .getResultList();
 
         return AllPost;
@@ -41,8 +45,10 @@ public class PostRepository {
         em.remove(findPost);
     }
 
+    @EntityGraph(attributePaths = {"post_member"})
     public List<Post> MyPagePost(Long memberId) {
-        return em.createQuery("SELECT p FROM Post p where p.post_member.id = :id", Post.class)
+        return em.createQuery("SELECT p FROM Post p join fetch p.postImg i " +
+                        "where p.post_member.id = :id order by p.createdDate desc", Post.class)
                 .setParameter("id", memberId)
                 .getResultList();
     }

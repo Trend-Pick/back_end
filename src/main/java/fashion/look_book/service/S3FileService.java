@@ -38,7 +38,7 @@ public class S3FileService {
         // filename을 랜덤으로 생성
 
         ObjectMetadata objMeta = new ObjectMetadata();
-        objMeta.setContentType("image/jpeg"); // 여기 이 부분
+        objMeta.setContentType("image/jpeg");
         objMeta.setContentLength(multipartFile.getInputStream().available());
         // file 사이즈 알려주는거
         objMeta.setContentDisposition("inline");

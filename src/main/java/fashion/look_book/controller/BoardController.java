@@ -11,9 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
-import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.s3.S3Client;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,12 +45,12 @@ public class BoardController {
         List<Post> findPosts = postService.findAllPost();
 
         List<PostDtoTitle> postLists = findPosts.stream()
-                .map(c -> {
-                    String imgUrl = Optional.ofNullable(c.getPostImg())
+                .map(post -> {
+                    String imgUrl = Optional.ofNullable(post.getPostImg())
                             .map(PostImg::getImgUrl)
                             .orElse(null);
                     try {
-                        return new PostDtoTitle(c.getTitle(), c.getContent(), c.getCreatedDate(), c.getLastModifiedDate(), imgUrl, c.getId(), c.getPost_member().getNickname());
+                        return new PostDtoTitle(post, post.getPost_member(), imgUrl);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -62,12 +59,6 @@ public class BoardController {
                 .collect((Collectors.toList()));
 
         return postLists;
-    }
-
-
-    @GetMapping("/create_post") // 글쓰기 페이지로 넘어가는 것
-    public void createPost() {
-        // 이거도 세션 만들어야지 넘어가는 걸로
     }
 
     @PostMapping("/create_post") // 글쓰기 페이지에서 저장을 누르는거
@@ -87,10 +78,8 @@ public class BoardController {
 
     @GetMapping("/post/{postId}") // 3번의 게시글 하나 클릭해서 들어가는 것
     public PostWithCommentDto post (@PathVariable ("postId") Long postId) {
-
         Post post = postService.findOne(postId);
-        PostImg postImg = postImgService    .findByPostId(postId);
-        List<Comment> commentList = commentService.post_comment(postId);
+        List<Comment> commentList = commentService.post_comment(post);
 
         List<CommentDtoContent> commentDtoContents = commentList.stream()
                 .map(c -> {
@@ -106,11 +95,11 @@ public class BoardController {
                 })
                 .collect(Collectors.toList());
 
-        if (postImg == null) {
+        if (post.getPostImg() == null) {
             return new PostWithCommentDto(post, post.getPost_member().getNickname(), post.getPost_member().getUser_user_id(), null, commentDtoContents);
         }
 
-        return new PostWithCommentDto(post, post.getPost_member().getNickname(), post.getPost_member().getUser_user_id(), postImg.getImgUrl(), commentDtoContents);
+        return new PostWithCommentDto(post, post.getPost_member().getNickname(), post.getPost_member().getUser_user_id(), post.getPostImg().getImgUrl(), commentDtoContents);
         // 자기 게시글이면 수정, 삭제 버튼 보이게
         // 프론트분들이랑 상의하기
     }

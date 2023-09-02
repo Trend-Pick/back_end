@@ -49,9 +49,8 @@ public class MyPageController {
             return null;
         }).collect(Collectors.toList());
         String imgUrl;
-        Long imgId;
         if (member.getMemberImg() == null) {
-            imgUrl = "https://trendpick-photo.s3.ap-northeast-2.amazonaws.com/7494fad9-a612-4f9f-9011-00595ef7ace9-1.jfif";
+            imgUrl = null;
         } else {
             imgUrl = member.getMemberImg().getImgUrl();
         }

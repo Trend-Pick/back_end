@@ -43,6 +43,10 @@ public class PictureService {
         return pictureRepository.findOne(pictureId);
     }
 
+    public Picture findOneByFecthJoin(Long pictureId) {
+        return pictureRepository.findOneByFetchJoin(pictureId);
+    }
+
 
     public Picture PictureByRandom(Member member) {
         List<Picture> pictures = pictureRepository.CanLikePicture(member);

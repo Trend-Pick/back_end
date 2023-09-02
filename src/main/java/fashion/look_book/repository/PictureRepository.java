@@ -26,8 +26,15 @@ public class PictureRepository {
         return em.find(Picture.class, id);
     }
 
+    public Picture findOneByFetchJoin(Long id) {
+        return em.createQuery("select p from Picture p join fetch p.likes left join fetch p.picture_member" +
+                        " where p.id = :id", Picture.class)
+                .setParameter("id", id)
+                .getSingleResult();
+    }
+
     public List<Picture> findAll() {
-        List<Picture> pictures = em.createQuery("select p from Picture p", Picture.class)
+        List<Picture> pictures = em.createQuery("select p from Picture p join fetch p.likes", Picture.class)
                 .getResultList();
         return pictures;
     }
@@ -46,7 +53,8 @@ public class PictureRepository {
     }
 
     public List<Picture> MyPagePicture(Long memberId) {
-        return em.createQuery("SELECT p FROM Picture p where p.picture_member.id = :id order by p.pictureTime desc ", Picture.class)
+        return em.createQuery("select p from Picture p join fetch p.likes l " +
+                        "where p.picture_member.id = :id order by p.pictureTime desc", Picture.class)
                 .setParameter("id", memberId)
                 .getResultList();
     }

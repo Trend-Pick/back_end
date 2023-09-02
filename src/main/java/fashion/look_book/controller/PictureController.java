@@ -63,8 +63,7 @@ public class PictureController {
     }
 
     @DeleteMapping("/delete_picture")
-    public ResponseEntity deletePicture(@RequestParam(value= "picture_id") Long pictureId) throws Exception{
-
+    public ResponseEntity deletePicture(@RequestParam(value= "pictureId") Long pictureId) throws Exception{
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         Picture picture = pictureService.findOne(pictureId);
