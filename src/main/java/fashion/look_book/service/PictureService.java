@@ -53,7 +53,14 @@ public class PictureService {
 
         Collections.shuffle(pictures);
 
-        Picture picture = pictures.get(0);
+        Picture picture;
+
+        try {
+            picture = pictures.get(0);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("모든 사진의 투표를 완료해서 더 이상 투표할 사진이 없습니다.");
+        }
+
 
         return picture;
     }

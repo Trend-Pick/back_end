@@ -53,11 +53,17 @@ public class LikeService {
 
     public List<Object[]> RankingOfWeek() {
         List<Object[]> weeklyLike = likeRepository.weeklyLike();
+        if(weeklyLike.isEmpty()) {
+            throw new IllegalArgumentException("이번 주 사진이 아직 투표되지 않았습니다");
+        }
         return weeklyLike;
     }
 
     public List<Object[]> RankingOfMonth() {
         List<Object[]> monthlyLike = likeRepository.monthlyLike();
+        if(monthlyLike.isEmpty()) {
+            throw new IllegalArgumentException("이번 달 사진이 아직 투표되지 않았습니다");
+        }
         return monthlyLike;
     }
 }

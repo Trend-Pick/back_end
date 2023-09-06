@@ -111,12 +111,13 @@ public class VoteController {
             if(member.getMemberImg() == null) {
                 weeklyRankingDto = new WeeklyRankingDto(member.getNickname(),
                         null, ImgUrl, likeDislikeDifference);
+                weeklyList.add(weeklyRankingDto);
             }
             else {
                 weeklyRankingDto = new WeeklyRankingDto(member.getNickname(),
                         member.getMemberImg().getImgUrl(), ImgUrl, likeDislikeDifference);
+                weeklyList.add(weeklyRankingDto);
             }
-            weeklyList.add(weeklyRankingDto);
         }
 
         return weeklyList;
@@ -139,12 +140,13 @@ public class VoteController {
             if(member.getMemberImg() == null) {
                 monthlyRankingDto = new MonthlyRankingDto(member.getNickname(),
                         null, imgUrl, likeDislikeDifference);
+                monthlyList.add(monthlyRankingDto);
             }
             else {
                 monthlyRankingDto = new MonthlyRankingDto(member.getNickname(),
                         member.getMemberImg().getImgUrl(), imgUrl, likeDislikeDifference);
+                monthlyList.add(monthlyRankingDto);
             }
-            monthlyList.add(monthlyRankingDto);
         }
 
         return monthlyList;
