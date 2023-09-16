@@ -45,9 +45,8 @@ public class PostRepository {
         em.remove(findPost);
     }
 
-    @EntityGraph(attributePaths = {"post_member"})
     public List<Post> MyPagePost(Long memberId) {
-        return em.createQuery("SELECT p FROM Post p join fetch p.postImg i " +
+        return em.createQuery("SELECT p FROM Post p join fetch p.postImg i join fetch p.post_member m " +
                         "where p.post_member.id = :id order by p.createdDate desc", Post.class)
                 .setParameter("id", memberId)
                 .getResultList();

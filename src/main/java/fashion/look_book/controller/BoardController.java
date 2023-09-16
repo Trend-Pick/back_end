@@ -104,7 +104,7 @@ public class BoardController {
         // 프론트분들이랑 상의하기
     }
 
-    @PutMapping("/update_post/{postId}")
+    @PatchMapping("/update_post/{postId}")
     public UpdatePostResponse updatePost(@PathVariable ("postId") Long postId,
                                          @RequestPart (value="createPostRequest") CreatePostRequest createPostRequest,
                                          @RequestPart (value="imgInPost", required = false) MultipartFile imgInPost)
@@ -183,7 +183,7 @@ public class BoardController {
 
 
     // 댓글 수정하기
-    @PutMapping("/update_comment/{postId}/{CommentId}")
+    @PatchMapping("/update_comment/{postId}/{CommentId}")
     public ResponseEntity<?> updatePost(@PathVariable ("postId") Long postId,
                                             @PathVariable ("CommentId") Long commentId,
                                             @RequestBody UpdateCommentRequest request) {

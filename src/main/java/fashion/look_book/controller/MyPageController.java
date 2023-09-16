@@ -31,7 +31,7 @@ public class MyPageController {
     private final MemberService memberService;
     private final LikeService likeService;
 
-    @GetMapping("/my_page") // 처음 페이지이고, 사진 최신 6개 보여주기
+    @GetMapping("/my_page")
     public MyPagePictureDto MyPagePictures() {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
@@ -61,7 +61,6 @@ public class MyPageController {
 
 
     @GetMapping("/my_page/post")
-    // 사진이랑 내가 쓴거 다 보내주기
     public MyPagePostDto MyPagePosts() {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
@@ -107,7 +106,7 @@ public class MyPageController {
         return new MemberPictureDto(imgUrl);
     }
 
-    @PutMapping("/update/member/picture") // 대표사진 수정 누르기
+    @PatchMapping("/update/member/picture") // 대표사진 수정 누르기
     public void UpdatePicture(@RequestParam MultipartFile newImg) throws Exception {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Long memberId = member.getId();
@@ -122,7 +121,7 @@ public class MyPageController {
         }
     }
 
-    @PutMapping("/change_password")
+    @PatchMapping("/change_password")
     public Long ChangePassword(@Validated @RequestBody ChangePWDto changePWDto) {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Long memberId = member.getId();
