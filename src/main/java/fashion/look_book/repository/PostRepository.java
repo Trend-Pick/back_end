@@ -31,10 +31,10 @@ public class PostRepository {
                 .getSingleResult();
     }
 
-    @EntityGraph(attributePaths = {"post_member", "postImg"})
     public List<Post> findAllPost() {
-        List<Post> AllPost = em.createQuery("select p from Post p join fetch p.post_member m " +
-                        "left join fetch m.memberImg mi left join fetch p.postImg i order by p.createdDate desc ", Post.class)
+        List<Post> AllPost = em.createQuery("select p from Post p left join fetch p.post_member m " +
+                        "left join fetch p.postImg i left join fetch m.memberImg mi " +
+                        "order by p.createdDate desc ", Post.class)
                 .getResultList();
 
         return AllPost;
@@ -46,8 +46,8 @@ public class PostRepository {
     }
 
     public List<Post> MyPagePost(Long memberId) {
-        return em.createQuery("SELECT p FROM Post p join fetch p.postImg i join fetch p.post_member m " +
-                        "where p.post_member.id = :id order by p.createdDate desc", Post.class)
+        return em.createQuery("select p from Post p left join fetch p.postImg i left join fetch p.post_member m " +
+                        "left join fetch m.memberImg mi where m.id = :id order by p.createdDate desc", Post.class)
                 .setParameter("id", memberId)
                 .getResultList();
     }

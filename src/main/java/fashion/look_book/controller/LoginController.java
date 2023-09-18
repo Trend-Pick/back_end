@@ -43,11 +43,6 @@ public class LoginController {
         회원가입
      **/
 
-    @GetMapping("/member/add")
-    public String addMember() {
-        return null;
-    }
-
     
     @PostMapping("/member/add")
     public ResponseEntity<?> saveMember(@Validated @RequestBody addMemberDtoRequest request, BindingResult bindingResult) {

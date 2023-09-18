@@ -53,7 +53,7 @@ public class PictureRepository {
     }
 
     public List<Picture> MyPagePicture(Long memberId) {
-        return em.createQuery("select p from Picture p join fetch p.likes l " +
+        return em.createQuery("select p from Picture p left join fetch p.likes l " +
                         "where p.picture_member.id = :id order by p.pictureTime desc", Picture.class)
                 .setParameter("id", memberId)
                 .getResultList();

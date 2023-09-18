@@ -1,9 +1,7 @@
 package fashion.look_book.domain;
 
-import fashion.look_book.Dto.Board.ImgInPostDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
