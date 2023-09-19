@@ -72,10 +72,11 @@ public class VoteController {
         List<Long> pictures = pictureService.RankingOfPicture();
         List<String> RankingUrl = new ArrayList<>();
         List<Long> RankingNumber = new ArrayList<>();
-        List<RankingPictureDto> PictureList = new ArrayList<>();
+        List<RankingPictureDto> pictureList = new ArrayList<>();
         RankingPictureDto rankingPictureDto;
 
-        for(int i = 0; i < 3; i++) {
+        for(int i = 0; i < pictures.size(); i++) {
+            if(i == 3) break;
             Picture picture = pictureService.findOne(pictures.get(i));
             Member member = picture.getPicture_member();
             RankingUrl.add(picture.getImgUrl());
@@ -88,10 +89,10 @@ public class VoteController {
                 rankingPictureDto = new RankingPictureDto(member.getNickname(), member.getMemberImg().getImgUrl(),
                         RankingUrl.get(i), RankingNumber.get(i));
             }
-            PictureList.add(rankingPictureDto);
+            pictureList.add(rankingPictureDto);
         }
 
-        return PictureList;
+        return pictureList;
     }
 
     // 주간 좋아요 순위
