@@ -96,17 +96,16 @@ public class MyPageController {
     @GetMapping("/update/member/picture")
     public MemberPictureDto UpdatePicturePage() {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        String imgUrl;
-        if (member.getMemberImg() == null) {
-            imgUrl = null;
-        } else {
-            imgUrl = member.getMemberImg().getImgUrl();
-        }
+        Long memberId = member.getId();
+
+        MemberImg memberImg = memberImgService.findByMemberId(memberId);
+        String imgUrl = memberImg.getImgUrl();
 
         return new MemberPictureDto(imgUrl);
-    }
+    } // 이거 트랜잭션으로 해보기
 
     @PatchMapping("/update/member/picture") // 대표사진 수정 누르기
+    @ResponseBody
     public void UpdatePicture(@RequestParam MultipartFile newImg) throws Exception {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Long memberId = member.getId();
