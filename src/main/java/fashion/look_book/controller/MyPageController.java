@@ -94,15 +94,22 @@ public class MyPageController {
     }
 
     @GetMapping("/update/member/picture")
+    @ResponseBody
     public MemberPictureDto UpdatePicturePage() {
         Member member = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
         Long memberId = member.getId();
 
         MemberImg memberImg = memberImgService.findByMemberId(memberId);
-        String imgUrl = memberImg.getImgUrl();
+        String imgUrl;
+        if (memberImg == null) {
+            imgUrl = null;
+        }
+        else {
+            imgUrl = memberImg.getImgUrl();
+        }
 
         return new MemberPictureDto(imgUrl);
-    } // 이거 트랜잭션으로 해보기
+    }
 
     @PatchMapping("/update/member/picture") // 대표사진 수정 누르기
     @ResponseBody
