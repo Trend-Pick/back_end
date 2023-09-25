@@ -1,17 +1,23 @@
 package fashion.look_book.repository;
 
-import fashion.look_book.domain.Comment;
-import fashion.look_book.domain.Like;
-import fashion.look_book.domain.Member;
+import fashion.look_book.domain.*;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Repository;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
 public class LikeRepository {
+
+    @PersistenceContext
     private EntityManager em;
 
     public void save(Like like) {
@@ -22,10 +28,54 @@ public class LikeRepository {
         return em.find(Like.class, id);
     }
 
-    public List<Like> findByMember(Member member) {
-        Long memberId = member.getId();
-        return em.createQuery("select l from Like l where l.member = :name", Like.class)
-                .setParameter("name", memberId)
+    @EntityGraph(attributePaths = {"picture", "like"})
+    public List<Object[]> weeklyLike() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime thisMonday = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).withHour(0).withMinute(0).withSecond(0);
+        LocalDateTime nextSunday = now.with(TemporalAdjusters.next(DayOfWeek.SUNDAY)).withHour(11).withMinute(59).withSecond(59);
+
+        List<Object[]> resultList = em.createQuery(
+                        "select l.picture, " +
+                                "sum(case when l.status = :likeStatus then 1 " +
+                                "         when l.status = :dislikeStatus then -1 " +
+                                "         else 0 end) as likeDislikeDifference " +
+                                "from Like l " +
+                                "where l.likeTime >= :startOfWeek " +
+                                "and l.likeTime < :endOfWeek " +
+                                "group by l.picture.id " +
+                                "order by likeDislikeDifference desc", Object[].class)
+                .setParameter("startOfWeek", thisMonday)
+                .setParameter("endOfWeek", nextSunday)
+                .setParameter("likeStatus", LikeStatus.LIKE)
+                .setParameter("dislikeStatus", LikeStatus.DISLIKE)
+                .setMaxResults(3)
                 .getResultList();
+
+        return resultList;
+    }
+
+    @EntityGraph(attributePaths = {"picture", "like"})
+    public List<Object[]> monthlyLike() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startOfMonth = now.withDayOfMonth(1);
+        LocalDateTime endOfMonth = startOfMonth.plusMonths(1);
+
+        List<Object[]> pictures = em.createQuery("SELECT l.picture, " +
+                        "SUM(CASE WHEN l.status = :likeStatus THEN 1 " +
+                        "         WHEN l.status = :dislikeStatus THEN -1 " +
+                        "         ELSE 0 END) as likeDislikeDifference " +
+                        "FROM Like l " +
+                        "WHERE l.likeTime >= :startOfMonth " +
+                        "AND l.likeTime < :endOfMonth " +
+                        "GROUP BY l.picture.id " +
+                        "ORDER BY likeDislikeDifference DESC", Object[].class)
+                .setParameter("startOfMonth", startOfMonth)
+                .setParameter("endOfMonth", endOfMonth)
+                .setParameter("likeStatus", LikeStatus.LIKE)
+                .setParameter("dislikeStatus", LikeStatus.DISLIKE)
+                .setMaxResults(3)
+                .getResultList();
+
+        return pictures;
     }
 }

@@ -1,22 +1,32 @@
 package fashion.look_book.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "likes")
 @Getter
+@SequenceGenerator(
+        name="LIKES_SEQ_GENERATOR",
+        allocationSize=1
+)
 public class Like {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "LIKES_SEQ_GENERATOR")
     @Column(name = "like_id")
     private Long id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member like_member;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "picture_id")
     private Picture picture;
@@ -24,11 +34,17 @@ public class Like {
     @Enumerated(EnumType.STRING)
     private LikeStatus status;
 
+    private LocalDateTime likeTime;
+
+    public Like() {
+    }
+
     @Builder
-    public Like (Member like_member, Picture picture, LikeStatus status) {
+    public Like (Member like_member, Picture picture, LikeStatus status, LocalDateTime likeTime) {
         this.like_member = like_member;
         this.picture = picture;
         this.status = status;
+        this.likeTime = likeTime;
     }
 
     public void update_like (Member like_member, Picture picture, LikeStatus status) {

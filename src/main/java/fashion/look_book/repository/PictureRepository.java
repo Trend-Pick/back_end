@@ -2,8 +2,11 @@ package fashion.look_book.repository;
 
 import fashion.look_book.domain.Member;
 import fashion.look_book.domain.Picture;
+import fashion.look_book.domain.Post;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PictureRepository {
 
+    @PersistenceContext
     private final EntityManager em;
 
     public void save(Picture picture) {
@@ -22,11 +26,36 @@ public class PictureRepository {
         return em.find(Picture.class, id);
     }
 
+    public Picture findOneByFetchJoin(Long id) {
+        return em.createQuery("select p from Picture p join fetch p.likes left join fetch p.picture_member" +
+                        " where p.id = :id", Picture.class)
+                .setParameter("id", id)
+                .getSingleResult();
+    }
 
-    public List<Picture> findByMember(Member member) {
+    public List<Picture> findAll() {
+        List<Picture> pictures = em.createQuery("select p from Picture p join fetch p.likes", Picture.class)
+                .getResultList();
+        return pictures;
+    }
+
+    public void delete(Long pictureId) {
+        Picture findPicture = em.find(Picture.class, pictureId);
+        em.remove(findPicture);
+    }
+
+    public List<Picture> CanLikePicture(Member member) {
         Long memberId = member.getId();
-        return em.createQuery("select p from Picture p where p.member = :name", Picture.class)
-                .setParameter("name", memberId)
+        return em.createQuery("select p from Picture p where p not in (select l.picture from Like l where l.like_member.id " +
+                        "= :member) and p.picture_member.id <> :member", Picture.class)
+                .setParameter("member", memberId)
+                .getResultList();
+    }
+
+    public List<Picture> MyPagePicture(Long memberId) {
+        return em.createQuery("select p from Picture p left join fetch p.likes l " +
+                        "where p.picture_member.id = :id order by p.pictureTime desc", Picture.class)
+                .setParameter("id", memberId)
                 .getResultList();
     }
 }

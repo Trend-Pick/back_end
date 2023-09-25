@@ -19,18 +19,32 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
+    private final PostRepository postRepository;
 
     @Transactional
-    public void save(Comment comment) {
+    public Long save(Comment comment) {
         commentRepository.save(comment);
+        return comment.getId();
     }
 
     public Comment findOne(Long commentId) {
         return commentRepository.findOne(commentId);
     }
 
-    public List<Comment> users_comment(Long id) {
-        Member findMember = memberRepository.findOne(id);
-        return commentRepository.findByMember(findMember);
+    public List<Comment> post_comment(Post post) {
+        return commentRepository.findByPost(post);
+    }
+
+    @Transactional
+    public Long updateComment(Long commentId, String content) {
+        Comment findComment = commentRepository.findOne(commentId);
+
+        findComment.update_comment(content);
+        return findComment.getId();
+    }
+
+    @Transactional
+    public void delete_Comment (Long commentId) {
+        commentRepository.deleteComment(commentId);
     }
 }

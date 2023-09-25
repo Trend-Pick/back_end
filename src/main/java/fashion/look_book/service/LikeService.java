@@ -7,10 +7,13 @@ import fashion.look_book.domain.Picture;
 import fashion.look_book.repository.LikeRepository;
 import fashion.look_book.repository.MemberRepository;
 import fashion.look_book.repository.PictureRepository;
+import jdk.jshell.Snippet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -19,7 +22,6 @@ import java.util.List;
 public class LikeService {
 
     private final LikeRepository likeRepository;
-    private final MemberRepository memberRepository;
     private final PictureRepository pictureRepository;
 
     @Transactional
@@ -31,23 +33,37 @@ public class LikeService {
         return likeRepository.findOne(likeId);
     }
 
-    public List<Like> users_like(Long id) {
-        Member findMember = memberRepository.findOne(id);
-        return likeRepository.findByMember(findMember);
-    }
-
-    public void change_like(Long id, Long pictureId, Like like) {
-
-        Member member = memberRepository.findOne(id);
+    public Long LikeNumber(Long pictureId) {
         Picture picture = pictureRepository.findOne(pictureId);
 
-        if(like.getStatus() == LikeStatus.LIKE) {
-            like.update_like(member, picture, LikeStatus.DISLIKE);
-        }
+        Long count = 0L;
 
-        else if(like.getStatus() == LikeStatus.DISLIKE) {
-            like.update_like(member, picture, LikeStatus.LIKE);
+        int size = picture.getLikes().size();
+
+        for(int i = 0; i < size; i++) {
+            if(picture.getLikes().get(i).getStatus() == LikeStatus.LIKE) {
+                count = count + 1;
+            }
+            else if(picture.getLikes().get(i).getStatus() == LikeStatus.DISLIKE) {
+                count = count - 1;
+            }
         }
+        return count;
     }
-    // 자동으로 실행될거같은데 한 번 확인해보기
+
+    public List<Object[]> RankingOfWeek() {
+        List<Object[]> weeklyLike = likeRepository.weeklyLike();
+        if(weeklyLike.isEmpty()) {
+            throw new IllegalArgumentException("이번 주 사진이 아직 투표되지 않았습니다");
+        }
+        return weeklyLike;
+    }
+
+    public List<Object[]> RankingOfMonth() {
+        List<Object[]> monthlyLike = likeRepository.monthlyLike();
+        if(monthlyLike.isEmpty()) {
+            throw new IllegalArgumentException("이번 달 사진이 아직 투표되지 않았습니다");
+        }
+        return monthlyLike;
+    }
 }

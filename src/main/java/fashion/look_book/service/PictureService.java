@@ -1,16 +1,14 @@
 package fashion.look_book.service;
 
-import fashion.look_book.domain.Like;
-import fashion.look_book.domain.LikeStatus;
 import fashion.look_book.domain.Member;
 import fashion.look_book.domain.Picture;
-import fashion.look_book.repository.MemberRepository;
 import fashion.look_book.repository.PictureRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -18,22 +16,77 @@ import java.util.List;
 public class PictureService {
 
     private final PictureRepository pictureRepository;
-    private final MemberRepository memberRepository;
+    private final LikeService likeService;
+    private final FileService fileService;
+    private final S3FileService s3FileService;
+
+    @Value("${cloud.aws.s3.bucket}") // .properties 의 itemImgLocation 값을 itemImgLocation 변수에 넣어
+    private String imgLocation;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     @Transactional
-    public void savePicture(Picture picture) {
+    public void save(Picture picture) throws Exception{
+
         pictureRepository.save(picture);
+    }
+
+    //삭제하려고 할 때 pictureId를 받아서 그 pictureId에 연결된 img를 삭제하는 식으로.
+    @Transactional
+    public void delete(Picture picture) throws Exception {
+        pictureRepository.delete(picture.getId());
+        s3FileService.deleteImage(picture.getImgName());
     }
 
     public Picture findOne(Long pictureId) {
         return pictureRepository.findOne(pictureId);
     }
 
-    public List<Picture> users_post(Long id) {
-        Member findMember = memberRepository.findOne(id);
-        return pictureRepository.findByMember(findMember);
+    public Picture findOneByFecthJoin(Long pictureId) {
+        return pictureRepository.findOneByFetchJoin(pictureId);
     }
 
-    // 이 사진의 like 갯수
-    
+
+    public Picture PictureByRandom(Member member) {
+        List<Picture> pictures = pictureRepository.CanLikePicture(member);
+
+        Collections.shuffle(pictures);
+
+        Picture picture;
+
+        try {
+            picture = pictures.get(0);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("모든 사진의 투표를 완료해서 더 이상 투표할 사진이 없습니다.");
+        }
+
+
+        return picture;
+    }
+
+    public List<Long> RankingOfPicture() {
+        List<Picture> pictures = pictureRepository.findAll();
+
+        int size = pictures.size();
+
+        Map<Long, Long> likeMap = new HashMap<>();
+
+        for (int i = 0; i < size; i++) {
+            Long like = likeService.LikeNumber(pictures.get(i).getId());
+            likeMap.put(pictures.get(i).getId(), like);
+        }
+
+        List<Long> keySet = new ArrayList<>(likeMap.keySet());
+
+        keySet.sort((o1, o2) -> likeMap.get(o2).compareTo(likeMap.get(o1)));
+
+        return keySet;
+    }
+
+
+    public List<Picture> MyPagePicture(Long memberId) {
+        List<Picture> pictures = pictureRepository.MyPagePicture(memberId);
+        return pictures;
+    }
 }
